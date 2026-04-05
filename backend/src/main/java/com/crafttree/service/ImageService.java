@@ -93,7 +93,7 @@ public class ImageService {
             }
 
             int exitCode = process.waitFor();
-            if (exitCode == 0 && output.toString().startsWith("OK:")) {
+            if (exitCode == 0 && output.toString().contains("OK:")) {
                 log.info("Background removed successfully: {}", output);
                 return true;
             } else {
