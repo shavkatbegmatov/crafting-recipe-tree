@@ -5,6 +5,7 @@ import RawTotals from '../components/tree/RawTotals'
 import CategoryBadge from '../components/ui/CategoryBadge'
 import Spinner from '../components/ui/Spinner'
 import { ArrowLeft, ArrowRight, Clock, Beaker } from 'lucide-react'
+import ImageUpload from '../components/items/ImageUpload'
 
 export default function ItemDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -61,14 +62,17 @@ export default function ItemDetailPage() {
           <p className="text-sm text-[#8a7a60] mb-4">{item.description}</p>
         )}
 
-        <div className="flex items-center gap-4 text-sm">
-          {item.craftTimeSeconds > 0 && (
-            <div className="flex items-center gap-1.5 text-[#8a7a60]">
-              <Clock size={14} />
-              <span>Kraft vaqti:</span>
-              <span className="font-mono text-[#d4c4a0]">{item.craftTimeSeconds}s</span>
-            </div>
-          )}
+        <div className="flex items-center justify-between text-sm">
+          <div className="flex items-center gap-4">
+            {item.craftTimeSeconds > 0 && (
+              <div className="flex items-center gap-1.5 text-[#8a7a60]">
+                <Clock size={14} />
+                <span>Kraft vaqti:</span>
+                <span className="font-mono text-[#d4c4a0]">{item.craftTimeSeconds}s</span>
+              </div>
+            )}
+          </div>
+          <ImageUpload itemId={itemId} />
         </div>
 
         {item.ingredients && item.ingredients.length > 0 && (

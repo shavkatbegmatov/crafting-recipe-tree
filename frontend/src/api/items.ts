@@ -41,3 +41,24 @@ export async function fetchUsedIn(id: number): Promise<UsedIn[]> {
   const { data } = await client.get(`/items/${id}/used-in`)
   return data
 }
+
+export async function uploadItemImage(
+  id: number,
+  file: File,
+  removeBg: boolean = true,
+  onProgress?: (percent: number) => void
+): Promise<{ imageUrl: string }> {
+  const formData = new FormData()
+  formData.append('file', file)
+
+  const { data } = await client.post(`/items/${id}/upload-image`, formData, {
+    params: { removeBg },
+    headers: { 'Content-Type': 'multipart/form-data' },
+    onUploadProgress: (e) => {
+      if (onProgress && e.total) {
+        onProgress(Math.round((e.loaded * 100) / e.total))
+      }
+    },
+  })
+  return data
+}

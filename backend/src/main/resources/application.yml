@@ -19,6 +19,17 @@ spring:
     enabled: true
     locations: classpath:db/migration
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+app:
+  uploads:
+    path: uploads
+  scripts:
+    python: python
+
 springdoc:
   api-docs:
     path: /api-docs

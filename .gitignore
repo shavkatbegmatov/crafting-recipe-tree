@@ -28,3 +28,7 @@ pgdata/
 
 # Source images
 imges-erz-5/
+
+# Uploads
+backend/uploads/
+uploads/
