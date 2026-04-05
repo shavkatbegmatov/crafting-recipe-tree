@@ -40,11 +40,14 @@ export default function ItemDetailPage() {
       {/* Item info */}
       <div className="bg-dark-card border border-dark-border rounded-lg overflow-hidden">
         {item.imageUrl && (
-          <div className="h-48 bg-dark-panel flex items-center justify-center overflow-hidden">
+          <div className="bg-dark-panel flex items-center justify-center p-4 overflow-hidden">
             <img
               src={item.imageUrl}
               alt={item.name}
-              className="w-full h-full object-contain"
+              className={item.imageUrl.endsWith('.png')
+                ? 'w-16 h-16 object-contain'
+                : 'max-w-md w-full h-auto rounded'
+              }
             />
           </div>
         )}
