@@ -10,10 +10,10 @@ const STAT_ICONS = {
 }
 
 const STAT_COLORS = {
-  RAW: 'text-gray-400',
-  MATERIAL: 'text-emerald-400',
-  ITEM: 'text-blue-400',
-  MODULE: 'text-amber-400',
+  RAW: 'text-[#8a7a60]',
+  MATERIAL: 'text-[#4a9a5a]',
+  ITEM: 'text-[#6a8abc]',
+  MODULE: 'text-[#c8a050]',
 }
 
 export default function HomePage() {
@@ -23,15 +23,15 @@ export default function HomePage() {
   const stats = categories?.map((cat) => {
     const count = items?.filter((i) => i.categoryCode === cat.code).length ?? 0
     const Icon = STAT_ICONS[cat.code as keyof typeof STAT_ICONS] || Package
-    const color = STAT_COLORS[cat.code as keyof typeof STAT_COLORS] || 'text-gray-400'
+    const color = STAT_COLORS[cat.code as keyof typeof STAT_COLORS] || 'text-[#8a7a60]'
     return { ...cat, count, Icon, color }
   })
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-semibold text-gray-100 mb-1">Kraft retseptlari</h1>
-        <p className="text-sm text-gray-500">Barcha elementlar va ularning retseptlari</p>
+        <h1 className="text-xl font-semibold text-[#d4c4a0] mb-1">Kraft retseptlari</h1>
+        <p className="text-sm text-[#8a7a60]">Barcha elementlar va ularning retseptlari</p>
       </div>
 
       {stats && (
@@ -40,9 +40,9 @@ export default function HomePage() {
             <div key={s.code} className="bg-dark-card border border-dark-border rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <s.Icon size={18} className={s.color} />
-                <span className="text-xs text-gray-500">{s.nameUz}</span>
+                <span className="text-xs text-[#8a7a60]">{s.nameUz}</span>
               </div>
-              <span className="text-2xl font-bold font-mono text-gray-200">{s.count}</span>
+              <span className="text-2xl font-bold font-mono text-[#d4c4a0]">{s.count}</span>
             </div>
           ))}
         </div>

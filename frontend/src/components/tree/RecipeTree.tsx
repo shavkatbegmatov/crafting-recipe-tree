@@ -12,7 +12,7 @@ export default function RecipeTree({ itemId }: Props) {
 
   if (isLoading) {
     return (
-      <div className="flex items-center gap-2 py-8 justify-center text-gray-500">
+      <div className="flex items-center gap-2 py-8 justify-center text-[#8a7a60]">
         <Spinner />
         <span className="text-sm">Daraxт yuklanmoqda...</span>
       </div>
@@ -29,13 +29,13 @@ export default function RecipeTree({ itemId }: Props) {
 
   return (
     <div className="bg-dark-card border border-dark-border rounded-lg p-5">
-      <h2 className="text-sm font-semibold text-gray-300 mb-4 flex items-center gap-2">
-        <GitBranch size={16} className="text-gray-500" />
+      <h2 className="text-sm font-semibold text-[#d4c4a0] mb-4 flex items-center gap-2">
+        <GitBranch size={16} className="text-[#8a7a60]" />
         Kraft shajara
       </h2>
 
       {isRaw ? (
-        <p className="text-sm text-gray-500">Bu xomashyo — retsepti yo'q</p>
+        <p className="text-sm text-[#8a7a60]">Bu xomashyo — retsepti yo'q</p>
       ) : (
         <div className="font-mono text-sm">
           <TreeNode node={tree} />

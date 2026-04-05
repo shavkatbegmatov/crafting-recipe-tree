@@ -10,7 +10,7 @@ export default function CraftTimeBadge({ seconds, className = '' }: Props) {
   if (seconds <= 0) return null
 
   return (
-    <span className={`inline-flex items-center gap-1 text-xs text-gray-500 font-mono ${className}`}>
+    <span className={`inline-flex items-center gap-1 text-xs text-[#8a7a60] font-mono ${className}`}>
       <Clock size={11} />
       {formatTime(seconds)}
     </span>

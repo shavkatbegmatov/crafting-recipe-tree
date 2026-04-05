@@ -18,7 +18,7 @@ export default function ItemList({ items, isLoading }: Props) {
 
   if (!items || items.length === 0) {
     return (
-      <div className="text-center py-12 text-gray-500 text-sm">
+      <div className="text-center py-12 text-[#8a7a60] text-sm">
         Elementlar topilmadi
       </div>
     )

@@ -80,6 +80,7 @@ public class CraftItemService {
                 .categoryNameRu(item.getCategory().getNameRu())
                 .categoryNameUz(item.getCategory().getNameUz())
                 .craftTimeSeconds(item.getCraftTimeSeconds())
+                .imageUrl(item.getImageUrl())
                 .build();
     }
 

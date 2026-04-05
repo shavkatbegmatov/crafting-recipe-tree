@@ -14,6 +14,7 @@ export interface CraftItem {
   categoryNameRu: string
   categoryNameUz: string
   craftTimeSeconds: number
+  imageUrl: string | null
   ingredients?: RecipeIngredient[]
 }
 

@@ -1,24 +1,24 @@
 import type { CategoryCode } from '../api/types'
 
 export const CATEGORY_COLORS: Record<CategoryCode, string> = {
-  RAW: '#6B7280',
-  MATERIAL: '#10B981',
-  ITEM: '#3B82F6',
-  MODULE: '#F59E0B',
+  RAW: '#8a7a60',
+  MATERIAL: '#4a9a5a',
+  ITEM: '#6a8abc',
+  MODULE: '#c8a050',
 }
 
 export const CATEGORY_BG: Record<CategoryCode, string> = {
-  RAW: 'bg-gray-500/10 text-gray-400 border-gray-500/30',
-  MATERIAL: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-  ITEM: 'bg-blue-500/10 text-blue-400 border-blue-500/30',
-  MODULE: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
+  RAW: 'bg-[#8a7a60]/10 text-[#8a7a60] border-[#8a7a60]/30',
+  MATERIAL: 'bg-[#4a9a5a]/10 text-[#4a9a5a] border-[#4a9a5a]/30',
+  ITEM: 'bg-[#6a8abc]/10 text-[#6a8abc] border-[#6a8abc]/30',
+  MODULE: 'bg-[#c8a050]/10 text-[#c8a050] border-[#c8a050]/30',
 }
 
 export const CATEGORY_DOT: Record<CategoryCode, string> = {
-  RAW: 'bg-gray-500',
-  MATERIAL: 'bg-emerald-500',
-  ITEM: 'bg-blue-500',
-  MODULE: 'bg-amber-500',
+  RAW: 'bg-[#8a7a60]',
+  MATERIAL: 'bg-[#4a9a5a]',
+  ITEM: 'bg-[#6a8abc]',
+  MODULE: 'bg-[#c8a050]',
 }
 
 export const CATEGORY_LABELS: Record<CategoryCode, string> = {

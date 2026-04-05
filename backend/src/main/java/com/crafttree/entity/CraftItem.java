@@ -33,6 +33,9 @@ public class CraftItem {
     @Column(name = "craft_time_seconds")
     private Integer craftTimeSeconds;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @OneToMany(mappedBy = "resultItem", fetch = FetchType.LAZY)
     @Builder.Default
     private List<RecipeIngredient> ingredients = new ArrayList<>();

@@ -25,3 +25,6 @@ pgdata/
 
 # Env
 .env
+
+# Source images
+imges-erz-5/
