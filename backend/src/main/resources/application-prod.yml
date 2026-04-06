@@ -1,0 +1,37 @@
+server:
+  port: 8080
+  forward-headers-strategy: framework
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:postgres}:${DB_PORT:5432}/${DB_NAME:crafttree}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    hikari:
+      maximum-pool-size: 10
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+app:
+  uploads:
+    path: uploads
+  scripts:
+    python: python
+  jwt:
+    secret: ${JWT_SECRET:Y3JhZnRpbmctcmVjaXBlLXRyZWUtand0LXNlY3JldC1rZXktMjAyNg==}
+    expiration: 86400000
+
+logging:
+  level:
+    root: INFO
+    com.crafttree: INFO

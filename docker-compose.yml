@@ -1,47 +1,43 @@
 services:
   postgres:
-    image: postgres:16
+    image: postgres:16-alpine
     container_name: crafting-recipe-db
     environment:
-      POSTGRES_DB: crafttree
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
+      POSTGRES_DB: ${DB_NAME:-crafttree}
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres}"]
       interval: 5s
       timeout: 5s
       retries: 5
 
   backend:
-    build: ./backend
-    image: crafting-recipe-tree-backend
+    image: ghcr.io/shavkatbegmatov/crafting-recipe-tree-backend:latest
     container_name: crafting-recipe-tree-backend
-    ports:
-      - "8080:8080"
     depends_on:
       postgres:
         condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/crafttree
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_PROFILES_ACTIVE: prod
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-crafttree}
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      JWT_SECRET: ${JWT_SECRET:-Y3JhZnRpbmctcmVjaXBlLXRyZWUtand0LXNlY3JldC1rZXktMjAyNg==}
     volumes:
       - uploads:/app/uploads
 
   frontend:
-    build: ./frontend
-    image: crafting-recipe-tree-frontend
+    image: ghcr.io/shavkatbegmatov/crafting-recipe-tree-frontend:latest
     container_name: crafting-recipe-tree-frontend
     ports:
-      - "5173:5173"
+      - "80:80"
     depends_on:
       - backend
-    environment:
-      VITE_API_URL: http://backend:8080
 
 volumes:
   pgdata:
