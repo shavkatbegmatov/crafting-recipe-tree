@@ -1,0 +1,70 @@
+{
+  "app": {
+    "title": "Craft Tree",
+    "subtitle": "Управление рецептами"
+  },
+  "sidebar": {
+    "elements": "Элементы",
+    "all": "Все",
+    "loading": "Загрузка..."
+  },
+  "search": {
+    "placeholder": "Поиск..."
+  },
+  "home": {
+    "title": "Крафт рецепты",
+    "subtitle": "Все элементы и их рецепты"
+  },
+  "detail": {
+    "back": "Назад",
+    "notFound": "Элемент не найден",
+    "goHome": "На главную",
+    "craftTime": "Время крафта:",
+    "directIngredients": "Прямые ингредиенты",
+    "usedIn": "Где используется"
+  },
+  "tree": {
+    "title": "Дерево крафта",
+    "loading": "Загрузка дерева...",
+    "error": "Произошла ошибка",
+    "rawNoRecipe": "Это сырьё — рецепта нет"
+  },
+  "rawTotals": {
+    "title": "Всего сырья для 1 шт. {{itemName}}",
+    "rawMaterial": "Сырьё",
+    "quantity": "Количество",
+    "totalTime": "Общее время крафта (последовательно):"
+  },
+  "upload": {
+    "button": "Загрузить изображение",
+    "title": "Загрузка изображения",
+    "selectFile": "Выберите скриншот",
+    "fileHint": "JPG, PNG — max 10MB",
+    "removeBg": "Автоматическое удаление фона (rembg)",
+    "uploading": "Загрузка... {{progress}}%",
+    "processing": "Удаление фона...",
+    "done": "Готово!",
+    "submit": "Загрузить",
+    "reprocessing": "Обработка...",
+    "error": "Ошибка при загрузке"
+  },
+  "notFound": {
+    "message": "Страница не найдена",
+    "goHome": "На главную"
+  },
+  "itemList": {
+    "empty": "Элементы не найдены"
+  },
+  "categories": {
+    "RAW": "Сырьё",
+    "MATERIAL": "Материал",
+    "ITEM": "Предмет",
+    "MODULE": "Модуль"
+  },
+  "time": {
+    "seconds": "{{count}}с",
+    "minutes": "{{count}}м",
+    "minutesSeconds": "{{minutes}}м {{seconds}}с",
+    "zero": "0с"
+  }
+}

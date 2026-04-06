@@ -11,6 +11,9 @@ import java.math.BigDecimal;
 public class UsedInDto {
     private Long itemId;
     private String itemName;
+    private String itemNameUz;
+    private String itemNameEn;
+    private String itemNameUzCyr;
     private String categoryCode;
     private BigDecimal quantity;
 }

@@ -1,6 +1,7 @@
 import type { CraftItem } from '../../api/types'
 import ItemCard from './ItemCard'
 import Spinner from '../ui/Spinner'
+import { useTranslation } from 'react-i18next'
 
 interface Props {
   items: CraftItem[] | undefined
@@ -8,6 +9,8 @@ interface Props {
 }
 
 export default function ItemList({ items, isLoading }: Props) {
+  const { t } = useTranslation()
+
   if (isLoading) {
     return (
       <div className="flex justify-center py-12">
@@ -19,7 +22,7 @@ export default function ItemList({ items, isLoading }: Props) {
   if (!items || items.length === 0) {
     return (
       <div className="text-center py-12 text-[#8a7a60] text-sm">
-        Elementlar topilmadi
+        {t('itemList.empty')}
       </div>
     )
   }

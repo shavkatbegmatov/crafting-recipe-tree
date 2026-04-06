@@ -1,5 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useItems } from '../../hooks/useItems'
+import { useLocalizedField } from '../../hooks/useLanguage'
 import { useState, useCallback } from 'react'
 import SearchBar from '../items/SearchBar'
 import { CATEGORY_DOT } from '../../utils/constants'
@@ -11,15 +13,9 @@ interface Props {
   onClose: () => void
 }
 
-const FILTERS: { code: string; label: string }[] = [
-  { code: '', label: 'Barchasi' },
-  { code: 'RAW', label: 'Xomashyo' },
-  { code: 'MATERIAL', label: 'Material' },
-  { code: 'ITEM', label: 'Predmet' },
-  { code: 'MODULE', label: 'Modul' },
-]
-
 export default function Sidebar({ isOpen, onClose }: Props) {
+  const { t } = useTranslation()
+  const { getField } = useLocalizedField()
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState('')
   const { id } = useParams()
@@ -28,8 +24,16 @@ export default function Sidebar({ isOpen, onClose }: Props) {
 
   const handleSearch = useCallback((val: string) => setSearch(val), [])
 
+  const filters = [
+    { code: '', label: t('sidebar.all') },
+    { code: 'RAW', label: t('categories.RAW') },
+    { code: 'MATERIAL', label: t('categories.MATERIAL') },
+    { code: 'ITEM', label: t('categories.ITEM') },
+    { code: 'MODULE', label: t('categories.MODULE') },
+  ]
+
   const filteredItems = items?.filter(
-    (item) => !search || item.name.toLowerCase().includes(search.toLowerCase())
+    (item) => !search || getField(item, 'name').toLowerCase().includes(search.toLowerCase())
   )
 
   return (
@@ -44,14 +48,14 @@ export default function Sidebar({ isOpen, onClose }: Props) {
       >
         <div className="p-3 border-b border-dark-border">
           <div className="flex items-center justify-between mb-3 lg:hidden">
-            <span className="text-sm font-medium text-[#d4c4a0]">Elementlar</span>
+            <span className="text-sm font-medium text-[#d4c4a0]">{t('sidebar.elements')}</span>
             <button onClick={onClose} className="text-[#8a7a60] hover:text-[#d4c4a0]">
               <X size={18} />
             </button>
           </div>
           <SearchBar value={search} onChange={handleSearch} />
           <div className="flex flex-wrap gap-1.5 mt-3">
-            {FILTERS.map((f) => (
+            {filters.map((f) => (
               <button
                 key={f.code}
                 onClick={() => setFilter(f.code)}
@@ -68,7 +72,7 @@ export default function Sidebar({ isOpen, onClose }: Props) {
         </div>
         <div className="flex-1 overflow-y-auto p-2">
           {isLoading ? (
-            <div className="text-center text-[#8a7a60] text-xs py-4">Yuklanmoqda...</div>
+            <div className="text-center text-[#8a7a60] text-xs py-4">{t('sidebar.loading')}</div>
           ) : (
             <div className="space-y-0.5">
               {filteredItems?.map((item) => (
@@ -86,7 +90,7 @@ export default function Sidebar({ isOpen, onClose }: Props) {
                       CATEGORY_DOT[item.categoryCode as CategoryCode] || 'bg-[#8a7a60]'
                     }`}
                   />
-                  <span className="truncate">{item.name}</span>
+                  <span className="truncate">{getField(item, 'name')}</span>
                 </button>
               ))}
             </div>

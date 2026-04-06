@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import type { RecipeTreeNode } from '../../api/types'
 import type { CategoryCode } from '../../api/types'
 import { CATEGORY_COLORS } from '../../utils/constants'
+import { useLocalizedField } from '../../hooks/useLanguage'
 import CraftTimeBadge from './CraftTimeBadge'
 
 interface Props {
@@ -15,8 +16,10 @@ interface Props {
 
 export default function TreeNode({ node, depth = 0, isLast = false }: Props) {
   const [isOpen, setIsOpen] = useState(depth < 2)
+  const { getField } = useLocalizedField()
   const hasChildren = node.children && node.children.length > 0
   const color = CATEGORY_COLORS[node.category as CategoryCode] || CATEGORY_COLORS.RAW
+  const name = getField(node, 'name')
 
   return (
     <div className={depth > 0 ? 'ml-5' : ''}>
@@ -56,11 +59,11 @@ export default function TreeNode({ node, depth = 0, isLast = false }: Props) {
             className="text-sm hover:underline transition-colors"
             style={{ color }}
           >
-            {node.name}
+            {name}
           </Link>
 
           {node.quantity !== 1 && (
-            <span className="text-xs font-mono text-gray-500">
+            <span className="text-xs font-mono text-[#8a7a60]">
               x{node.quantity % 1 === 0 ? node.quantity : node.quantity.toFixed(2)}
             </span>
           )}

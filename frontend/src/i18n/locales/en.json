@@ -1,0 +1,70 @@
+{
+  "app": {
+    "title": "Craft Tree",
+    "subtitle": "Recipe Manager"
+  },
+  "sidebar": {
+    "elements": "Elements",
+    "all": "All",
+    "loading": "Loading..."
+  },
+  "search": {
+    "placeholder": "Search..."
+  },
+  "home": {
+    "title": "Crafting Recipes",
+    "subtitle": "All elements and their recipes"
+  },
+  "detail": {
+    "back": "Back",
+    "notFound": "Element not found",
+    "goHome": "Back to home",
+    "craftTime": "Craft time:",
+    "directIngredients": "Direct ingredients",
+    "usedIn": "Used in"
+  },
+  "tree": {
+    "title": "Craft Tree",
+    "loading": "Loading tree...",
+    "error": "An error occurred",
+    "rawNoRecipe": "This is a raw material — no recipe"
+  },
+  "rawTotals": {
+    "title": "Total raw materials for 1x {{itemName}}",
+    "rawMaterial": "Raw material",
+    "quantity": "Quantity",
+    "totalTime": "Total craft time (sequential):"
+  },
+  "upload": {
+    "button": "Upload image",
+    "title": "Upload image",
+    "selectFile": "Select screenshot",
+    "fileHint": "JPG, PNG — max 10MB",
+    "removeBg": "Auto remove background (rembg)",
+    "uploading": "Uploading... {{progress}}%",
+    "processing": "Removing background...",
+    "done": "Done!",
+    "submit": "Upload",
+    "reprocessing": "Processing...",
+    "error": "Upload failed"
+  },
+  "notFound": {
+    "message": "Page not found",
+    "goHome": "Back to home"
+  },
+  "itemList": {
+    "empty": "No elements found"
+  },
+  "categories": {
+    "RAW": "Raw Material",
+    "MATERIAL": "Material",
+    "ITEM": "Item",
+    "MODULE": "Module"
+  },
+  "time": {
+    "seconds": "{{count}}s",
+    "minutes": "{{count}}m",
+    "minutesSeconds": "{{minutes}}m {{seconds}}s",
+    "zero": "0s"
+  }
+}

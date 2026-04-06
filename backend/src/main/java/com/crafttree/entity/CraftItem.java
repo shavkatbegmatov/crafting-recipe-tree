@@ -23,8 +23,26 @@ public class CraftItem {
     @Column(unique = true, nullable = false, length = 100)
     private String name;
 
+    @Column(name = "name_uz", length = 100)
+    private String nameUz;
+
+    @Column(name = "name_en", length = 100)
+    private String nameEn;
+
+    @Column(name = "name_uz_cyr", length = 100)
+    private String nameUzCyr;
+
     @Column(columnDefinition = "TEXT")
     private String description;
+
+    @Column(name = "description_uz", columnDefinition = "TEXT")
+    private String descriptionUz;
+
+    @Column(name = "description_en", columnDefinition = "TEXT")
+    private String descriptionEn;
+
+    @Column(name = "description_uz_cyr", columnDefinition = "TEXT")
+    private String descriptionUzCyr;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", nullable = false)

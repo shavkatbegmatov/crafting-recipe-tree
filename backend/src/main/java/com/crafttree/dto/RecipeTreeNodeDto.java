@@ -13,6 +13,9 @@ import java.util.List;
 public class RecipeTreeNodeDto {
     private Long id;
     private String name;
+    private String nameUz;
+    private String nameEn;
+    private String nameUzCyr;
     private String category;
     private Integer craftTimeSeconds;
     private BigDecimal quantity;

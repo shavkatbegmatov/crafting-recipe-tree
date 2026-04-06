@@ -40,15 +40,22 @@ public class RecipeTreeService {
         CraftItem item = craftItemRepository.findById(itemId)
                 .orElseThrow(() -> new ItemNotFoundException(itemId));
 
-        Map<String, BigDecimal> rawMap = new LinkedHashMap<>();
-        calculateRawTotals(item, BigDecimal.ONE, rawMap, new HashSet<>(), 0);
+        Map<Long, BigDecimal> rawMap = new LinkedHashMap<>();
+        Map<Long, CraftItem> itemLookup = new HashMap<>();
+        calculateRawTotals(item, BigDecimal.ONE, rawMap, itemLookup, new HashSet<>(), 0);
 
         List<RawTotalDto.RawMaterialEntry> materials = rawMap.entrySet().stream()
-                .sorted(Map.Entry.<String, BigDecimal>comparingByValue().reversed())
-                .map(e -> RawTotalDto.RawMaterialEntry.builder()
-                        .name(e.getKey())
-                        .totalQuantity(e.getValue().setScale(4, RoundingMode.HALF_UP))
-                        .build())
+                .sorted(Map.Entry.<Long, BigDecimal>comparingByValue().reversed())
+                .map(e -> {
+                    CraftItem raw = itemLookup.get(e.getKey());
+                    return RawTotalDto.RawMaterialEntry.builder()
+                            .name(raw.getName())
+                            .nameUz(raw.getNameUz())
+                            .nameEn(raw.getNameEn())
+                            .nameUzCyr(raw.getNameUzCyr())
+                            .totalQuantity(e.getValue().setScale(4, RoundingMode.HALF_UP))
+                            .build();
+                })
                 .collect(Collectors.toList());
 
         int totalTime = calculateTotalCraftTime(item, BigDecimal.ONE, new HashSet<>(), 0);
@@ -56,6 +63,9 @@ public class RecipeTreeService {
         return RawTotalDto.builder()
                 .itemId(item.getId())
                 .itemName(item.getName())
+                .itemNameUz(item.getNameUz())
+                .itemNameEn(item.getNameEn())
+                .itemNameUzCyr(item.getNameUzCyr())
                 .totalCraftTimeSeconds(totalTime)
                 .rawMaterials(materials)
                 .build();
@@ -73,6 +83,9 @@ public class RecipeTreeService {
             return RecipeTreeNodeDto.builder()
                     .id(item.getId())
                     .name(item.getName())
+                    .nameUz(item.getNameUz())
+                    .nameEn(item.getNameEn())
+                    .nameUzCyr(item.getNameUzCyr())
                     .category(item.getCategory().getCode())
                     .craftTimeSeconds(item.getCraftTimeSeconds())
                     .quantity(quantity)
@@ -83,6 +96,9 @@ public class RecipeTreeService {
         RecipeTreeNodeDto node = RecipeTreeNodeDto.builder()
                 .id(item.getId())
                 .name(item.getName())
+                .nameUz(item.getNameUz())
+                .nameEn(item.getNameEn())
+                .nameUzCyr(item.getNameUzCyr())
                 .category(item.getCategory().getCode())
                 .craftTimeSeconds(item.getCraftTimeSeconds())
                 .quantity(quantity)
@@ -109,13 +125,14 @@ public class RecipeTreeService {
         return node;
     }
 
-    private void calculateRawTotals(CraftItem item, BigDecimal multiplier, Map<String, BigDecimal> rawMap, Set<Long> visited, int depth) {
+    private void calculateRawTotals(CraftItem item, BigDecimal multiplier, Map<Long, BigDecimal> rawMap, Map<Long, CraftItem> itemLookup, Set<Long> visited, int depth) {
         if (depth > MAX_DEPTH || visited.contains(item.getId())) {
             return;
         }
 
         if (RAW_CATEGORY.equals(item.getCategory().getCode())) {
-            rawMap.merge(item.getName(), multiplier, BigDecimal::add);
+            rawMap.merge(item.getId(), multiplier, BigDecimal::add);
+            itemLookup.putIfAbsent(item.getId(), item);
             return;
         }
 
@@ -123,13 +140,14 @@ public class RecipeTreeService {
 
         List<RecipeIngredient> ingredients = recipeIngredientRepository.findByResultItemId(item.getId());
         if (ingredients.isEmpty()) {
-            rawMap.merge(item.getName(), multiplier, BigDecimal::add);
+            rawMap.merge(item.getId(), multiplier, BigDecimal::add);
+            itemLookup.putIfAbsent(item.getId(), item);
             return;
         }
 
         for (RecipeIngredient ri : ingredients) {
             BigDecimal childQuantity = ri.getQuantity().multiply(multiplier);
-            calculateRawTotals(ri.getIngredientItem(), childQuantity, rawMap, new HashSet<>(visited), depth + 1);
+            calculateRawTotals(ri.getIngredientItem(), childQuantity, rawMap, itemLookup, new HashSet<>(visited), depth + 1);
         }
     }
 

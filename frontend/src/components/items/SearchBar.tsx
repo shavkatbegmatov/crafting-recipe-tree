@@ -1,13 +1,14 @@
 import { Search, X } from 'lucide-react'
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 
 interface Props {
   value: string
   onChange: (value: string) => void
-  placeholder?: string
 }
 
-export default function SearchBar({ value, onChange, placeholder = 'Qidirish...' }: Props) {
+export default function SearchBar({ value, onChange }: Props) {
+  const { t } = useTranslation()
   const [local, setLocal] = useState(value)
 
   useEffect(() => {
@@ -26,7 +27,7 @@ export default function SearchBar({ value, onChange, placeholder = 'Qidirish...'
         type="text"
         value={local}
         onChange={(e) => setLocal(e.target.value)}
-        placeholder={placeholder}
+        placeholder={t('search.placeholder')}
         className="w-full bg-dark-bg border border-dark-border rounded-lg pl-9 pr-8 py-2 text-sm text-[#d4c4a0] placeholder-[#5a4e3a] focus:outline-none focus:border-dark-gold/50 transition-colors"
       />
       {local && (

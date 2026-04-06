@@ -20,10 +20,3 @@ export const CATEGORY_DOT: Record<CategoryCode, string> = {
   ITEM: 'bg-[#6a8abc]',
   MODULE: 'bg-[#c8a050]',
 }
-
-export const CATEGORY_LABELS: Record<CategoryCode, string> = {
-  RAW: 'Xomashyo',
-  MATERIAL: 'Material',
-  ITEM: 'Predmet',
-  MODULE: 'Modul',
-}

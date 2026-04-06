@@ -1,0 +1,70 @@
+{
+  "app": {
+    "title": "Craft Tree",
+    "subtitle": "Рецептлар бошқаруви"
+  },
+  "sidebar": {
+    "elements": "Элементлар",
+    "all": "Барчаси",
+    "loading": "Юкланмоқда..."
+  },
+  "search": {
+    "placeholder": "Қидириш..."
+  },
+  "home": {
+    "title": "Крафт рецептлари",
+    "subtitle": "Барча элементлар ва уларнинг рецептлари"
+  },
+  "detail": {
+    "back": "Орқага",
+    "notFound": "Элемент топилмади",
+    "goHome": "Бош саҳифага қайтиш",
+    "craftTime": "Крафт вақти:",
+    "directIngredients": "Бевосита ингредиентлар",
+    "usedIn": "Қаерда ишлатилади"
+  },
+  "tree": {
+    "title": "Крафт шажара",
+    "loading": "Дарахт юкланмоқда...",
+    "error": "Хатолик юз берди",
+    "rawNoRecipe": "Бу хомашё — рецепти йўқ"
+  },
+  "rawTotals": {
+    "title": "1 дона {{itemName}} учун жами хомашё",
+    "rawMaterial": "Хомашё",
+    "quantity": "Миқдор",
+    "totalTime": "Жами крафт вақти (кетма-кет):"
+  },
+  "upload": {
+    "button": "Расм юклаш",
+    "title": "Расм юклаш",
+    "selectFile": "Скриншот танланг",
+    "fileHint": "JPG, PNG — max 10MB",
+    "removeBg": "Фонни автоматик олиб ташлаш (rembg)",
+    "uploading": "Юкланмоқда... {{progress}}%",
+    "processing": "Фон олиб ташланмоқда...",
+    "done": "Тайёр!",
+    "submit": "Юклаш",
+    "reprocessing": "Қайта ишланмоқда...",
+    "error": "Юклашда хатолик юз берди"
+  },
+  "notFound": {
+    "message": "Саҳифа топилмади",
+    "goHome": "Бош саҳифага қайтиш"
+  },
+  "itemList": {
+    "empty": "Элементлар топилмади"
+  },
+  "categories": {
+    "RAW": "Хомашё",
+    "MATERIAL": "Материал",
+    "ITEM": "Предмет",
+    "MODULE": "Модул"
+  },
+  "time": {
+    "seconds": "{{count}}с",
+    "minutes": "{{count}}д",
+    "minutesSeconds": "{{minutes}}д {{seconds}}с",
+    "zero": "0с"
+  }
+}

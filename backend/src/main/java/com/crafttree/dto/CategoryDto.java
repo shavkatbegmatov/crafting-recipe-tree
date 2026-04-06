@@ -11,5 +11,7 @@ public class CategoryDto {
     private String code;
     private String nameRu;
     private String nameUz;
+    private String nameEn;
+    private String nameUzCyr;
     private Integer sortOrder;
 }

@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react'
 import { Upload, Loader2, Check, X, ImageIcon } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { uploadItemImage } from '../../api/items'
 import { useQueryClient } from '@tanstack/react-query'
 
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export default function ImageUpload({ itemId }: Props) {
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const [file, setFile] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
@@ -38,17 +40,15 @@ export default function ImageUpload({ itemId }: Props) {
 
     try {
       setProgress(0)
-      const result = await uploadItemImage(itemId, file, removeBg, (p) => {
+      await uploadItemImage(itemId, file, removeBg, (p) => {
         setProgress(p)
         if (p >= 100) setStatus('processing')
       })
 
       setStatus('done')
-      // Invalidate queries to refresh item data
       queryClient.invalidateQueries({ queryKey: ['item', itemId] })
       queryClient.invalidateQueries({ queryKey: ['items'] })
 
-      // Reset after delay
       setTimeout(() => {
         setIsOpen(false)
         setFile(null)
@@ -58,7 +58,7 @@ export default function ImageUpload({ itemId }: Props) {
       }, 1500)
     } catch (err: any) {
       setStatus('error')
-      setError(err?.response?.data?.message || 'Yuklashda xatolik yuz berdi')
+      setError(err?.response?.data?.message || t('upload.error'))
     } finally {
       setUploading(false)
     }
@@ -80,7 +80,7 @@ export default function ImageUpload({ itemId }: Props) {
         className="flex items-center gap-1.5 text-xs text-[#8a7a60] hover:text-dark-gold transition-colors border border-dark-border rounded px-3 py-1.5 hover:border-dark-gold/40"
       >
         <Upload size={13} />
-        Rasm yuklash
+        {t('upload.button')}
       </button>
     )
   }
@@ -90,14 +90,13 @@ export default function ImageUpload({ itemId }: Props) {
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-medium text-[#d4c4a0] flex items-center gap-2">
           <ImageIcon size={15} />
-          Rasm yuklash
+          {t('upload.title')}
         </h3>
         <button onClick={handleCancel} className="text-[#8a7a60] hover:text-[#d4c4a0]">
           <X size={16} />
         </button>
       </div>
 
-      {/* File input */}
       <div
         onClick={() => fileRef.current?.click()}
         className="border-2 border-dashed border-dark-border rounded-lg p-6 text-center cursor-pointer hover:border-dark-gold/40 transition-colors"
@@ -107,8 +106,8 @@ export default function ImageUpload({ itemId }: Props) {
         ) : (
           <div className="text-[#8a7a60]">
             <Upload size={24} className="mx-auto mb-2" />
-            <p className="text-sm">Screenshot tanlang</p>
-            <p className="text-xs mt-1">JPG, PNG — max 10MB</p>
+            <p className="text-sm">{t('upload.selectFile')}</p>
+            <p className="text-xs mt-1">{t('upload.fileHint')}</p>
           </div>
         )}
         <input
@@ -120,7 +119,6 @@ export default function ImageUpload({ itemId }: Props) {
         />
       </div>
 
-      {/* Options */}
       {file && (
         <div className="space-y-3">
           <label className="flex items-center gap-2 text-sm text-[#d4c4a0] cursor-pointer">
@@ -130,30 +128,29 @@ export default function ImageUpload({ itemId }: Props) {
               onChange={(e) => setRemoveBg(e.target.checked)}
               className="rounded border-dark-border bg-dark-bg accent-[#c8a050]"
             />
-            Fonni avtomatik olib tashlash (rembg)
+            {t('upload.removeBg')}
           </label>
 
-          {/* Progress / Status */}
           {status === 'uploading' && (
             <div className="space-y-1">
               <div className="w-full bg-dark-bg rounded-full h-1.5">
                 <div className="bg-dark-gold h-1.5 rounded-full transition-all" style={{ width: `${progress}%` }} />
               </div>
-              <p className="text-xs text-[#8a7a60]">Yuklanmoqda... {progress}%</p>
+              <p className="text-xs text-[#8a7a60]">{t('upload.uploading', { progress })}</p>
             </div>
           )}
 
           {status === 'processing' && (
             <div className="flex items-center gap-2 text-xs text-dark-gold">
               <Loader2 size={14} className="animate-spin" />
-              Fon olib tashlanmoqda...
+              {t('upload.processing')}
             </div>
           )}
 
           {status === 'done' && (
             <div className="flex items-center gap-2 text-xs text-[#4a9a5a]">
               <Check size={14} />
-              Tayyor!
+              {t('upload.done')}
             </div>
           )}
 
@@ -161,7 +158,6 @@ export default function ImageUpload({ itemId }: Props) {
             <p className="text-xs text-red-400">{error}</p>
           )}
 
-          {/* Upload button */}
           <button
             onClick={handleUpload}
             disabled={uploading || status === 'done'}
@@ -170,14 +166,14 @@ export default function ImageUpload({ itemId }: Props) {
             {uploading ? (
               <span className="flex items-center justify-center gap-2">
                 <Loader2 size={14} className="animate-spin" />
-                {status === 'processing' ? 'Qayta ishlanmoqda...' : 'Yuklanmoqda...'}
+                {status === 'processing' ? t('upload.reprocessing') : t('upload.uploading', { progress })}
               </span>
             ) : status === 'done' ? (
               <span className="flex items-center justify-center gap-2">
-                <Check size={14} /> Tayyor
+                <Check size={14} /> {t('upload.done')}
               </span>
             ) : (
-              'Yuklash'
+              t('upload.submit')
             )}
           </button>
         </div>

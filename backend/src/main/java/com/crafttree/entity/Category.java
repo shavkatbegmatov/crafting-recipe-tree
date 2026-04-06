@@ -25,6 +25,12 @@ public class Category {
     @Column(name = "name_uz", nullable = false, length = 100)
     private String nameUz;
 
+    @Column(name = "name_en", length = 100)
+    private String nameEn;
+
+    @Column(name = "name_uz_cyr", length = 100)
+    private String nameUzCyr;
+
     @Column(name = "sort_order")
     private Integer sortOrder;
 }

@@ -3,12 +3,15 @@ import { Clock } from 'lucide-react'
 import type { CraftItem } from '../../api/types'
 import CategoryBadge from '../ui/CategoryBadge'
 import { formatTime } from '../../utils/formatTime'
+import { useLocalizedField } from '../../hooks/useLanguage'
 
 interface Props {
   item: CraftItem
 }
 
 export default function ItemCard({ item }: Props) {
+  const { getField } = useLocalizedField()
+
   return (
     <Link
       to={`/items/${item.id}`}
@@ -20,7 +23,7 @@ export default function ItemCard({ item }: Props) {
         }`}>
           <img
             src={item.imageUrl}
-            alt={item.name}
+            alt={getField(item, 'name')}
             className={`opacity-85 group-hover:opacity-100 transition-opacity ${
               item.imageUrl.endsWith('.png')
                 ? 'w-12 h-12 object-contain'
@@ -32,7 +35,7 @@ export default function ItemCard({ item }: Props) {
       <div className="p-3">
         <div className="flex items-start justify-between gap-2 mb-1.5">
           <h3 className="text-sm font-medium text-[#d4c4a0] group-hover:text-[#e8d8b0] transition-colors truncate">
-            {item.name}
+            {getField(item, 'name')}
           </h3>
           <CategoryBadge code={item.categoryCode} />
         </div>

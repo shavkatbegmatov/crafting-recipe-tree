@@ -1,0 +1,70 @@
+{
+  "app": {
+    "title": "Craft Tree",
+    "subtitle": "Retseptlar boshqaruvi"
+  },
+  "sidebar": {
+    "elements": "Elementlar",
+    "all": "Barchasi",
+    "loading": "Yuklanmoqda..."
+  },
+  "search": {
+    "placeholder": "Qidirish..."
+  },
+  "home": {
+    "title": "Kraft retseptlari",
+    "subtitle": "Barcha elementlar va ularning retseptlari"
+  },
+  "detail": {
+    "back": "Orqaga",
+    "notFound": "Element topilmadi",
+    "goHome": "Bosh sahifaga qaytish",
+    "craftTime": "Kraft vaqti:",
+    "directIngredients": "Bevosita ingredientlar",
+    "usedIn": "Qayerda ishlatiladi"
+  },
+  "tree": {
+    "title": "Kraft shajara",
+    "loading": "Daraxt yuklanmoqda...",
+    "error": "Xatolik yuz berdi",
+    "rawNoRecipe": "Bu xomashyo — retsepti yo'q"
+  },
+  "rawTotals": {
+    "title": "1 dona {{itemName}} uchun jami xomashyo",
+    "rawMaterial": "Xomashyo",
+    "quantity": "Miqdor",
+    "totalTime": "Jami kraft vaqti (ketma-ket):"
+  },
+  "upload": {
+    "button": "Rasm yuklash",
+    "title": "Rasm yuklash",
+    "selectFile": "Screenshot tanlang",
+    "fileHint": "JPG, PNG — max 10MB",
+    "removeBg": "Fonni avtomatik olib tashlash (rembg)",
+    "uploading": "Yuklanmoqda... {{progress}}%",
+    "processing": "Fon olib tashlanmoqda...",
+    "done": "Tayyor!",
+    "submit": "Yuklash",
+    "reprocessing": "Qayta ishlanmoqda...",
+    "error": "Yuklashda xatolik yuz berdi"
+  },
+  "notFound": {
+    "message": "Sahifa topilmadi",
+    "goHome": "Bosh sahifaga qaytish"
+  },
+  "itemList": {
+    "empty": "Elementlar topilmadi"
+  },
+  "categories": {
+    "RAW": "Xomashyo",
+    "MATERIAL": "Material",
+    "ITEM": "Predmet",
+    "MODULE": "Modul"
+  },
+  "time": {
+    "seconds": "{{count}}s",
+    "minutes": "{{count}}m",
+    "minutesSeconds": "{{minutes}}m {{seconds}}s",
+    "zero": "0s"
+  }
+}
