@@ -41,24 +41,26 @@ export default function ImageUpload({ itemId }: Props) {
     if (!isOpen) return
 
     const handlePaste = (e: ClipboardEvent) => {
-      const items = e.clipboardData?.items
-      if (!items) return
+      const clipboardItems = e.clipboardData?.items
+      if (!clipboardItems) return
 
-      for (const item of items) {
-        if (item.type.startsWith('image/')) {
+      for (let i = 0; i < clipboardItems.length; i++) {
+        const item = clipboardItems[i]
+        if (item.type.indexOf('image') !== -1) {
           e.preventDefault()
+          e.stopPropagation()
           const blob = item.getAsFile()
           if (blob) {
             const f = new File([blob], `screenshot_${Date.now()}.png`, { type: blob.type })
             setFileWithPreview(f)
           }
-          break
+          return
         }
       }
     }
 
-    document.addEventListener('paste', handlePaste)
-    return () => document.removeEventListener('paste', handlePaste)
+    window.addEventListener('paste', handlePaste, true)
+    return () => window.removeEventListener('paste', handlePaste, true)
   }, [isOpen, setFileWithPreview])
 
   // Drag & drop
