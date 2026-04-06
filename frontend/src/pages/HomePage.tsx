@@ -2,20 +2,10 @@ import { useItems, useCategories } from '../hooks/useItems'
 import { useTranslation } from 'react-i18next'
 import { useLocalizedField } from '../hooks/useLanguage'
 import ItemList from '../components/items/ItemList'
-import { Package, Layers, Cpu, Box } from 'lucide-react'
+import { Package, Layers, Cpu, Box, Gem, Zap, Wrench, FlaskConical } from 'lucide-react'
 
-const STAT_ICONS = {
-  RAW: Package,
-  MATERIAL: Layers,
-  ITEM: Box,
-  MODULE: Cpu,
-}
-
-const STAT_COLORS = {
-  RAW: 'text-[#8a7a60]',
-  MATERIAL: 'text-[#4a9a5a]',
-  ITEM: 'text-[#6a8abc]',
-  MODULE: 'text-[#c8a050]',
+const ICON_MAP: Record<string, React.ComponentType<any>> = {
+  Package, Layers, Cpu, Box, Gem, Zap, Wrench, FlaskConical,
 }
 
 export default function HomePage() {
@@ -26,9 +16,8 @@ export default function HomePage() {
 
   const stats = categories?.map((cat) => {
     const count = items?.filter((i) => i.categoryCode === cat.code).length ?? 0
-    const Icon = STAT_ICONS[cat.code as keyof typeof STAT_ICONS] || Package
-    const color = STAT_COLORS[cat.code as keyof typeof STAT_COLORS] || 'text-[#8a7a60]'
-    return { ...cat, count, Icon, color }
+    const Icon = ICON_MAP[cat.icon] || Package
+    return { ...cat, count, Icon }
   })
 
   return (
@@ -43,7 +32,7 @@ export default function HomePage() {
           {stats.map((s) => (
             <div key={s.code} className="bg-dark-card border border-dark-border rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
-                <s.Icon size={18} className={s.color} />
+                <s.Icon size={18} style={{ color: s.color }} />
                 <span className="text-xs text-[#8a7a60]">{getField(s, 'name')}</span>
               </div>
               <span className="text-2xl font-bold font-mono text-[#d4c4a0]">{s.count}</span>

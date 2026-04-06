@@ -31,6 +31,12 @@ public class Category {
     @Column(name = "name_uz_cyr", length = 100)
     private String nameUzCyr;
 
+    @Column(length = 7)
+    private String color;
+
+    @Column(length = 30)
+    private String icon;
+
     @Column(name = "sort_order")
     private Integer sortOrder;
 }

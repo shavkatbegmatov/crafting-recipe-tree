@@ -1,11 +1,10 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useItems } from '../../hooks/useItems'
+import { useItems, useCategories } from '../../hooks/useItems'
 import { useLocalizedField } from '../../hooks/useLanguage'
 import { useState, useCallback } from 'react'
 import SearchBar from '../items/SearchBar'
-import { CATEGORY_DOT } from '../../utils/constants'
-import type { CategoryCode } from '../../api/types'
+import { DEFAULT_CATEGORY_COLOR } from '../../utils/constants'
 import { X } from 'lucide-react'
 
 interface Props {
@@ -21,16 +20,9 @@ export default function Sidebar({ isOpen, onClose }: Props) {
   const { id } = useParams()
   const navigate = useNavigate()
   const { data: items, isLoading } = useItems(filter || undefined)
+  const { data: categories } = useCategories()
 
   const handleSearch = useCallback((val: string) => setSearch(val), [])
-
-  const filters = [
-    { code: '', label: t('sidebar.all') },
-    { code: 'RAW', label: t('categories.RAW') },
-    { code: 'MATERIAL', label: t('categories.MATERIAL') },
-    { code: 'ITEM', label: t('categories.ITEM') },
-    { code: 'MODULE', label: t('categories.MODULE') },
-  ]
 
   const filteredItems = items?.filter(
     (item) => !search || getField(item, 'name').toLowerCase().includes(search.toLowerCase())
@@ -55,17 +47,27 @@ export default function Sidebar({ isOpen, onClose }: Props) {
           </div>
           <SearchBar value={search} onChange={handleSearch} />
           <div className="flex flex-wrap gap-1.5 mt-3">
-            {filters.map((f) => (
+            <button
+              onClick={() => setFilter('')}
+              className={`text-xs px-2.5 py-1 rounded-md transition-colors border ${
+                filter === ''
+                  ? 'bg-dark-gold/20 text-dark-gold border-dark-gold/40'
+                  : 'bg-dark-bg text-[#8a7a60] hover:text-[#d4c4a0] border-dark-border hover:border-[#4a4238]'
+              }`}
+            >
+              {t('sidebar.all')}
+            </button>
+            {categories?.map((cat) => (
               <button
-                key={f.code}
-                onClick={() => setFilter(f.code)}
+                key={cat.code}
+                onClick={() => setFilter(cat.code)}
                 className={`text-xs px-2.5 py-1 rounded-md transition-colors border ${
-                  filter === f.code
+                  filter === cat.code
                     ? 'bg-dark-gold/20 text-dark-gold border-dark-gold/40'
                     : 'bg-dark-bg text-[#8a7a60] hover:text-[#d4c4a0] border-dark-border hover:border-[#4a4238]'
                 }`}
               >
-                {f.label}
+                {getField(cat, 'name')}
               </button>
             ))}
           </div>
@@ -75,24 +77,28 @@ export default function Sidebar({ isOpen, onClose }: Props) {
             <div className="text-center text-[#8a7a60] text-xs py-4">{t('sidebar.loading')}</div>
           ) : (
             <div className="space-y-0.5">
-              {filteredItems?.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => { navigate(`/items/${item.id}`); onClose() }}
-                  className={`w-full text-left px-3 py-2 rounded-md text-sm flex items-center gap-2 transition-colors ${
-                    String(item.id) === id
-                      ? 'bg-dark-hover text-[#d4c4a0] border-l-2 border-dark-gold'
-                      : 'text-[#8a7a60] hover:text-[#d4c4a0] hover:bg-dark-bg'
-                  }`}
-                >
-                  <span
-                    className={`w-2 h-2 rounded-full shrink-0 ${
-                      CATEGORY_DOT[item.categoryCode as CategoryCode] || 'bg-[#8a7a60]'
+              {filteredItems?.map((item) => {
+                const cat = categories?.find((c) => c.code === item.categoryCode)
+                const dotColor = cat?.color || DEFAULT_CATEGORY_COLOR
+
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => { navigate(`/items/${item.id}`); onClose() }}
+                    className={`w-full text-left px-3 py-2 rounded-md text-sm flex items-center gap-2 transition-colors ${
+                      String(item.id) === id
+                        ? 'bg-dark-hover text-[#d4c4a0] border-l-2 border-dark-gold'
+                        : 'text-[#8a7a60] hover:text-[#d4c4a0] hover:bg-dark-bg'
                     }`}
-                  />
-                  <span className="truncate">{getField(item, 'name')}</span>
-                </button>
-              ))}
+                  >
+                    <span
+                      className="w-2 h-2 rounded-full shrink-0"
+                      style={{ backgroundColor: dotColor }}
+                    />
+                    <span className="truncate">{getField(item, 'name')}</span>
+                  </button>
+                )
+              })}
             </div>
           )}
         </div>

@@ -32,6 +32,8 @@ public class CraftItemService {
                         .nameUz(c.getNameUz())
                         .nameEn(c.getNameEn())
                         .nameUzCyr(c.getNameUzCyr())
+                        .color(c.getColor())
+                        .icon(c.getIcon())
                         .sortOrder(c.getSortOrder())
                         .build())
                 .collect(Collectors.toList());

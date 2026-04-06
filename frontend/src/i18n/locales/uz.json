@@ -57,7 +57,7 @@
     "empty": "Elementlar topilmadi"
   },
   "categories": {
-    "RAW": "Xomashyo",
+    "RAW": "Bazoviy resurs",
     "MATERIAL": "Material",
     "ITEM": "Predmet",
     "MODULE": "Modul"
@@ -87,6 +87,17 @@
     "descUz": "Tavsif (UZ)",
     "descEn": "Tavsif (EN)",
     "descUzCyr": "Tavsif (UZ-kir)"
+  },
+  "admin": {
+    "categories": "Kategoriyalar",
+    "addCategory": "Kategoriya qo'shish",
+    "code": "Kod",
+    "name": "Nomi",
+    "color": "Rang",
+    "icon": "Ikonka",
+    "sortOrder": "Tartib raqami",
+    "actions": "Amallar",
+    "confirmDelete": "Rostdan o'chirmoqchimisiz?"
   },
   "time": {
     "seconds": "{{count}}s",

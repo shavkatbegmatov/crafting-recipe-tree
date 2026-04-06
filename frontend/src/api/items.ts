@@ -6,6 +6,31 @@ export async function fetchCategories(): Promise<Category[]> {
   return data
 }
 
+export interface UpdateCategoryData {
+  code?: string
+  nameRu?: string
+  nameUz?: string
+  nameEn?: string
+  nameUzCyr?: string
+  color?: string
+  icon?: string
+  sortOrder?: number
+}
+
+export async function createCategory(data: UpdateCategoryData): Promise<Category> {
+  const { data: res } = await client.post('/categories', data)
+  return res
+}
+
+export async function updateCategory(id: number, data: UpdateCategoryData): Promise<Category> {
+  const { data: res } = await client.put(`/categories/${id}`, data)
+  return res
+}
+
+export async function deleteCategory(id: number): Promise<void> {
+  await client.delete(`/categories/${id}`)
+}
+
 export async function fetchItems(category?: string): Promise<CraftItem[]> {
   const params = category ? { category } : {}
   const { data } = await client.get('/items', { params })

@@ -1,6 +1,5 @@
 package com.crafttree.controller;
 
-import com.crafttree.dto.CategoryDto;
 import com.crafttree.dto.CraftItemDto;
 import com.crafttree.dto.UpdateItemRequest;
 import com.crafttree.dto.UsedInDto;
@@ -19,12 +18,6 @@ import java.util.List;
 public class CraftItemController {
 
     private final CraftItemService craftItemService;
-
-    @GetMapping("/categories")
-    @Operation(summary = "Get all categories")
-    public List<CategoryDto> getCategories() {
-        return craftItemService.getAllCategories();
-    }
 
     @GetMapping("/items")
     @Operation(summary = "Get all items, optionally filtered by category")

@@ -50,10 +50,18 @@ export default function Header({ onToggleSidebar }: Props) {
           {user ? (
             <>
               {isAdmin && (
-                <span className="flex items-center gap-1 text-xs text-dark-gold">
-                  <Shield size={12} />
-                  {t('auth.admin')}
-                </span>
+                <>
+                  <span className="flex items-center gap-1 text-xs text-dark-gold">
+                    <Shield size={12} />
+                    {t('auth.admin')}
+                  </span>
+                  <Link
+                    to="/admin/categories"
+                    className="text-xs text-[#8a7a60] hover:text-dark-gold transition-colors"
+                  >
+                    {t('admin.categories')}
+                  </Link>
+                </>
               )}
               <button
                 onClick={logout}

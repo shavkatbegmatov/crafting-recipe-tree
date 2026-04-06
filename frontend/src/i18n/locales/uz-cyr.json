@@ -57,7 +57,7 @@
     "empty": "Элементлар топилмади"
   },
   "categories": {
-    "RAW": "Хомашё",
+    "RAW": "Базовий ресурс",
     "MATERIAL": "Материал",
     "ITEM": "Предмет",
     "MODULE": "Модул"
@@ -87,6 +87,17 @@
     "descUz": "Тавсиф (UZ)",
     "descEn": "Тавсиф (EN)",
     "descUzCyr": "Тавсиф (УЗ-кир)"
+  },
+  "admin": {
+    "categories": "Категориялар",
+    "addCategory": "Категория қўшиш",
+    "code": "Код",
+    "name": "Номи",
+    "color": "Ранг",
+    "icon": "Иконка",
+    "sortOrder": "Тартиб рақами",
+    "actions": "Амаллар",
+    "confirmDelete": "Ростдан ўчирмоқчимисиз?"
   },
   "time": {
     "seconds": "{{count}}с",

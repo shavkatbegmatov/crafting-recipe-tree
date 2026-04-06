@@ -57,7 +57,7 @@
     "empty": "Элементы не найдены"
   },
   "categories": {
-    "RAW": "Сырьё",
+    "RAW": "Базовый ресурс",
     "MATERIAL": "Материал",
     "ITEM": "Предмет",
     "MODULE": "Модуль"
@@ -87,6 +87,17 @@
     "descUz": "Описание (UZ)",
     "descEn": "Описание (EN)",
     "descUzCyr": "Описание (UZ-кир)"
+  },
+  "admin": {
+    "categories": "Категории",
+    "addCategory": "Добавить категорию",
+    "code": "Код",
+    "name": "Название",
+    "color": "Цвет",
+    "icon": "Иконка",
+    "sortOrder": "Порядок",
+    "actions": "Действия",
+    "confirmDelete": "Вы уверены, что хотите удалить?"
   },
   "time": {
     "seconds": "{{count}}с",

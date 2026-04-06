@@ -5,6 +5,8 @@ export interface Category {
   nameUz: string
   nameEn: string
   nameUzCyr: string
+  color: string
+  icon: string
   sortOrder: number
 }
 

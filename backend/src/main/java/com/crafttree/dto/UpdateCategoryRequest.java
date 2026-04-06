@@ -5,9 +5,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class CategoryDto {
-    private Long id;
+public class UpdateCategoryRequest {
     private String code;
     private String nameRu;
     private String nameUz;

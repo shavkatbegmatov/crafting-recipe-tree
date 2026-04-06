@@ -57,7 +57,7 @@
     "empty": "No elements found"
   },
   "categories": {
-    "RAW": "Raw Material",
+    "RAW": "Base Resource",
     "MATERIAL": "Material",
     "ITEM": "Item",
     "MODULE": "Module"
@@ -87,6 +87,17 @@
     "descUz": "Description (UZ)",
     "descEn": "Description (EN)",
     "descUzCyr": "Description (UZ-cyr)"
+  },
+  "admin": {
+    "categories": "Categories",
+    "addCategory": "Add category",
+    "code": "Code",
+    "name": "Name",
+    "color": "Color",
+    "icon": "Icon",
+    "sortOrder": "Sort order",
+    "actions": "Actions",
+    "confirmDelete": "Are you sure you want to delete?"
   },
   "time": {
     "seconds": "{{count}}s",

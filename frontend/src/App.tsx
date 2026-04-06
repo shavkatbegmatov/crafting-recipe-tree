@@ -5,6 +5,7 @@ import HomePage from './pages/HomePage'
 import ItemDetailPage from './pages/ItemDetailPage'
 import NotFoundPage from './pages/NotFoundPage'
 import LoginPage from './pages/LoginPage'
+import AdminCategoriesPage from './pages/AdminCategoriesPage'
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
           <Route path="items/:id" element={<ItemDetailPage />} />
+          <Route path="admin/categories" element={<AdminCategoriesPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>

@@ -37,10 +37,14 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/api-docs/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/uploads/**").permitAll()
-                // Admin endpoints
+                // Admin endpoints — items
                 .requestMatchers(HttpMethod.PUT, "/api/items/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/api/items/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/items/**").hasRole("ADMIN")
+                // Admin endpoints — categories
+                .requestMatchers(HttpMethod.POST, "/api/categories/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/categories/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/categories/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

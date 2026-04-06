@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom'
 import { ChevronRight, ChevronDown, Dot } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { RecipeTreeNode } from '../../api/types'
-import type { CategoryCode } from '../../api/types'
-import { CATEGORY_COLORS } from '../../utils/constants'
+import { useCategories } from '../../hooks/useItems'
+import { DEFAULT_CATEGORY_COLOR } from '../../utils/constants'
 import { useLocalizedField } from '../../hooks/useLanguage'
 import CraftTimeBadge from './CraftTimeBadge'
 
@@ -17,8 +17,9 @@ interface Props {
 export default function TreeNode({ node, depth = 0, isLast = false }: Props) {
   const [isOpen, setIsOpen] = useState(depth < 2)
   const { getField } = useLocalizedField()
+  const { data: categories } = useCategories()
   const hasChildren = node.children && node.children.length > 0
-  const color = CATEGORY_COLORS[node.category as CategoryCode] || CATEGORY_COLORS.RAW
+  const color = categories?.find((c) => c.code === node.category)?.color || DEFAULT_CATEGORY_COLOR
   const name = getField(node, 'name')
 
   return (
