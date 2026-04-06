@@ -120,6 +120,19 @@ public class CraftItemService {
                 .categoryNameUzCyr(item.getCategory().getNameUzCyr())
                 .craftTimeSeconds(item.getCraftTimeSeconds())
                 .imageUrl(item.getImageUrl())
+                .tags(item.getTags().stream()
+                        .map(tag -> TagDto.builder()
+                                .id(tag.getId())
+                                .code(tag.getCode())
+                                .nameRu(tag.getNameRu())
+                                .nameUz(tag.getNameUz())
+                                .nameEn(tag.getNameEn())
+                                .nameUzCyr(tag.getNameUzCyr())
+                                .color(tag.getColor())
+                                .sortOrder(tag.getSortOrder())
+                                .build())
+                        .sorted((a, b) -> (a.getSortOrder() != null ? a.getSortOrder() : 0) - (b.getSortOrder() != null ? b.getSortOrder() : 0))
+                        .collect(Collectors.toList()))
                 .build();
     }
 

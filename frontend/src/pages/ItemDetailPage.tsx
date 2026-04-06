@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useLocalizedField } from '../hooks/useLanguage'
-import { useItem, useUsedIn, useCategories } from '../hooks/useItems'
+import { useItem, useUsedIn, useCategories, useTags } from '../hooks/useItems'
 import { useAuth } from '../contexts/AuthContext'
-import { updateItem } from '../api/items'
+import { updateItem, setItemTags } from '../api/items'
 import { useQueryClient } from '@tanstack/react-query'
 import RecipeTree from '../components/tree/RecipeTree'
 import RawTotals from '../components/tree/RawTotals'
@@ -22,7 +22,10 @@ export default function ItemDetailPage() {
   const { data: item, isLoading, error } = useItem(itemId)
   const { data: usedIn } = useUsedIn(itemId)
   const { data: categories } = useCategories()
+  const { data: allTags } = useTags()
   const queryClient = useQueryClient()
+
+  const [selectedTagIds, setSelectedTagIds] = useState<number[]>([])
 
   // Edit mode state
   const [editing, setEditing] = useState(false)
@@ -48,6 +51,7 @@ export default function ItemDetailPage() {
       descriptionEn: item.descriptionEn || '',
       descriptionUzCyr: item.descriptionUzCyr || '',
     })
+    setSelectedTagIds(item.tags?.map((t) => t.id) || [])
     setEditing(true)
     setSaved(false)
   }
@@ -61,6 +65,7 @@ export default function ItemDetailPage() {
     setSaving(true)
     try {
       await updateItem(itemId, { ...editData, categoryId: Number(editData.categoryId) || undefined })
+      await setItemTags(itemId, selectedTagIds)
       queryClient.invalidateQueries({ queryKey: ['item', itemId] })
       queryClient.invalidateQueries({ queryKey: ['items'] })
       setSaved(true)
@@ -155,6 +160,37 @@ export default function ItemDetailPage() {
                 </select>
               </div>
 
+              {/* Tags */}
+              <div>
+                <label className="block text-xs text-[#8a7a60] mb-2">{t('edit.tags')}</label>
+                <div className="flex flex-wrap gap-1.5">
+                  {allTags?.map((tag) => {
+                    const selected = selectedTagIds.includes(tag.id)
+                    return (
+                      <button
+                        key={tag.id}
+                        type="button"
+                        onClick={() => setSelectedTagIds((prev) =>
+                          selected ? prev.filter((id) => id !== tag.id) : [...prev, tag.id]
+                        )}
+                        className="text-xs px-2.5 py-1 rounded-full border transition-colors"
+                        style={selected ? {
+                          backgroundColor: `${tag.color}25`,
+                          color: tag.color,
+                          borderColor: `${tag.color}60`,
+                        } : {
+                          backgroundColor: 'transparent',
+                          color: '#5a4e3a',
+                          borderColor: '#3a3228',
+                        }}
+                      >
+                        {getField(tag, 'name')}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {[
                   { key: 'name', label: t('edit.nameRu') },
@@ -214,6 +250,25 @@ export default function ItemDetailPage() {
             <>
               {itemDesc && (
                 <p className="text-sm text-[#8a7a60] mb-4">{itemDesc}</p>
+              )}
+
+              {/* Tags display */}
+              {item.tags && item.tags.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mb-4">
+                  {item.tags.map((tag) => (
+                    <span
+                      key={tag.id}
+                      className="text-xs px-2.5 py-1 rounded-full border"
+                      style={{
+                        backgroundColor: `${tag.color}20`,
+                        color: tag.color,
+                        borderColor: `${tag.color}40`,
+                      }}
+                    >
+                      {getField(tag, 'name')}
+                    </span>
+                  ))}
+                </div>
               )}
 
               <div className="flex items-center justify-between text-sm">

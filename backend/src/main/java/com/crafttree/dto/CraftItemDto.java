@@ -25,5 +25,6 @@ public class CraftItemDto {
     private String categoryNameUzCyr;
     private Integer craftTimeSeconds;
     private String imageUrl;
+    private List<TagDto> tags;
     private List<RecipeIngredientDto> ingredients;
 }

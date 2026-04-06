@@ -75,6 +75,7 @@
   },
   "edit": {
     "button": "Edit",
+    "tags": "Tags",
     "category": "Category",
     "save": "Save",
     "cancel": "Cancel",

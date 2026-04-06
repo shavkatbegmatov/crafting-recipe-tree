@@ -1,5 +1,5 @@
 import client from './client'
-import type { Category, CraftItem, RecipeTreeNode, RawTotal, UsedIn } from './types'
+import type { Category, CraftItem, RecipeTreeNode, RawTotal, UsedIn, Tag } from './types'
 
 export async function fetchCategories(): Promise<Category[]> {
   const { data } = await client.get('/categories')
@@ -103,4 +103,29 @@ export async function uploadItemImage(
     },
   })
   return data
+}
+
+// Tags
+export async function fetchTags(): Promise<Tag[]> {
+  const { data } = await client.get('/tags')
+  return data
+}
+
+export async function setItemTags(itemId: number, tagIds: number[]): Promise<Tag[]> {
+  const { data } = await client.put(`/tags/items/${itemId}`, tagIds)
+  return data
+}
+
+export async function createTag(tag: Partial<Tag>): Promise<Tag> {
+  const { data } = await client.post('/tags', tag)
+  return data
+}
+
+export async function updateTag(id: number, tag: Partial<Tag>): Promise<Tag> {
+  const { data } = await client.put(`/tags/${id}`, tag)
+  return data
+}
+
+export async function deleteTag(id: number): Promise<void> {
+  await client.delete(`/tags/${id}`)
 }

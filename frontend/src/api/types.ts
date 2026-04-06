@@ -10,6 +10,17 @@ export interface Category {
   sortOrder: number
 }
 
+export interface Tag {
+  id: number
+  code: string
+  nameRu: string
+  nameUz: string
+  nameEn: string
+  nameUzCyr: string
+  color: string
+  sortOrder: number
+}
+
 export interface CraftItem {
   id: number
   name: string
@@ -27,6 +38,7 @@ export interface CraftItem {
   categoryNameUzCyr: string
   craftTimeSeconds: number
   imageUrl: string | null
+  tags?: Tag[]
   ingredients?: RecipeIngredient[]
 }
 

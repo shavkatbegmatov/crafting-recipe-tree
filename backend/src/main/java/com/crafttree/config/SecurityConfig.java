@@ -45,6 +45,10 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/categories/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/categories/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/categories/**").hasRole("ADMIN")
+                // Admin endpoints — tags
+                .requestMatchers(HttpMethod.POST, "/api/tags/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/tags/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/tags/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

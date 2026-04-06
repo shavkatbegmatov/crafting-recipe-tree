@@ -5,7 +5,9 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "craft_items")
@@ -53,6 +55,15 @@ public class CraftItem {
 
     @Column(name = "image_url")
     private String imageUrl;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "item_tags",
+        joinColumns = @JoinColumn(name = "item_id"),
+        inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    @Builder.Default
+    private Set<Tag> tags = new HashSet<>();
 
     @OneToMany(mappedBy = "resultItem", fetch = FetchType.LAZY)
     @Builder.Default

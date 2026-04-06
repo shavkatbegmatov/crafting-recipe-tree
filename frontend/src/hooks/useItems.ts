@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { fetchCategories, fetchItems, fetchItem, searchItems, fetchUsedIn } from '../api/items'
+import { fetchCategories, fetchItems, fetchItem, searchItems, fetchUsedIn, fetchTags } from '../api/items'
 
 export function useCategories() {
   return useQuery({
@@ -28,6 +28,13 @@ export function useSearchItems(query: string) {
     queryKey: ['search', query],
     queryFn: () => searchItems(query),
     enabled: query.length >= 1,
+  })
+}
+
+export function useTags() {
+  return useQuery({
+    queryKey: ['tags'],
+    queryFn: fetchTags,
   })
 }
 
