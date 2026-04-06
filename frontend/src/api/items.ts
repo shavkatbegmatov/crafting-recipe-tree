@@ -68,6 +68,7 @@ export async function fetchUsedIn(id: number): Promise<UsedIn[]> {
 }
 
 export interface UpdateItemData {
+  categoryId?: number
   name?: string
   nameUz?: string
   nameEn?: string

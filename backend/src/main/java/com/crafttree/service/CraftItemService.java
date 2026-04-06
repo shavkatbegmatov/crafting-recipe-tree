@@ -66,6 +66,10 @@ public class CraftItemService {
         CraftItem item = craftItemRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id));
 
+        if (request.getCategoryId() != null) {
+            item.setCategory(categoryRepository.findById(request.getCategoryId())
+                    .orElseThrow(() -> new RuntimeException("Category not found: " + request.getCategoryId())));
+        }
         if (request.getName() != null) item.setName(request.getName());
         if (request.getNameUz() != null) item.setNameUz(request.getNameUz());
         if (request.getNameEn() != null) item.setNameEn(request.getNameEn());

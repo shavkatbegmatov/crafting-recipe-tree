@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useLocalizedField } from '../hooks/useLanguage'
-import { useItem, useUsedIn } from '../hooks/useItems'
+import { useItem, useUsedIn, useCategories } from '../hooks/useItems'
 import { useAuth } from '../contexts/AuthContext'
 import { updateItem } from '../api/items'
 import { useQueryClient } from '@tanstack/react-query'
@@ -21,6 +21,7 @@ export default function ItemDetailPage() {
   const itemId = Number(id)
   const { data: item, isLoading, error } = useItem(itemId)
   const { data: usedIn } = useUsedIn(itemId)
+  const { data: categories } = useCategories()
   const queryClient = useQueryClient()
 
   // Edit mode state
@@ -28,13 +29,16 @@ export default function ItemDetailPage() {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [editData, setEditData] = useState({
+    categoryId: 0,
     name: '', nameUz: '', nameEn: '', nameUzCyr: '',
     description: '', descriptionUz: '', descriptionEn: '', descriptionUzCyr: '',
   })
 
   const startEdit = () => {
     if (!item) return
+    const cat = categories?.find((c) => c.code === item.categoryCode)
     setEditData({
+      categoryId: cat?.id || 0,
       name: item.name || '',
       nameUz: item.nameUz || '',
       nameEn: item.nameEn || '',
@@ -56,7 +60,7 @@ export default function ItemDetailPage() {
   const handleSave = async () => {
     setSaving(true)
     try {
-      await updateItem(itemId, editData)
+      await updateItem(itemId, { ...editData, categoryId: Number(editData.categoryId) || undefined })
       queryClient.invalidateQueries({ queryKey: ['item', itemId] })
       queryClient.invalidateQueries({ queryKey: ['items'] })
       setSaved(true)
@@ -135,6 +139,22 @@ export default function ItemDetailPage() {
           {/* Edit mode */}
           {editing ? (
             <div className="space-y-4 mt-4">
+              {/* Category selector */}
+              <div>
+                <label className="block text-xs text-[#8a7a60] mb-1">{t('edit.category')}</label>
+                <select
+                  value={editData.categoryId}
+                  onChange={(e) => updateField('categoryId', e.target.value)}
+                  className="w-full sm:w-64 bg-dark-bg border border-dark-border rounded px-3 py-2 text-sm text-[#d4c4a0] focus:outline-none focus:border-dark-gold/50"
+                >
+                  {categories?.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {getField(cat, 'name')} ({cat.code})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {[
                   { key: 'name', label: t('edit.nameRu') },

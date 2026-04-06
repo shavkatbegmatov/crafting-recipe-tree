@@ -75,6 +75,7 @@
   },
   "edit": {
     "button": "Tahrirlash",
+    "category": "Kategoriya",
     "save": "Saqlash",
     "cancel": "Bekor qilish",
     "saving": "Saqlanmoqda...",

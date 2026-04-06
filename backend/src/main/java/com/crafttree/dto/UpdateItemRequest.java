@@ -6,6 +6,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateItemRequest {
+    private Long categoryId;
     private String name;
     private String nameUz;
     private String nameEn;

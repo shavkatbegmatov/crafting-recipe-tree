@@ -75,6 +75,7 @@
   },
   "edit": {
     "button": "Edit",
+    "category": "Category",
     "save": "Save",
     "cancel": "Cancel",
     "saving": "Saving...",
