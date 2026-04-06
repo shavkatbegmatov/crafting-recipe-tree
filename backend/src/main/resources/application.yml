@@ -29,6 +29,9 @@ app:
     path: uploads
   scripts:
     python: python
+  jwt:
+    secret: Y3JhZnRpbmctcmVjaXBlLXRyZWUtand0LXNlY3JldC1rZXktMjAyNg==
+    expiration: 86400000
 
 springdoc:
   api-docs:

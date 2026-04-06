@@ -62,6 +62,32 @@
     "ITEM": "Предмет",
     "MODULE": "Модуль"
   },
+  "login": {
+    "title": "Вход в панель администратора",
+    "username": "Имя пользователя",
+    "password": "Пароль",
+    "submit": "Войти"
+  },
+  "auth": {
+    "login": "Войти",
+    "logout": "Выйти",
+    "admin": "Админ"
+  },
+  "edit": {
+    "button": "Редактировать",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "saving": "Сохранение...",
+    "saved": "Сохранено!",
+    "nameRu": "Название (RU)",
+    "nameUz": "Название (UZ)",
+    "nameEn": "Название (EN)",
+    "nameUzCyr": "Название (UZ-кир)",
+    "descRu": "Описание (RU)",
+    "descUz": "Описание (UZ)",
+    "descEn": "Описание (EN)",
+    "descUzCyr": "Описание (UZ-кир)"
+  },
   "time": {
     "seconds": "{{count}}с",
     "minutes": "{{count}}м",

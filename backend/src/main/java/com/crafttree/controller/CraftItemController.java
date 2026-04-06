@@ -2,6 +2,7 @@ package com.crafttree.controller;
 
 import com.crafttree.dto.CategoryDto;
 import com.crafttree.dto.CraftItemDto;
+import com.crafttree.dto.UpdateItemRequest;
 import com.crafttree.dto.UsedInDto;
 import com.crafttree.service.CraftItemService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,5 +48,11 @@ public class CraftItemController {
     @Operation(summary = "Get recipes where this item is used as ingredient")
     public List<UsedInDto> getUsedIn(@PathVariable Long id) {
         return craftItemService.getUsedIn(id);
+    }
+
+    @PutMapping("/items/{id}")
+    @Operation(summary = "Update item names and descriptions (admin only)")
+    public CraftItemDto updateItem(@PathVariable Long id, @RequestBody UpdateItemRequest request) {
+        return craftItemService.updateItem(id, request);
     }
 }

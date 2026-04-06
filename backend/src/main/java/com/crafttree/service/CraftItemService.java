@@ -59,6 +59,26 @@ public class CraftItemService {
                 .collect(Collectors.toList());
     }
 
+    @org.springframework.transaction.annotation.Transactional
+    public CraftItemDto updateItem(Long id, UpdateItemRequest request) {
+        CraftItem item = craftItemRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException(id));
+
+        if (request.getName() != null) item.setName(request.getName());
+        if (request.getNameUz() != null) item.setNameUz(request.getNameUz());
+        if (request.getNameEn() != null) item.setNameEn(request.getNameEn());
+        if (request.getNameUzCyr() != null) item.setNameUzCyr(request.getNameUzCyr());
+        if (request.getDescription() != null) item.setDescription(request.getDescription());
+        if (request.getDescriptionUz() != null) item.setDescriptionUz(request.getDescriptionUz());
+        if (request.getDescriptionEn() != null) item.setDescriptionEn(request.getDescriptionEn());
+        if (request.getDescriptionUzCyr() != null) item.setDescriptionUzCyr(request.getDescriptionUzCyr());
+
+        item.setUpdatedAt(java.time.LocalDateTime.now());
+        craftItemRepository.save(item);
+
+        return toDtoWithIngredients(item);
+    }
+
     public List<UsedInDto> getUsedIn(Long itemId) {
         if (!craftItemRepository.existsById(itemId)) {
             throw new ItemNotFoundException(itemId);

@@ -62,6 +62,32 @@
     "ITEM": "Item",
     "MODULE": "Module"
   },
+  "login": {
+    "title": "Admin panel login",
+    "username": "Username",
+    "password": "Password",
+    "submit": "Sign in"
+  },
+  "auth": {
+    "login": "Sign in",
+    "logout": "Sign out",
+    "admin": "Admin"
+  },
+  "edit": {
+    "button": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "saving": "Saving...",
+    "saved": "Saved!",
+    "nameRu": "Name (RU)",
+    "nameUz": "Name (UZ)",
+    "nameEn": "Name (EN)",
+    "nameUzCyr": "Name (UZ-cyr)",
+    "descRu": "Description (RU)",
+    "descUz": "Description (UZ)",
+    "descEn": "Description (EN)",
+    "descUzCyr": "Description (UZ-cyr)"
+  },
   "time": {
     "seconds": "{{count}}s",
     "minutes": "{{count}}m",

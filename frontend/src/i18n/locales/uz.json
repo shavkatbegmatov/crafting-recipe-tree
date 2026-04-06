@@ -62,6 +62,32 @@
     "ITEM": "Predmet",
     "MODULE": "Modul"
   },
+  "login": {
+    "title": "Admin paneliga kirish",
+    "username": "Foydalanuvchi nomi",
+    "password": "Parol",
+    "submit": "Kirish"
+  },
+  "auth": {
+    "login": "Kirish",
+    "logout": "Chiqish",
+    "admin": "Admin"
+  },
+  "edit": {
+    "button": "Tahrirlash",
+    "save": "Saqlash",
+    "cancel": "Bekor qilish",
+    "saving": "Saqlanmoqda...",
+    "saved": "Saqlandi!",
+    "nameRu": "Nomi (RU)",
+    "nameUz": "Nomi (UZ)",
+    "nameEn": "Nomi (EN)",
+    "nameUzCyr": "Nomi (UZ-kir)",
+    "descRu": "Tavsif (RU)",
+    "descUz": "Tavsif (UZ)",
+    "descEn": "Tavsif (EN)",
+    "descUzCyr": "Tavsif (UZ-kir)"
+  },
   "time": {
     "seconds": "{{count}}s",
     "minutes": "{{count}}m",

@@ -62,6 +62,32 @@
     "ITEM": "Предмет",
     "MODULE": "Модул"
   },
+  "login": {
+    "title": "Админ панелига кириш",
+    "username": "Фойдаланувчи номи",
+    "password": "Парол",
+    "submit": "Кириш"
+  },
+  "auth": {
+    "login": "Кириш",
+    "logout": "Чиқиш",
+    "admin": "Админ"
+  },
+  "edit": {
+    "button": "Таҳрирлаш",
+    "save": "Сақлаш",
+    "cancel": "Бекор қилиш",
+    "saving": "Сақланмоқда...",
+    "saved": "Сақланди!",
+    "nameRu": "Номи (RU)",
+    "nameUz": "Номи (UZ)",
+    "nameEn": "Номи (EN)",
+    "nameUzCyr": "Номи (УЗ-кир)",
+    "descRu": "Тавсиф (RU)",
+    "descUz": "Тавсиф (UZ)",
+    "descEn": "Тавсиф (EN)",
+    "descUzCyr": "Тавсиф (УЗ-кир)"
+  },
   "time": {
     "seconds": "{{count}}с",
     "minutes": "{{count}}д",

@@ -42,6 +42,22 @@ export async function fetchUsedIn(id: number): Promise<UsedIn[]> {
   return data
 }
 
+export interface UpdateItemData {
+  name?: string
+  nameUz?: string
+  nameEn?: string
+  nameUzCyr?: string
+  description?: string
+  descriptionUz?: string
+  descriptionEn?: string
+  descriptionUzCyr?: string
+}
+
+export async function updateItem(id: number, data: UpdateItemData): Promise<CraftItem> {
+  const { data: res } = await client.put(`/items/${id}`, data)
+  return res
+}
+
 export async function uploadItemImage(
   id: number,
   file: File,
