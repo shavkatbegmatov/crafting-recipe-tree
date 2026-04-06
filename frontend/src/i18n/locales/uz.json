@@ -40,6 +40,7 @@
     "title": "Rasm yuklash",
     "selectFile": "Screenshot tanlang",
     "fileHint": "JPG, PNG — max 10MB",
+    "pasteHint": "Ctrl+V — clipboard'dan qo'yish",
     "removeBg": "Fonni avtomatik olib tashlash (rembg)",
     "uploading": "Yuklanmoqda... {{progress}}%",
     "processing": "Fon olib tashlanmoqda...",

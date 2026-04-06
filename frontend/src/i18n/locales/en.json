@@ -40,6 +40,7 @@
     "title": "Upload image",
     "selectFile": "Select screenshot",
     "fileHint": "JPG, PNG — max 10MB",
+    "pasteHint": "Ctrl+V — paste from clipboard",
     "removeBg": "Auto remove background (rembg)",
     "uploading": "Uploading... {{progress}}%",
     "processing": "Removing background...",

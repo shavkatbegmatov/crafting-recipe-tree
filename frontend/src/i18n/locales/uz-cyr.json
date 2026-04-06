@@ -40,6 +40,7 @@
     "title": "Расм юклаш",
     "selectFile": "Скриншот танланг",
     "fileHint": "JPG, PNG — max 10MB",
+    "pasteHint": "Ctrl+V — clipboard'дан қўйиш",
     "removeBg": "Фонни автоматик олиб ташлаш (rembg)",
     "uploading": "Юкланмоқда... {{progress}}%",
     "processing": "Фон олиб ташланмоқда...",

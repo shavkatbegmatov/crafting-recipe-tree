@@ -40,6 +40,7 @@
     "title": "Загрузка изображения",
     "selectFile": "Выберите скриншот",
     "fileHint": "JPG, PNG — max 10MB",
+    "pasteHint": "Ctrl+V — вставить из буфера обмена",
     "removeBg": "Автоматическое удаление фона (rembg)",
     "uploading": "Загрузка... {{progress}}%",
     "processing": "Удаление фона...",

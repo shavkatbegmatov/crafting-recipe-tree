@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react'
-import { Upload, Loader2, Check, X, ImageIcon } from 'lucide-react'
+import { useState, useRef, useEffect, useCallback } from 'react'
+import { Upload, Loader2, Check, X, ImageIcon, Clipboard } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { uploadItemImage } from '../../api/items'
 import { useQueryClient } from '@tanstack/react-query'
@@ -19,17 +19,58 @@ export default function ImageUpload({ itemId }: Props) {
   const [status, setStatus] = useState<'idle' | 'uploading' | 'processing' | 'done' | 'error'>('idle')
   const [error, setError] = useState<string | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
+  const dropRef = useRef<HTMLDivElement>(null)
   const queryClient = useQueryClient()
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const f = e.target.files?.[0]
-    if (!f) return
+  const setFileWithPreview = useCallback((f: File) => {
     setFile(f)
     setError(null)
     setStatus('idle')
     const reader = new FileReader()
     reader.onload = (ev) => setPreview(ev.target?.result as string)
     reader.readAsDataURL(f)
+  }, [])
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0]
+    if (f) setFileWithPreview(f)
+  }
+
+  // Clipboard paste (Ctrl+V)
+  useEffect(() => {
+    if (!isOpen) return
+
+    const handlePaste = (e: ClipboardEvent) => {
+      const items = e.clipboardData?.items
+      if (!items) return
+
+      for (const item of items) {
+        if (item.type.startsWith('image/')) {
+          e.preventDefault()
+          const blob = item.getAsFile()
+          if (blob) {
+            const f = new File([blob], `screenshot_${Date.now()}.png`, { type: blob.type })
+            setFileWithPreview(f)
+          }
+          break
+        }
+      }
+    }
+
+    document.addEventListener('paste', handlePaste)
+    return () => document.removeEventListener('paste', handlePaste)
+  }, [isOpen, setFileWithPreview])
+
+  // Drag & drop
+  const [dragOver, setDragOver] = useState(false)
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    setDragOver(false)
+    const f = e.dataTransfer.files[0]
+    if (f && f.type.startsWith('image/')) {
+      setFileWithPreview(f)
+    }
   }
 
   const handleUpload = async () => {
@@ -97,9 +138,18 @@ export default function ImageUpload({ itemId }: Props) {
         </button>
       </div>
 
+      {/* Drop zone + paste + click */}
       <div
+        ref={dropRef}
         onClick={() => fileRef.current?.click()}
-        className="border-2 border-dashed border-dark-border rounded-lg p-6 text-center cursor-pointer hover:border-dark-gold/40 transition-colors"
+        onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
+        onDragLeave={() => setDragOver(false)}
+        onDrop={handleDrop}
+        className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
+          dragOver
+            ? 'border-dark-gold bg-dark-gold/5'
+            : 'border-dark-border hover:border-dark-gold/40'
+        }`}
       >
         {preview ? (
           <img src={preview} alt="Preview" className="max-h-40 mx-auto rounded" />
@@ -108,6 +158,10 @@ export default function ImageUpload({ itemId }: Props) {
             <Upload size={24} className="mx-auto mb-2" />
             <p className="text-sm">{t('upload.selectFile')}</p>
             <p className="text-xs mt-1">{t('upload.fileHint')}</p>
+            <div className="flex items-center justify-center gap-1.5 mt-2 text-xs text-[#5a4e3a]">
+              <Clipboard size={11} />
+              {t('upload.pasteHint')}
+            </div>
           </div>
         )}
         <input
