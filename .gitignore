@@ -32,3 +32,8 @@ imges-erz-5/
 # Uploads
 backend/uploads/
 uploads/
+extracted_uploads/
+uploads_to_upload/
+
+# Claude Code session state
+.claude/
