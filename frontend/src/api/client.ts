@@ -1,7 +1,14 @@
 import axios from 'axios'
 
+// In production, VITE_API_BASE_URL is baked in at build time (see Dockerfile ARG),
+// pointing to the backend's public URL, e.g. "https://api.example.com".
+// In dev or when not set, fall back to relative "/api" which is proxied by
+// Vite dev server (vite.config.ts) or by nginx (nginx.conf).
+const apiRoot = import.meta.env.VITE_API_BASE_URL
+const baseURL = apiRoot ? `${apiRoot}/api` : '/api'
+
 const client = axios.create({
-  baseURL: '/api',
+  baseURL,
   headers: {
     'Content-Type': 'application/json',
   },
