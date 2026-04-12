@@ -101,6 +101,12 @@
     "actions": "Действия",
     "confirmDelete": "Вы уверены, что хотите удалить?"
   },
+  "chat": {
+    "title": "Чат",
+    "placeholder": "Напишите сообщение...",
+    "empty": "Сообщений пока нет",
+    "loginRequired": "Войдите, чтобы отправлять сообщения"
+  },
   "time": {
     "seconds": "{{count}}с",
     "minutes": "{{count}}м",

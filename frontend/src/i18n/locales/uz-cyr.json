@@ -101,6 +101,12 @@
     "actions": "Амаллар",
     "confirmDelete": "Ростдан ўчирмоқчимисиз?"
   },
+  "chat": {
+    "title": "Чат",
+    "placeholder": "Хабар ёзинг...",
+    "empty": "Ҳали хабарлар йўқ",
+    "loginRequired": "Хабар юбориш учун киринг"
+  },
   "time": {
     "seconds": "{{count}}с",
     "minutes": "{{count}}д",

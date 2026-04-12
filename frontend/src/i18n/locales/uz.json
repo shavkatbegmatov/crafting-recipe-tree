@@ -101,6 +101,12 @@
     "actions": "Amallar",
     "confirmDelete": "Rostdan o'chirmoqchimisiz?"
   },
+  "chat": {
+    "title": "Chat",
+    "placeholder": "Xabar yozing...",
+    "empty": "Hali xabarlar yo'q",
+    "loginRequired": "Xabar yuborish uchun kiring"
+  },
   "time": {
     "seconds": "{{count}}s",
     "minutes": "{{count}}m",

@@ -101,6 +101,12 @@
     "actions": "Actions",
     "confirmDelete": "Are you sure you want to delete?"
   },
+  "chat": {
+    "title": "Chat",
+    "placeholder": "Type a message...",
+    "empty": "No messages yet",
+    "loginRequired": "Sign in to send messages"
+  },
   "time": {
     "seconds": "{{count}}s",
     "minutes": "{{count}}m",
