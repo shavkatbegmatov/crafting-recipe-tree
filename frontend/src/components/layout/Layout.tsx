@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom'
 import { useState } from 'react'
 import Header from './Header'
 import Sidebar from './Sidebar'
+import ChatButton from '../chat/ChatButton'
 
 export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -15,6 +16,7 @@ export default function Layout() {
           <Outlet />
         </main>
       </div>
+      <ChatButton />
     </div>
   )
 }

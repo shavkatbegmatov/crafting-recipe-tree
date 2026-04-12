@@ -39,6 +39,9 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/api-docs/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/uploads/**").permitAll()
+                // WebSocket + Chat
+                .requestMatchers("/ws/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/chat/**").permitAll()
                 // Admin endpoints — items
                 .requestMatchers(HttpMethod.PUT, "/api/items/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/api/items/**").hasRole("ADMIN")

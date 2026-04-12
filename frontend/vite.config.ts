@@ -10,7 +10,11 @@ export default defineConfig({
     host: '0.0.0.0',
     proxy: {
       '/api': backendUrl,
-      '/uploads': backendUrl
+      '/uploads': backendUrl,
+      '/ws': {
+        target: backendUrl,
+        ws: true,
+      },
     }
   }
 })
