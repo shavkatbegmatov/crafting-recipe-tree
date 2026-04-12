@@ -70,7 +70,22 @@
     "noAccount": "Akkauntingiz yo'qmi? Ro'yxatdan o'ting",
     "or": "yoki",
     "signUp": "Yangi akkaunt yaratish",
-    "error": "Foydalanuvchi nomi yoki parol noto'g'ri"
+    "error": "Foydalanuvchi nomi yoki parol noto'g'ri",
+    "eyebrow": "Operatsion terminal",
+    "heroTitle": "Crafting frontini aniq va tez boshqaring",
+    "heroDescription": "Retsept zanjirlari, xomashyo hisobi va jamoa signalini bitta markaziy panelda ushlab, keyingi craft qarorini ishonch bilan qabul qiling.",
+    "statusSecure": "Himoyalangan kirish",
+    "statusLive": "Jonli retsept paneli",
+    "statusCommand": "Bazaga tayyor",
+    "cardDescription": "Akkauntingizga ulanib, crafting oqimini uzilgan joyidan davom ettiring.",
+    "featureTreeTitle": "Retsept marshruti",
+    "featureTreeDescription": "Murakkab craft shajarasini bir necha qadam oldindan ko'rib, bottlenecklarni tez toping.",
+    "featureMaterialsTitle": "Xomashyo nazorati",
+    "featureMaterialsDescription": "Har bir craft uchun kerak bo'ladigan resurs va vaqtni aniqlik bilan kuzating.",
+    "featureChatTitle": "Jamoa sinxroni",
+    "featureChatDescription": "Chat va tezkor boshqaruv bilan bazadagi ritmni bir tempda ushlab turing.",
+    "showPassword": "Parolni ko'rsatish",
+    "hidePassword": "Parolni yashirish"
   },
   "register": {
     "title": "Akkaunt yaratish",

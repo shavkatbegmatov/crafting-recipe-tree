@@ -70,7 +70,22 @@
     "noAccount": "Don't have an account? Sign up",
     "or": "or",
     "signUp": "Create new account",
-    "error": "Invalid username or password"
+    "error": "Invalid username or password",
+    "eyebrow": "Operations terminal",
+    "heroTitle": "Run your crafting front with speed and control",
+    "heroDescription": "Keep recipe chains, raw-material counts, and squad communication in one command surface so every next craft decision stays fast and precise.",
+    "statusSecure": "Secure access",
+    "statusLive": "Live recipe deck",
+    "statusCommand": "Base ready",
+    "cardDescription": "Reconnect to your account and resume the crafting flow exactly where you left it.",
+    "featureTreeTitle": "Recipe routing",
+    "featureTreeDescription": "Read complex craft branches several steps ahead and spot production bottlenecks early.",
+    "featureMaterialsTitle": "Material control",
+    "featureMaterialsDescription": "Track the resources and timing required for every craft with confident clarity.",
+    "featureChatTitle": "Squad sync",
+    "featureChatDescription": "Keep the base in rhythm with chat visibility and fast control actions.",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
   },
   "register": {
     "title": "Create your account",
