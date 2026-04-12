@@ -67,7 +67,10 @@
     "username": "Foydalanuvchi nomi",
     "password": "Parol",
     "submit": "Kirish",
-    "noAccount": "Akkauntingiz yo'qmi? Ro'yxatdan o'ting"
+    "noAccount": "Akkauntingiz yo'qmi? Ro'yxatdan o'ting",
+    "or": "yoki",
+    "signUp": "Yangi akkaunt yaratish",
+    "error": "Foydalanuvchi nomi yoki parol noto'g'ri"
   },
   "register": {
     "title": "Akkaunt yaratish",
