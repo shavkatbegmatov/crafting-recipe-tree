@@ -17,7 +17,7 @@ export default function Layout() {
   }
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden bg-dark-bg">
+    <div className="flex h-[100dvh] flex-col overflow-hidden bg-dark-bg">
       <Header onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
       {isLoading ? (
         <div className="flex flex-1 items-center justify-center">

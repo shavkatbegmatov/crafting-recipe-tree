@@ -28,11 +28,6 @@ const routeTrail = {
     'linear-gradient(135deg, rgba(230,171,70,0) 0%, rgba(230,171,70,0.1) 28%, rgba(230,171,70,0.68) 48%, rgba(255,235,199,0.92) 50%, rgba(230,171,70,0.64) 52%, rgba(230,171,70,0.06) 72%, rgba(230,171,70,0) 100%)',
 }
 
-const violetZone = {
-  background:
-    'radial-gradient(circle at 30% 30%, rgba(230,182,255,0.32), rgba(162,70,196,0.52) 45%, rgba(98,30,126,0.88) 100%)',
-}
-
 const terrainNoise = {
   background:
     'radial-gradient(circle at 20% 28%, rgba(214,152,64,0.20), transparent 24%), radial-gradient(circle at 52% 62%, rgba(255,205,130,0.12), transparent 20%), radial-gradient(circle at 78% 38%, rgba(0,0,0,0.24), transparent 24%), linear-gradient(145deg, rgba(96,64,40,0.90), rgba(33,24,18,0.88))',
@@ -82,35 +77,28 @@ export default function WelcomePage() {
 
       <div className="relative mx-auto h-full max-w-[1680px] px-4 py-5 sm:px-6 lg:px-8 xl:px-10 xl:py-6 2xl:px-12 2xl:py-7">
         <div className="grid h-full gap-6 xl:grid-cols-[minmax(0,1.34fr)_minmax(430px,0.76fr)] 2xl:grid-cols-[minmax(0,1.42fr)_minmax(470px,0.72fr)] 2xl:gap-8">
-          <section className="relative overflow-hidden rounded-[34px] border border-dark-border/70 bg-dark-card/80 shadow-[0_24px_90px_rgba(0,0,0,0.40)]">
+          <section className="relative overflow-hidden rounded-[34px] border border-dark-border/70 bg-dark-card/80 shadow-[0_24px_90px_rgba(0,0,0,0.40)] xl:h-full">
             <div className="absolute inset-0 opacity-[0.12]" style={gridOverlay} />
             <div className="absolute inset-y-0 left-0 w-[58%]" style={terrainNoise} />
-            <div className="absolute inset-y-0 left-0 w-[48%] bg-[linear-gradient(90deg,rgba(14,11,9,0.14),rgba(14,11,9,0.30),rgba(14,11,9,0.12),transparent)]" />
+            <div className="absolute inset-y-0 left-0 w-[52%] bg-[linear-gradient(90deg,rgba(10,8,7,0.24),rgba(10,8,7,0.54),rgba(10,8,7,0.22),transparent)]" />
             <div className="absolute inset-y-0 right-0 w-[46%]" style={voidTerrain} />
-            <div className="absolute inset-y-0 left-[54%] w-[12%] opacity-80" style={routeTrail} />
-            <div className="absolute inset-y-0 left-[48%] w-[24%] bg-[linear-gradient(90deg,transparent,rgba(8,7,8,0.30),rgba(8,7,8,0.58),transparent)]" />
+            <div className="absolute inset-y-0 left-[58%] w-[10%] opacity-70" style={routeTrail} />
+            <div className="absolute inset-y-0 left-[50%] w-[20%] bg-[linear-gradient(90deg,transparent,rgba(8,7,8,0.18),rgba(8,7,8,0.42),transparent)]" />
+            <div className="absolute right-[12%] top-[16%] h-[30%] w-[20%] rounded-[40%] bg-[radial-gradient(circle_at_center,rgba(255,211,151,0.06),rgba(255,211,151,0.01)_58%,transparent_75%)]" />
+            <div className="absolute left-[14%] bottom-[10%] h-[24%] w-[14%] rounded-[34%] bg-[radial-gradient(circle_at_center,rgba(229,168,82,0.10),rgba(229,168,82,0.02)_60%,transparent_78%)]" />
 
-            <div
-              className="absolute left-[13%] bottom-[8%] h-[32%] w-[19%] rounded-[34%] opacity-65 blur-[1px]"
-              style={violetZone}
-            />
-            <div
-              className="absolute right-[16%] top-[18%] h-[26%] w-[18%] rounded-[36%] opacity-70 blur-[1px]"
-              style={violetZone}
-            />
-
-            <div className="absolute left-[20%] top-[66%] hidden h-24 w-24 rounded-3xl border border-dark-gold/35 bg-black/25 shadow-[0_0_35px_rgba(230,171,70,0.18)] backdrop-blur-sm lg:block" />
-            <div className="absolute left-[20.8%] top-[67.5%] hidden h-20 w-20 items-center justify-center rounded-[28px] border border-dark-gold/25 bg-dark-card/80 text-dark-gold lg:flex">
+            <div className="absolute left-[18%] top-[72%] hidden h-20 w-20 rounded-3xl border border-dark-gold/35 bg-black/25 shadow-[0_0_35px_rgba(230,171,70,0.18)] backdrop-blur-sm lg:block" />
+            <div className="absolute left-[18.7%] top-[73.1%] hidden h-16 w-16 items-center justify-center rounded-[24px] border border-dark-gold/25 bg-dark-card/80 text-dark-gold lg:flex">
               <Boxes size={34} />
             </div>
 
-            <div className="absolute left-[57.5%] top-[49%] h-16 w-16 rounded-full bg-white/80 blur-xl" />
-            <div className="absolute left-[58.3%] top-[50.3%] flex h-10 w-10 items-center justify-center rounded-full border border-[#fff2d0]/70 bg-[#fff7e0] text-[#8c6430] shadow-[0_0_28px_rgba(255,244,204,0.85)]">
+            <div className="absolute left-[60.5%] top-[51%] h-14 w-14 rounded-full bg-white/80 blur-xl" />
+            <div className="absolute left-[61.2%] top-[52%] flex h-9 w-9 items-center justify-center rounded-full border border-[#fff2d0]/70 bg-[#fff7e0] text-[#8c6430] shadow-[0_0_28px_rgba(255,244,204,0.85)]">
               <Pickaxe size={18} />
             </div>
 
-            <div className="relative flex min-h-[560px] flex-col justify-between p-6 sm:p-8 lg:p-10 xl:min-h-[610px] xl:p-10 2xl:min-h-[660px] 2xl:p-11">
-              <div className="max-w-[760px] rounded-[34px] border border-white/5 bg-[linear-gradient(180deg,rgba(14,11,9,0.76),rgba(14,11,9,0.58))] px-5 py-5 shadow-[0_22px_60px_rgba(0,0,0,0.30)] backdrop-blur-[2px] sm:px-7 sm:py-6 xl:max-w-[840px] xl:px-8 xl:py-7 2xl:max-w-[900px] 2xl:px-9 2xl:py-8">
+            <div className="relative flex min-h-[520px] flex-col justify-between p-6 sm:p-8 lg:p-10 xl:h-full xl:min-h-0 xl:p-9 2xl:p-10">
+              <div className="max-w-[740px] rounded-[34px] border border-white/5 bg-[linear-gradient(180deg,rgba(14,11,9,0.82),rgba(14,11,9,0.62))] px-5 py-5 shadow-[0_22px_60px_rgba(0,0,0,0.30)] backdrop-blur-[2px] sm:px-7 sm:py-6 xl:max-w-[800px] xl:px-8 xl:py-6 2xl:max-w-[840px] 2xl:px-9 2xl:py-7">
                 <div className="flex flex-wrap items-center gap-2.5">
                   <div className="rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-2 text-xs font-medium uppercase tracking-[0.24em] text-red-300">
                     {t('welcome.statusAlert')}
@@ -121,10 +109,10 @@ export default function WelcomePage() {
                   </div>
                 </div>
 
-                <h1 className="mt-5 max-w-[11.5ch] text-[clamp(3.1rem,4.7vw,5.55rem)] font-semibold leading-[0.94] tracking-[-0.045em] text-[#f4e4bf] drop-shadow-[0_8px_24px_rgba(0,0,0,0.48)] 2xl:max-w-[12ch]">
+                <h1 className="mt-5 max-w-[11ch] text-[clamp(2.8rem,4.2vw,4.95rem)] font-semibold leading-[0.94] tracking-[-0.045em] text-[#f4e4bf] drop-shadow-[0_8px_24px_rgba(0,0,0,0.48)] 2xl:max-w-[11.5ch]">
                   {t('welcome.title')}
                 </h1>
-                <p className="mt-4 max-w-[58ch] text-[0.98rem] leading-7 text-[#d2bb95] drop-shadow-[0_4px_16px_rgba(0,0,0,0.35)] 2xl:max-w-[60ch] 2xl:text-[1.08rem] 2xl:leading-8">
+                <p className="mt-4 max-w-[56ch] text-[0.94rem] leading-7 text-[#d2bb95] drop-shadow-[0_4px_16px_rgba(0,0,0,0.35)] 2xl:max-w-[58ch] 2xl:text-[1rem] 2xl:leading-7">
                   {t('welcome.description')}
                 </p>
 
@@ -144,7 +132,7 @@ export default function WelcomePage() {
                 </div>
               </div>
 
-              <div className="grid max-w-[940px] gap-3 sm:grid-cols-3 xl:max-w-[1020px]">
+              <div className="grid max-w-[880px] gap-3 sm:grid-cols-3 xl:max-w-[940px]">
                 {terrainStats.map((item) => (
                   <div
                     key={item.labelKey}
@@ -160,33 +148,33 @@ export default function WelcomePage() {
             </div>
           </section>
 
-          <section className="relative overflow-hidden rounded-[30px] border border-dark-border/75 bg-dark-card/85 shadow-[0_20px_70px_rgba(0,0,0,0.38)] backdrop-blur-sm">
+          <section className="relative overflow-hidden rounded-[30px] border border-dark-border/75 bg-dark-card/85 shadow-[0_20px_70px_rgba(0,0,0,0.38)] backdrop-blur-sm xl:h-full">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(200,160,80,0.12),transparent_42%)]" />
             <div className="absolute right-[-14%] top-[-10%] h-56 w-56 rounded-full border border-dark-gold/10" />
             <div className="absolute right-[-6%] top-[12%] h-40 w-40 rounded-full border border-dark-gold/10" />
 
-            <div className="relative flex h-full flex-col gap-6 p-6 sm:p-8 xl:p-8 2xl:p-9">
+            <div className="relative flex h-full min-h-[520px] flex-col gap-5 p-6 sm:p-8 xl:min-h-0 xl:p-7 2xl:p-8">
               <div>
                 <div className="inline-flex items-center gap-2 rounded-full border border-dark-gold/15 bg-dark-gold/10 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.24em] text-dark-gold/90">
                   <LockKeyhole size={12} />
                   {t('welcome.panelEyebrow')}
                 </div>
 
-                <h2 className="mt-4 max-w-[15ch] text-[2rem] font-semibold leading-tight text-[#f3e0b5] xl:text-[2.15rem] 2xl:text-[2.35rem]">
+                <h2 className="mt-4 max-w-[15ch] text-[1.9rem] font-semibold leading-tight text-[#f3e0b5] xl:text-[2.05rem] 2xl:text-[2.2rem]">
                   {t('welcome.panelTitle')}
                 </h2>
-                <p className="mt-3 max-w-[42ch] text-[0.95rem] leading-7 text-[#b19d80]">
+                <p className="mt-3 max-w-[40ch] text-[0.92rem] leading-7 text-[#b19d80]">
                   {t('welcome.panelDescription')}
                 </p>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 {featureItems.map((item) => {
                   const Icon = item.icon
                   return (
                     <div
                       key={item.titleKey}
-                      className="rounded-2xl border border-dark-border/75 bg-black/15 p-4 xl:p-[18px]"
+                      className="rounded-2xl border border-dark-border/75 bg-black/15 p-4 xl:p-4"
                     >
                       <div className="flex items-start gap-3">
                         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-dark-gold/10 text-dark-gold">
@@ -196,7 +184,7 @@ export default function WelcomePage() {
                           <h3 className="text-sm font-semibold text-[#f0dfb8] xl:text-[1rem]">
                             {t(item.titleKey)}
                           </h3>
-                          <p className="mt-1.5 text-sm leading-6 text-[#a69479] xl:text-[0.95rem]">
+                          <p className="mt-1.5 text-sm leading-6 text-[#a69479] xl:text-[0.92rem]">
                             {t(item.descriptionKey)}
                           </p>
                         </div>
@@ -206,7 +194,7 @@ export default function WelcomePage() {
                 })}
               </div>
 
-              <div className="rounded-[28px] border border-dark-gold/20 bg-[linear-gradient(180deg,rgba(200,160,80,0.10),rgba(200,160,80,0.04))] p-5 xl:p-[22px]">
+              <div className="rounded-[28px] border border-dark-gold/20 bg-[linear-gradient(180deg,rgba(200,160,80,0.10),rgba(200,160,80,0.04))] p-[18px] xl:p-5">
                 <div className="flex items-center gap-3">
                   <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-dark-gold/20 bg-dark-gold/10 text-dark-gold">
                     <Boxes size={22} />
