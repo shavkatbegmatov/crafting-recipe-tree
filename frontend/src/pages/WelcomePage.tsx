@@ -80,59 +80,61 @@ export default function WelcomePage() {
     <div className="relative min-h-full overflow-hidden bg-dark-bg">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(200,160,80,0.08),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(114,50,145,0.08),transparent_24%)]" />
 
-      <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-        <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+      <div className="relative mx-auto max-w-[1680px] px-4 py-6 sm:px-6 lg:px-8 xl:px-10 xl:py-8 2xl:px-12 2xl:py-10">
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1.34fr)_minmax(430px,0.76fr)] 2xl:grid-cols-[minmax(0,1.42fr)_minmax(470px,0.72fr)] 2xl:gap-8">
           <section className="relative overflow-hidden rounded-[34px] border border-dark-border/70 bg-dark-card/80 shadow-[0_24px_90px_rgba(0,0,0,0.40)]">
             <div className="absolute inset-0 opacity-[0.12]" style={gridOverlay} />
-            <div className="absolute inset-y-0 left-0 w-[56%]" style={terrainNoise} />
-            <div className="absolute inset-y-0 right-0 w-[48%]" style={voidTerrain} />
-            <div className="absolute inset-y-0 left-[45%] w-[15%] opacity-95" style={routeTrail} />
+            <div className="absolute inset-y-0 left-0 w-[58%]" style={terrainNoise} />
+            <div className="absolute inset-y-0 left-0 w-[48%] bg-[linear-gradient(90deg,rgba(14,11,9,0.14),rgba(14,11,9,0.30),rgba(14,11,9,0.12),transparent)]" />
+            <div className="absolute inset-y-0 right-0 w-[46%]" style={voidTerrain} />
+            <div className="absolute inset-y-0 left-[54%] w-[12%] opacity-80" style={routeTrail} />
+            <div className="absolute inset-y-0 left-[48%] w-[24%] bg-[linear-gradient(90deg,transparent,rgba(8,7,8,0.30),rgba(8,7,8,0.58),transparent)]" />
 
             <div
-              className="absolute left-[11%] bottom-[10%] h-[34%] w-[21%] rounded-[34%] opacity-80 blur-[1px]"
+              className="absolute left-[13%] bottom-[8%] h-[32%] w-[19%] rounded-[34%] opacity-65 blur-[1px]"
               style={violetZone}
             />
             <div
-              className="absolute right-[16%] top-[18%] h-[26%] w-[18%] rounded-[36%] opacity-80 blur-[1px]"
+              className="absolute right-[16%] top-[18%] h-[26%] w-[18%] rounded-[36%] opacity-70 blur-[1px]"
               style={violetZone}
             />
 
-            <div className="absolute left-[18%] top-[58%] h-24 w-24 rounded-3xl border border-dark-gold/35 bg-black/25 shadow-[0_0_35px_rgba(230,171,70,0.18)] backdrop-blur-sm" />
-            <div className="absolute left-[18.8%] top-[59.5%] flex h-20 w-20 items-center justify-center rounded-[28px] border border-dark-gold/25 bg-dark-card/80 text-dark-gold">
+            <div className="absolute left-[20%] top-[66%] hidden h-24 w-24 rounded-3xl border border-dark-gold/35 bg-black/25 shadow-[0_0_35px_rgba(230,171,70,0.18)] backdrop-blur-sm lg:block" />
+            <div className="absolute left-[20.8%] top-[67.5%] hidden h-20 w-20 items-center justify-center rounded-[28px] border border-dark-gold/25 bg-dark-card/80 text-dark-gold lg:flex">
               <Boxes size={34} />
             </div>
 
-            <div className="absolute left-[48.5%] top-[46%] h-16 w-16 rounded-full bg-white/80 blur-xl" />
-            <div className="absolute left-[49.5%] top-[47.5%] flex h-10 w-10 items-center justify-center rounded-full border border-[#fff2d0]/70 bg-[#fff7e0] text-[#8c6430] shadow-[0_0_28px_rgba(255,244,204,0.85)]">
+            <div className="absolute left-[57.5%] top-[49%] h-16 w-16 rounded-full bg-white/80 blur-xl" />
+            <div className="absolute left-[58.3%] top-[50.3%] flex h-10 w-10 items-center justify-center rounded-full border border-[#fff2d0]/70 bg-[#fff7e0] text-[#8c6430] shadow-[0_0_28px_rgba(255,244,204,0.85)]">
               <Pickaxe size={18} />
             </div>
 
-            <div className="absolute left-6 top-6 rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-2 text-xs font-medium uppercase tracking-[0.24em] text-red-300">
-              {t('welcome.statusAlert')}
-            </div>
-
-            <div className="relative flex min-h-[560px] flex-col justify-between p-6 sm:p-8 lg:p-10">
-              <div className="max-w-xl">
-                <div className="inline-flex items-center gap-2 rounded-full border border-dark-gold/15 bg-dark-gold/10 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.28em] text-dark-gold/90">
-                  <Crosshair size={12} />
-                  {t('welcome.eyebrow')}
+            <div className="relative flex min-h-[620px] flex-col justify-between p-6 sm:p-8 lg:p-10 xl:min-h-[680px] xl:p-11 2xl:min-h-[740px] 2xl:p-12">
+              <div className="max-w-[760px] rounded-[34px] border border-white/5 bg-[linear-gradient(180deg,rgba(14,11,9,0.76),rgba(14,11,9,0.58))] px-5 py-5 shadow-[0_22px_60px_rgba(0,0,0,0.30)] backdrop-blur-[2px] sm:px-7 sm:py-7 xl:max-w-[840px] xl:px-8 xl:py-8 2xl:max-w-[900px] 2xl:px-10 2xl:py-10">
+                <div className="flex flex-wrap items-center gap-2.5">
+                  <div className="rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-2 text-xs font-medium uppercase tracking-[0.24em] text-red-300">
+                    {t('welcome.statusAlert')}
+                  </div>
+                  <div className="inline-flex items-center gap-2 rounded-full border border-dark-gold/15 bg-dark-gold/10 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.28em] text-dark-gold/90">
+                    <Crosshair size={12} />
+                    {t('welcome.eyebrow')}
+                  </div>
                 </div>
-                <h1 className="mt-6 max-w-2xl text-4xl font-semibold leading-[1.02] tracking-tight text-[#f4e4bf] sm:text-5xl lg:text-[4.25rem]">
+
+                <h1 className="mt-6 max-w-[12ch] text-[clamp(3.25rem,5vw,6.1rem)] font-semibold leading-[0.95] tracking-[-0.04em] text-[#f4e4bf] drop-shadow-[0_8px_24px_rgba(0,0,0,0.48)] 2xl:max-w-[13ch]">
                   {t('welcome.title')}
                 </h1>
-                <p className="mt-5 max-w-xl text-sm leading-7 text-[#b6a180] sm:text-base">
+                <p className="mt-5 max-w-[62ch] text-base leading-8 text-[#d2bb95] drop-shadow-[0_4px_16px_rgba(0,0,0,0.35)] 2xl:text-[1.15rem] 2xl:leading-9">
                   {t('welcome.description')}
                 </p>
-              </div>
 
-              <div className="space-y-5">
-                <div className="flex flex-wrap gap-2.5">
+                <div className="mt-6 flex max-w-[760px] flex-wrap gap-2.5 xl:max-w-[840px] 2xl:max-w-[900px]">
                   {signalItems.map((item) => {
                     const Icon = item.icon
                     return (
                       <div
                         key={item.labelKey}
-                        className="inline-flex items-center gap-2 rounded-full border border-dark-border/75 bg-black/20 px-4 py-2 text-xs font-medium text-[#d9c7a4] backdrop-blur-sm"
+                        className="inline-flex items-center gap-2 rounded-full border border-dark-border/75 bg-black/28 px-4 py-2 text-xs font-medium text-[#ead7b4] backdrop-blur-sm"
                       >
                         <Icon size={14} className="text-dark-gold" />
                         <span>{t(item.labelKey)}</span>
@@ -140,20 +142,20 @@ export default function WelcomePage() {
                     )
                   })}
                 </div>
+              </div>
 
-                <div className="grid gap-3 sm:grid-cols-3">
-                  {terrainStats.map((item) => (
-                    <div
-                      key={item.labelKey}
-                      className="rounded-2xl border border-dark-border/70 bg-black/18 px-4 py-3 backdrop-blur-sm"
-                    >
-                      <p className="text-xl font-semibold text-[#f4e4bf]">{t(item.valueKey)}</p>
-                      <p className="mt-1 text-[11px] uppercase tracking-[0.22em] text-[#8a7a60]">
-                        {t(item.labelKey)}
-                      </p>
-                    </div>
-                  ))}
-                </div>
+              <div className="grid max-w-[940px] gap-3 sm:grid-cols-3 xl:max-w-[1020px]">
+                {terrainStats.map((item) => (
+                  <div
+                    key={item.labelKey}
+                    className="rounded-2xl border border-dark-border/70 bg-black/22 px-5 py-4 shadow-[0_10px_30px_rgba(0,0,0,0.18)] backdrop-blur-sm"
+                  >
+                    <p className="text-[1.85rem] font-semibold text-[#f4e4bf]">{t(item.valueKey)}</p>
+                    <p className="mt-1.5 text-[11px] uppercase tracking-[0.26em] text-[#9f8b6d]">
+                      {t(item.labelKey)}
+                    </p>
+                  </div>
+                ))}
               </div>
             </div>
           </section>
@@ -163,17 +165,17 @@ export default function WelcomePage() {
             <div className="absolute right-[-14%] top-[-10%] h-56 w-56 rounded-full border border-dark-gold/10" />
             <div className="absolute right-[-6%] top-[12%] h-40 w-40 rounded-full border border-dark-gold/10" />
 
-            <div className="relative flex h-full flex-col gap-8 p-6 sm:p-8">
+            <div className="relative flex h-full flex-col gap-8 p-6 sm:p-8 xl:p-9 2xl:p-10">
               <div>
                 <div className="inline-flex items-center gap-2 rounded-full border border-dark-gold/15 bg-dark-gold/10 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.24em] text-dark-gold/90">
                   <LockKeyhole size={12} />
                   {t('welcome.panelEyebrow')}
                 </div>
 
-                <h2 className="mt-5 text-3xl font-semibold leading-tight text-[#f3e0b5]">
+                <h2 className="mt-5 max-w-[16ch] text-3xl font-semibold leading-tight text-[#f3e0b5] xl:text-[2.25rem] 2xl:text-[2.5rem]">
                   {t('welcome.panelTitle')}
                 </h2>
-                <p className="mt-3 text-sm leading-7 text-[#a28f72]">
+                <p className="mt-3 max-w-[44ch] text-[0.98rem] leading-8 text-[#b19d80]">
                   {t('welcome.panelDescription')}
                 </p>
               </div>
@@ -184,17 +186,17 @@ export default function WelcomePage() {
                   return (
                     <div
                       key={item.titleKey}
-                      className="rounded-2xl border border-dark-border/75 bg-black/15 p-4"
+                      className="rounded-2xl border border-dark-border/75 bg-black/15 p-4 xl:p-5"
                     >
                       <div className="flex items-start gap-3">
                         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-dark-gold/10 text-dark-gold">
                           <Icon size={18} />
                         </div>
                         <div>
-                          <h3 className="text-sm font-semibold text-[#f0dfb8]">
+                          <h3 className="text-sm font-semibold text-[#f0dfb8] xl:text-[1rem]">
                             {t(item.titleKey)}
                           </h3>
-                          <p className="mt-1.5 text-sm leading-6 text-[#8f7f66]">
+                          <p className="mt-1.5 text-sm leading-7 text-[#a69479] xl:text-[0.98rem]">
                             {t(item.descriptionKey)}
                           </p>
                         </div>
@@ -204,7 +206,7 @@ export default function WelcomePage() {
                 })}
               </div>
 
-              <div className="rounded-[28px] border border-dark-gold/20 bg-[linear-gradient(180deg,rgba(200,160,80,0.10),rgba(200,160,80,0.04))] p-5">
+              <div className="rounded-[28px] border border-dark-gold/20 bg-[linear-gradient(180deg,rgba(200,160,80,0.10),rgba(200,160,80,0.04))] p-5 xl:p-6">
                 <div className="flex items-center gap-3">
                   <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-dark-gold/20 bg-dark-gold/10 text-dark-gold">
                     <Boxes size={22} />
