@@ -43,13 +43,16 @@ public class AuthController {
             String token = jwtService.generateToken(user);
 
             return ResponseEntity.ok(LoginResponse.builder()
+                    .authenticated(true)
                     .token(token)
                     .username(user.getUsername())
                     .role(user.getRole())
                     .build());
         } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("error", "Invalid username or password"));
+            return ResponseEntity.ok(LoginResponse.builder()
+                    .authenticated(false)
+                    .errorCode("INVALID_CREDENTIALS")
+                    .build());
         }
     }
 

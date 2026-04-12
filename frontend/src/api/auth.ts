@@ -22,7 +22,15 @@ export interface AuthUser {
   createdAt?: string
 }
 
-export async function login(data: LoginRequest): Promise<AuthUser> {
+export interface LoginResponse {
+  authenticated: boolean
+  token?: string
+  username?: string
+  role?: string
+  errorCode?: string
+}
+
+export async function login(data: LoginRequest): Promise<LoginResponse> {
   const { data: res } = await client.post('/auth/login', data)
   return res
 }

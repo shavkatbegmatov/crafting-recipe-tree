@@ -85,7 +85,11 @@
     "featureChatTitle": "Squad sync",
     "featureChatDescription": "Keep the base in rhythm with chat visibility and fast control actions.",
     "showPassword": "Show password",
-    "hidePassword": "Hide password"
+    "hidePassword": "Hide password",
+    "invalidCredentialsTitle": "Access denied",
+    "invalidCredentialsDescription": "The username or password did not match. Check your details and try again.",
+    "unavailableTitle": "Sign-in could not be completed",
+    "unavailableDescription": "We could not finish the request right now. Please try again in a moment."
   },
   "register": {
     "title": "Create your account",

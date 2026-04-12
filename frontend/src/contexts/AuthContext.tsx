@@ -7,11 +7,15 @@ import {
   getMe,
 } from '../api/auth'
 
+type LoginResult =
+  | { success: true }
+  | { success: false; errorCode: string }
+
 interface AuthContextType {
   user: AuthUser | null
   isAdmin: boolean
   isLoading: boolean
-  login: (username: string, password: string) => Promise<void>
+  login: (username: string, password: string) => Promise<LoginResult>
   register: (data: RegisterRequest) => Promise<void>
   updateProfile: (data: UpdateProfileRequest) => Promise<void>
   logout: () => void
@@ -22,7 +26,7 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   isAdmin: false,
   isLoading: true,
-  login: async () => {},
+  login: async () => ({ success: false as const, errorCode: 'LOGIN_FAILED' }),
   register: async () => {},
   updateProfile: async () => {},
   logout: () => {},
@@ -52,19 +56,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
-  const login = useCallback(async (username: string, password: string) => {
+  const login = useCallback<AuthContextType['login']>(async (username: string, password: string) => {
     setError(null)
-    try {
-      const res = await apiLogin({ username, password })
-      if (res.token) {
-        localStorage.setItem('token', res.token)
-        setUser(res)
-      }
-    } catch (err: any) {
-      const msg = err?.response?.data?.error || 'Login failed'
-      setError(msg)
-      throw new Error(msg)
+
+    const res = await apiLogin({ username, password })
+
+    if (!res.authenticated || !res.token || !res.username || !res.role) {
+      const errorCode = res.errorCode || 'LOGIN_FAILED'
+      setError(errorCode)
+      return { success: false as const, errorCode }
     }
+
+    const authUser: AuthUser = {
+      token: res.token,
+      username: res.username,
+      role: res.role,
+    }
+
+    localStorage.setItem('token', res.token)
+    setUser(authUser)
+    return { success: true as const }
   }, [])
 
   const register = useCallback(async (data: RegisterRequest) => {

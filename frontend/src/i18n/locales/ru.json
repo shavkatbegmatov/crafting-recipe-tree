@@ -85,7 +85,11 @@
     "featureChatTitle": "Синхрон команды",
     "featureChatDescription": "Держите ритм базы под контролем через чат и быстрые управляющие действия.",
     "showPassword": "Показать пароль",
-    "hidePassword": "Скрыть пароль"
+    "hidePassword": "Скрыть пароль",
+    "invalidCredentialsTitle": "Доступ отклонён",
+    "invalidCredentialsDescription": "Имя пользователя или пароль не совпали. Проверьте данные и попробуйте снова.",
+    "unavailableTitle": "Вход сейчас не выполнен",
+    "unavailableDescription": "Не удалось завершить запрос. Повторите попытку немного позже."
   },
   "register": {
     "title": "Создание аккаунта",

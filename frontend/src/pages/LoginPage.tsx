@@ -108,6 +108,23 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [focusedField, setFocusedField] = useState<string | null>(null)
 
+  const errorContent =
+    error === 'INVALID_CREDENTIALS'
+      ? {
+          title: t('login.invalidCredentialsTitle'),
+          description: t('login.invalidCredentialsDescription'),
+          toneClass: 'border-amber-500/25 bg-amber-500/10 text-amber-100',
+          iconClass: 'text-amber-300',
+        }
+      : error
+        ? {
+            title: t('login.unavailableTitle'),
+            description: t('login.unavailableDescription'),
+            toneClass: 'border-red-500/20 bg-red-500/10 text-red-100',
+            iconClass: 'text-red-300',
+          }
+        : null
+
   const handleSubmit = useCallback(
     async (event: React.FormEvent) => {
       event.preventDefault()
@@ -117,15 +134,19 @@ export default function LoginPage() {
       setError(null)
 
       try {
-        await login(username.trim(), password)
-        navigate('/')
-      } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : t('login.error'))
+        const result = await login(username.trim(), password)
+        if (result.success) {
+          navigate('/')
+          return
+        }
+        setError(result.errorCode)
+      } catch {
+        setError('LOGIN_UNAVAILABLE')
       } finally {
         setLoading(false)
       }
     },
-    [username, password, login, navigate, t],
+    [username, password, login, navigate],
   )
 
   const isSubmitDisabled = loading || !username.trim() || !password
@@ -339,7 +360,10 @@ export default function LoginPage() {
                       <input
                         type="text"
                         value={username}
-                        onChange={(event) => setUsername(event.target.value)}
+                        onChange={(event) => {
+                          setUsername(event.target.value)
+                          if (error) setError(null)
+                        }}
                         onFocus={() => setFocusedField('username')}
                         onBlur={() => setFocusedField(null)}
                         className="w-full bg-transparent px-3 py-3.5 text-sm text-[#f0dfb8] placeholder:text-[#8a7a60]/40 focus:outline-none"
@@ -375,7 +399,10 @@ export default function LoginPage() {
                       <input
                         type={showPassword ? 'text' : 'password'}
                         value={password}
-                        onChange={(event) => setPassword(event.target.value)}
+                        onChange={(event) => {
+                          setPassword(event.target.value)
+                          if (error) setError(null)
+                        }}
                         onFocus={() => setFocusedField('password')}
                         onBlur={() => setFocusedField(null)}
                         className="w-full bg-transparent px-3 py-3.5 text-sm text-[#f0dfb8] placeholder:text-[#8a7a60]/40 focus:outline-none"
@@ -395,7 +422,7 @@ export default function LoginPage() {
                   </motion.div>
 
                   <AnimatePresence mode="wait">
-                    {error && (
+                    {errorContent && (
                       <motion.div
                         variants={shakeVariants}
                         animate="shake"
@@ -407,11 +434,19 @@ export default function LoginPage() {
                           initial={{ opacity: 0, y: -8 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -8 }}
-                          className="flex items-center gap-3 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3"
+                          className={`flex items-start gap-3 rounded-2xl px-4 py-3 ${errorContent.toneClass}`}
                           role="alert"
                         >
-                          <AlertCircle size={16} className="shrink-0 text-red-400" />
-                          <p className="text-xs leading-5 text-red-300">{error}</p>
+                          <AlertCircle
+                            size={16}
+                            className={`mt-0.5 shrink-0 ${errorContent.iconClass}`}
+                          />
+                          <div className="space-y-1">
+                            <p className="text-sm font-medium">{errorContent.title}</p>
+                            <p className="text-xs leading-5 opacity-85">
+                              {errorContent.description}
+                            </p>
+                          </div>
                         </motion.div>
                       </motion.div>
                     )}

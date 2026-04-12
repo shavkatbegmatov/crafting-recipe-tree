@@ -85,7 +85,11 @@
     "featureChatTitle": "Jamoa sinxroni",
     "featureChatDescription": "Chat va tezkor boshqaruv bilan bazadagi ritmni bir tempda ushlab turing.",
     "showPassword": "Parolni ko'rsatish",
-    "hidePassword": "Parolni yashirish"
+    "hidePassword": "Parolni yashirish",
+    "invalidCredentialsTitle": "Kirish rad etildi",
+    "invalidCredentialsDescription": "Foydalanuvchi nomi yoki parol mos kelmadi. Ma'lumotlarni tekshirib, qayta urinib ko'ring.",
+    "unavailableTitle": "Kirish hozircha bajarilmadi",
+    "unavailableDescription": "So'rovni yakunlab bo'lmadi. Bir ozdan keyin yana urinib ko'ring."
   },
   "register": {
     "title": "Akkaunt yaratish",
