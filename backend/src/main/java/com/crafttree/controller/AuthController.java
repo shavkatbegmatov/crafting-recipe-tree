@@ -94,6 +94,29 @@ public class AuthController {
                 .body(Map.of("error", "Invalid token"));
     }
 
+    @PutMapping("/profile")
+    @Operation(summary = "Update current user's profile (display name, password)")
+    public ResponseEntity<?> updateProfile(
+            @RequestHeader("Authorization") String authHeader,
+            @Valid @RequestBody UpdateProfileRequest request) {
+        try {
+            String token = authHeader.substring(7);
+            String username = jwtService.extractUsername(token);
+            User user = userRepository.findByUsername(username).orElseThrow();
+
+            if (!jwtService.isTokenValid(token, user)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("error", "Invalid token"));
+            }
+
+            UserProfileDto profile = authService.updateProfile(user, request);
+            return ResponseEntity.ok(profile);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", e.getMessage()));
+        }
+    }
+
     @GetMapping("/referrer")
     @Operation(summary = "Look up who a referral code belongs to (public)")
     public ResponseEntity<?> lookupReferrer(@RequestParam String code) {

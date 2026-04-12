@@ -123,6 +123,19 @@
     "actions": "Действия",
     "confirmDelete": "Вы уверены, что хотите удалить?"
   },
+  "profile": {
+    "editProfile": "Редактировать профиль",
+    "displayName": "Отображаемое имя",
+    "changePassword": "Сменить пароль",
+    "currentPassword": "Текущий пароль",
+    "newPassword": "Новый пароль",
+    "save": "Сохранить",
+    "wrongPassword": "Неверный текущий пароль",
+    "memberSince": "Участник с {{date}}",
+    "referral": "Реферальная ссылка",
+    "copyLink": "Копировать",
+    "copied": "Скопировано!"
+  },
   "chat": {
     "title": "Чат",
     "placeholder": "Напишите сообщение...",

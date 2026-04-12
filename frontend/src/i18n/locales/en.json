@@ -123,6 +123,19 @@
     "actions": "Actions",
     "confirmDelete": "Are you sure you want to delete?"
   },
+  "profile": {
+    "editProfile": "Edit profile",
+    "displayName": "Display name",
+    "changePassword": "Change password",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "save": "Save changes",
+    "wrongPassword": "Current password is incorrect",
+    "memberSince": "Member since {{date}}",
+    "referral": "Referral link",
+    "copyLink": "Copy link",
+    "copied": "Copied!"
+  },
   "chat": {
     "title": "Chat",
     "placeholder": "Type a message...",

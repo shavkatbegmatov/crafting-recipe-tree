@@ -123,6 +123,19 @@
     "actions": "Амаллар",
     "confirmDelete": "Ростдан ўчирмоқчимисиз?"
   },
+  "profile": {
+    "editProfile": "Профилни таҳрирлаш",
+    "displayName": "Кўрсатиладиган исм",
+    "changePassword": "Паролни ўзгартириш",
+    "currentPassword": "Жорий парол",
+    "newPassword": "Янги парол",
+    "save": "Сақлаш",
+    "wrongPassword": "Жорий парол нотўғри",
+    "memberSince": "{{date}} дан аъзо",
+    "referral": "Реферал ҳавола",
+    "copyLink": "Нусхалаш",
+    "copied": "Нусхаланди!"
+  },
   "chat": {
     "title": "Чат",
     "placeholder": "Хабар ёзинг...",

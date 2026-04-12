@@ -123,6 +123,19 @@
     "actions": "Amallar",
     "confirmDelete": "Rostdan o'chirmoqchimisiz?"
   },
+  "profile": {
+    "editProfile": "Profilni tahrirlash",
+    "displayName": "Ko'rsatiladigan ism",
+    "changePassword": "Parolni o'zgartirish",
+    "currentPassword": "Joriy parol",
+    "newPassword": "Yangi parol",
+    "save": "Saqlash",
+    "wrongPassword": "Joriy parol noto'g'ri",
+    "memberSince": "{{date}} dan a'zo",
+    "referral": "Referal havola",
+    "copyLink": "Nusxalash",
+    "copied": "Nusxalandi!"
+  },
   "chat": {
     "title": "Chat",
     "placeholder": "Xabar yozing...",
