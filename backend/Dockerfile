@@ -10,7 +10,7 @@ WORKDIR /app
 # Python + rembg for background removal
 RUN apt-get update && apt-get install -y python3 python3-pip python3-venv && \
     python3 -m venv /opt/venv && \
-    /opt/venv/bin/pip install rembg Pillow numpy onnxruntime scipy && \
+    /opt/venv/bin/pip install rembg Pillow "numpy<2.0" onnxruntime scipy && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ENV PATH="/opt/venv/bin:$PATH"
