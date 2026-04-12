@@ -37,6 +37,17 @@ export async function getMe(): Promise<AuthUser> {
   return res
 }
 
+export interface UpdateProfileRequest {
+  displayName?: string
+  newPassword?: string
+  currentPassword?: string
+}
+
+export async function updateProfile(data: UpdateProfileRequest): Promise<AuthUser> {
+  const { data: res } = await client.put('/auth/profile', data)
+  return res
+}
+
 export async function lookupReferrer(code: string): Promise<string | null> {
   try {
     const { data } = await client.get('/auth/referrer', { params: { code } })

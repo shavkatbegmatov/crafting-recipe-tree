@@ -3,6 +3,7 @@ package com.crafttree.service;
 import com.crafttree.config.JwtService;
 import com.crafttree.dto.RegisterRequest;
 import com.crafttree.dto.RegisterResponse;
+import com.crafttree.dto.UpdateProfileRequest;
 import com.crafttree.dto.UserProfileDto;
 import com.crafttree.entity.User;
 import com.crafttree.repository.UserRepository;
@@ -82,6 +83,29 @@ public class AuthService {
                 .referralCount((int) referralCount)
                 .createdAt(user.getCreatedAt())
                 .build();
+    }
+
+    /**
+     * Update the user's profile (display name, password).
+     */
+    @Transactional
+    public UserProfileDto updateProfile(User user, UpdateProfileRequest request) {
+        // Display name
+        if (request.getDisplayName() != null) {
+            user.setDisplayName(request.getDisplayName().isBlank() ? null : request.getDisplayName().trim());
+        }
+
+        // Password change
+        if (request.getNewPassword() != null && !request.getNewPassword().isBlank()) {
+            if (request.getCurrentPassword() == null ||
+                    !passwordEncoder.matches(request.getCurrentPassword(), user.getPasswordHash())) {
+                throw new IllegalArgumentException("WRONG_PASSWORD");
+            }
+            user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
+        }
+
+        userRepository.save(user);
+        return getProfile(user);
     }
 
     /**

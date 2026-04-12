@@ -1,6 +1,11 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
-import type { AuthUser, RegisterRequest } from '../api/auth'
-import { login as apiLogin, register as apiRegister, getMe } from '../api/auth'
+import type { AuthUser, RegisterRequest, UpdateProfileRequest } from '../api/auth'
+import {
+  login as apiLogin,
+  register as apiRegister,
+  updateProfile as apiUpdateProfile,
+  getMe,
+} from '../api/auth'
 
 interface AuthContextType {
   user: AuthUser | null
@@ -8,6 +13,7 @@ interface AuthContextType {
   isLoading: boolean
   login: (username: string, password: string) => Promise<void>
   register: (data: RegisterRequest) => Promise<void>
+  updateProfile: (data: UpdateProfileRequest) => Promise<void>
   logout: () => void
   error: string | null
 }
@@ -18,6 +24,7 @@ const AuthContext = createContext<AuthContextType>({
   isLoading: true,
   login: async () => {},
   register: async () => {},
+  updateProfile: async () => {},
   logout: () => {},
   error: null,
 })
@@ -75,13 +82,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
+  const updateProfile = useCallback(async (data: UpdateProfileRequest) => {
+    const res = await apiUpdateProfile(data)
+    // Keep the existing token
+    const token = localStorage.getItem('token')
+    setUser({ ...res, token: token || undefined })
+  }, [])
+
   const logout = useCallback(() => {
     localStorage.removeItem('token')
     setUser(null)
   }, [])
 
   return (
-    <AuthContext.Provider value={{ user, isAdmin, isLoading, login, register, logout, error }}>
+    <AuthContext.Provider
+      value={{ user, isAdmin, isLoading, login, register, updateProfile, logout, error }}
+    >
       {children}
     </AuthContext.Provider>
   )

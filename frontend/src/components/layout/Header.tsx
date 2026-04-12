@@ -1,8 +1,9 @@
-import { Boxes, Menu, LogIn, LogOut, Shield, UserPlus, User } from 'lucide-react'
+import { Boxes, Menu, LogIn, UserPlus } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../../contexts/AuthContext'
 import { LANGUAGES } from '../../i18n'
+import UserDropdown from './UserDropdown'
 
 interface Props {
   onToggleSidebar: () => void
@@ -10,7 +11,7 @@ interface Props {
 
 export default function Header({ onToggleSidebar }: Props) {
   const { t, i18n } = useTranslation()
-  const { user, isAdmin, logout } = useAuth()
+  const { user } = useAuth()
 
   return (
     <header className="h-14 bg-dark-card border-b border-dark-border flex items-center px-4 gap-3 shrink-0">
@@ -46,34 +47,9 @@ export default function Header({ onToggleSidebar }: Props) {
         </div>
 
         {/* Auth */}
-        <div className="border-l border-dark-border pl-2 flex items-center gap-2">
+        <div className="border-l border-dark-border pl-2">
           {user ? (
-            <>
-              {/* User identity */}
-              <span className="flex items-center gap-1 text-xs text-[#d4c4a0]">
-                {isAdmin ? <Shield size={12} className="text-dark-gold" /> : <User size={12} />}
-                <span className="hidden sm:inline max-w-[100px] truncate">
-                  {user.displayName || user.username}
-                </span>
-              </span>
-
-              {isAdmin && (
-                <Link
-                  to="/admin/categories"
-                  className="text-xs text-[#8a7a60] hover:text-dark-gold transition-colors"
-                >
-                  {t('admin.categories')}
-                </Link>
-              )}
-
-              <button
-                onClick={logout}
-                className="flex items-center gap-1 text-xs text-[#8a7a60] hover:text-[#d4c4a0] transition-colors"
-              >
-                <LogOut size={13} />
-                <span className="hidden sm:inline">{t('auth.logout')}</span>
-              </button>
-            </>
+            <UserDropdown />
           ) : (
             <div className="flex items-center gap-2">
               <Link
