@@ -18,8 +18,8 @@
   "welcome": {
     "eyebrow": "ERZ fan craft navigator",
     "statusAlert": "Fan-made craft sector",
-    "title": "Track ERZ craft chains and manage them faster",
-    "description": "This is a fan project inspired by ERZ Online. After sign-in, the craft tree, raw-material balance, and item routes are available in one craft console.",
+    "title": "Track ERZ craft routes and build chains faster",
+    "description": "This fan project is inspired by ERZ Online. After sign-in, the craft tree, resource balance, and item routes open inside one craft console.",
     "signalSecure": "Protected session",
     "signalZones": "Craft sectors tracked",
     "signalUnlock": "Craft panel unlocks after login",
@@ -31,15 +31,15 @@
     "statGridLabel": "navigation watch",
     "panelEyebrow": "Unlocks after sign-in",
     "panelTitle": "The craft console opens after sign-in",
-    "panelDescription": "Once authenticated, the recipe tree, material totals, detail views, and chat controls become available.",
+    "panelDescription": "Once authenticated, the recipe tree, materials, and team chat work in one place.",
     "featureRouteTitle": "Craft routes",
-    "featureRouteDescription": "See which resources feed each item and where the chain starts slowing down.",
+    "featureRouteDescription": "See which resources feed each item and where the chain begins to stall.",
     "featureForecastTitle": "Resource balance",
-    "featureForecastDescription": "Preview the raw materials, timing, and category spread required for every craft.",
+    "featureForecastDescription": "Forecast the raw materials, timing, and load required for every craft.",
     "featureControlTitle": "Base control",
-    "featureControlDescription": "Keep chat, admin actions, and fast crafting decisions inside one fan-made command surface.",
+    "featureControlDescription": "Keep chat, admin actions, and fast crafting decisions inside one command surface.",
     "lockedTitle": "Craft console is ready, waiting for access",
-    "lockedDescription": "As soon as you log in, the craft interface, item index, and full recipe tree open immediately."
+    "lockedDescription": "Once you log in, the craft interface, item index, and full recipe tree open immediately."
   },
   "detail": {
     "back": "Back",
