@@ -63,13 +63,35 @@
     "MODULE": "Модуль"
   },
   "login": {
-    "title": "Вход в панель администратора",
+    "title": "Вход в аккаунт",
     "username": "Имя пользователя",
     "password": "Пароль",
-    "submit": "Войти"
+    "submit": "Войти",
+    "noAccount": "Нет аккаунта? Зарегистрируйтесь"
+  },
+  "register": {
+    "title": "Создание аккаунта",
+    "username": "Имя пользователя",
+    "displayName": "Отображаемое имя",
+    "displayNamePlaceholder": "Как вас будут видеть другие",
+    "password": "Пароль",
+    "confirmPassword": "Подтверждение пароля",
+    "referralCode": "Реферальный код",
+    "optional": "(необязательно)",
+    "submit": "Создать аккаунт",
+    "hasAccount": "Уже есть аккаунт? Войти",
+    "success": "Аккаунт создан! Перенаправление...",
+    "referredBy": "Приглашён от {{name}}",
+    "usernameTaken": "Это имя пользователя уже занято",
+    "invalidReferral": "Неверный реферальный код",
+    "passwordMismatch": "Пароли не совпадают",
+    "passwordTooShort": "Минимум 6 символов",
+    "usernameTooShort": "Минимум 3 символа",
+    "usernameInvalid": "Только буквы, цифры и подчёркивание"
   },
   "auth": {
     "login": "Войти",
+    "register": "Регистрация",
     "logout": "Выйти",
     "admin": "Админ"
   },

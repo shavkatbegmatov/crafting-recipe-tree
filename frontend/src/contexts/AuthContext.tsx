@@ -1,12 +1,13 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
-import type { AuthUser } from '../api/auth'
-import { login as apiLogin, getMe } from '../api/auth'
+import type { AuthUser, RegisterRequest } from '../api/auth'
+import { login as apiLogin, register as apiRegister, getMe } from '../api/auth'
 
 interface AuthContextType {
   user: AuthUser | null
   isAdmin: boolean
   isLoading: boolean
   login: (username: string, password: string) => Promise<void>
+  register: (data: RegisterRequest) => Promise<void>
   logout: () => void
   error: string | null
 }
@@ -16,6 +17,7 @@ const AuthContext = createContext<AuthContextType>({
   isAdmin: false,
   isLoading: true,
   login: async () => {},
+  register: async () => {},
   logout: () => {},
   error: null,
 })
@@ -58,13 +60,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
+  const register = useCallback(async (data: RegisterRequest) => {
+    setError(null)
+    try {
+      const res = await apiRegister(data)
+      if (res.token) {
+        localStorage.setItem('token', res.token)
+        setUser(res)
+      }
+    } catch (err: any) {
+      const code = err?.response?.data?.error || 'Registration failed'
+      setError(code)
+      throw new Error(code)
+    }
+  }, [])
+
   const logout = useCallback(() => {
     localStorage.removeItem('token')
     setUser(null)
   }, [])
 
   return (
-    <AuthContext.Provider value={{ user, isAdmin, isLoading, login, logout, error }}>
+    <AuthContext.Provider value={{ user, isAdmin, isLoading, login, register, logout, error }}>
       {children}
     </AuthContext.Provider>
   )

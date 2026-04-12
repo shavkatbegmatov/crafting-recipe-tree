@@ -63,13 +63,35 @@
     "MODULE": "Module"
   },
   "login": {
-    "title": "Admin panel login",
+    "title": "Sign in to your account",
     "username": "Username",
     "password": "Password",
-    "submit": "Sign in"
+    "submit": "Sign in",
+    "noAccount": "Don't have an account? Sign up"
+  },
+  "register": {
+    "title": "Create your account",
+    "username": "Username",
+    "displayName": "Display name",
+    "displayNamePlaceholder": "How others will see you",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "referralCode": "Referral code",
+    "optional": "(optional)",
+    "submit": "Create account",
+    "hasAccount": "Already have an account? Sign in",
+    "success": "Account created! Redirecting...",
+    "referredBy": "Invited by {{name}}",
+    "usernameTaken": "This username is already taken",
+    "invalidReferral": "Invalid referral code",
+    "passwordMismatch": "Passwords don't match",
+    "passwordTooShort": "Minimum 6 characters",
+    "usernameTooShort": "Minimum 3 characters",
+    "usernameInvalid": "Only letters, digits and underscore"
   },
   "auth": {
     "login": "Sign in",
+    "register": "Sign up",
     "logout": "Sign out",
     "admin": "Admin"
   },

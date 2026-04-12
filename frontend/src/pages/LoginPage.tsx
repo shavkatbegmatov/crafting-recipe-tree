@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../contexts/AuthContext'
-import { Boxes, LogIn, Loader2 } from 'lucide-react'
+import { Boxes, LogIn, Loader2, UserPlus } from 'lucide-react'
 
 export default function LoginPage() {
   const { t } = useTranslation()
@@ -68,12 +68,22 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2 rounded text-sm font-medium bg-dark-gold/20 text-dark-gold border border-dark-gold/40 hover:bg-dark-gold/30 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full py-2.5 rounded-xl text-sm font-medium bg-dark-gold/20 text-dark-gold border border-dark-gold/40 hover:bg-dark-gold/30 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {loading ? <Loader2 size={14} className="animate-spin" /> : <LogIn size={14} />}
             {t('login.submit')}
           </button>
         </form>
+
+        <div className="mt-5 pt-4 border-t border-dark-border text-center">
+          <Link
+            to="/register"
+            className="inline-flex items-center gap-1.5 text-xs text-[#8a7a60] hover:text-dark-gold transition-colors"
+          >
+            <UserPlus size={13} />
+            {t('login.noAccount')}
+          </Link>
+        </div>
       </div>
     </div>
   )

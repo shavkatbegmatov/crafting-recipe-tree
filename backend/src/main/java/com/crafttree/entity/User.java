@@ -32,8 +32,25 @@ public class User implements UserDetails {
     @Column(nullable = false, length = 20)
     private String role;
 
+    @Column(name = "display_name", length = 50)
+    private String displayName;
+
+    @Column(name = "referral_code", unique = true, nullable = false, length = 12)
+    private String referralCode;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "referred_by")
+    private User referredBy;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @PrePersist
+    void prePersist() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

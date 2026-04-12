@@ -5,10 +5,21 @@ export interface LoginRequest {
   password: string
 }
 
+export interface RegisterRequest {
+  username: string
+  password: string
+  displayName?: string
+  referralCode?: string
+}
+
 export interface AuthUser {
   token?: string
   username: string
+  displayName?: string
   role: string
+  referralCode?: string
+  referralCount?: number
+  createdAt?: string
 }
 
 export async function login(data: LoginRequest): Promise<AuthUser> {
@@ -16,7 +27,21 @@ export async function login(data: LoginRequest): Promise<AuthUser> {
   return res
 }
 
+export async function register(data: RegisterRequest): Promise<AuthUser> {
+  const { data: res } = await client.post('/auth/register', data)
+  return res
+}
+
 export async function getMe(): Promise<AuthUser> {
   const { data: res } = await client.get('/auth/me')
   return res
+}
+
+export async function lookupReferrer(code: string): Promise<string | null> {
+  try {
+    const { data } = await client.get('/auth/referrer', { params: { code } })
+    return data.name
+  } catch {
+    return null
+  }
 }
