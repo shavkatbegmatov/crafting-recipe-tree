@@ -63,13 +63,35 @@
     "MODULE": "Модул"
   },
   "login": {
-    "title": "Админ панелига кириш",
+    "title": "Аккаунтга кириш",
     "username": "Фойдаланувчи номи",
     "password": "Парол",
-    "submit": "Кириш"
+    "submit": "Кириш",
+    "noAccount": "Аккаунтингиз йўқми? Рўйхатдан ўтинг"
+  },
+  "register": {
+    "title": "Аккаунт яратиш",
+    "username": "Фойдаланувчи номи",
+    "displayName": "Кўрсатиладиган исм",
+    "displayNamePlaceholder": "Бошқалар сизни қандай кўради",
+    "password": "Парол",
+    "confirmPassword": "Паролни тасдиқланг",
+    "referralCode": "Реферал код",
+    "optional": "(ихтиёрий)",
+    "submit": "Аккаунт яратиш",
+    "hasAccount": "Аккаунтингиз борми? Кириш",
+    "success": "Аккаунт яратилди! Йўналтирилмоқда...",
+    "referredBy": "{{name}} таклиф қилган",
+    "usernameTaken": "Бу фойдаланувчи номи банд",
+    "invalidReferral": "Нотўғри реферал код",
+    "passwordMismatch": "Пароллар мос келмайди",
+    "passwordTooShort": "Камида 6 та белги",
+    "usernameTooShort": "Камида 3 та белги",
+    "usernameInvalid": "Фақат ҳарфлар, рақамлар ва пастки чизиқ"
   },
   "auth": {
     "login": "Кириш",
+    "register": "Рўйхатдан ўтиш",
     "logout": "Чиқиш",
     "admin": "Админ"
   },

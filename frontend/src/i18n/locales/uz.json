@@ -63,13 +63,35 @@
     "MODULE": "Modul"
   },
   "login": {
-    "title": "Admin paneliga kirish",
+    "title": "Akkauntga kirish",
     "username": "Foydalanuvchi nomi",
     "password": "Parol",
-    "submit": "Kirish"
+    "submit": "Kirish",
+    "noAccount": "Akkauntingiz yo'qmi? Ro'yxatdan o'ting"
+  },
+  "register": {
+    "title": "Akkaunt yaratish",
+    "username": "Foydalanuvchi nomi",
+    "displayName": "Ko'rsatiladigan ism",
+    "displayNamePlaceholder": "Boshqalar sizni qanday ko'radi",
+    "password": "Parol",
+    "confirmPassword": "Parolni tasdiqlang",
+    "referralCode": "Referal kod",
+    "optional": "(ixtiyoriy)",
+    "submit": "Akkaunt yaratish",
+    "hasAccount": "Akkauntingiz bormi? Kirish",
+    "success": "Akkaunt yaratildi! Yo'naltirilmoqda...",
+    "referredBy": "{{name}} taklif qilgan",
+    "usernameTaken": "Bu foydalanuvchi nomi band",
+    "invalidReferral": "Noto'g'ri referal kod",
+    "passwordMismatch": "Parollar mos kelmaydi",
+    "passwordTooShort": "Kamida 6 ta belgi",
+    "usernameTooShort": "Kamida 3 ta belgi",
+    "usernameInvalid": "Faqat harflar, raqamlar va pastki chiziq"
   },
   "auth": {
     "login": "Kirish",
+    "register": "Ro'yxatdan o'tish",
     "logout": "Chiqish",
     "admin": "Admin"
   },
