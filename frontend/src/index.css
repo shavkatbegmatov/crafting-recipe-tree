@@ -10,6 +10,25 @@ body {
   padding: 0;
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-text-fill-color: #f0dfb8;
+  caret-color: #f0dfb8;
+  border-radius: inherit;
+  -webkit-box-shadow: 0 0 0 1000px #0d0b08 inset;
+  box-shadow: 0 0 0 1000px #0d0b08 inset;
+  transition:
+    background-color 9999s ease-in-out 0s,
+    color 9999s ease-in-out 0s;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
 }
