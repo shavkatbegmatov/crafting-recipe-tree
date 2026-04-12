@@ -34,7 +34,7 @@ export default function Layout() {
           <ChatButton />
         </>
       ) : (
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto xl:overflow-hidden">
           <WelcomePage />
         </main>
       )}
