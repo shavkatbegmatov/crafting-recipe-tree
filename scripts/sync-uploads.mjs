@@ -57,12 +57,17 @@ function getConfig() {
     log.dim(`Copy scripts/.env.sync.example → scripts/.env.sync and fill it in.`)
     process.exit(1)
   }
+  const skipDbSync = env.SKIP_DB_SYNC === '1' || env.SKIP_DB_SYNC === 'true'
   return {
-    apiUrl: env.PROD_API_URL.replace(/\/+$/, ''),
-    username: env.PROD_ADMIN_USERNAME,
-    password: env.PROD_ADMIN_PASSWORD,
+    prodApiUrl: env.PROD_API_URL.replace(/\/+$/, ''),
+    prodUsername: env.PROD_ADMIN_USERNAME,
+    prodPassword: env.PROD_ADMIN_PASSWORD,
+    localApiUrl: (env.LOCAL_API_URL || 'http://localhost:8089').replace(/\/+$/, ''),
+    localUsername: env.LOCAL_ADMIN_USERNAME || 'admin',
+    localPassword: env.LOCAL_ADMIN_PASSWORD || 'admin123',
     uploadsDir: resolve(REPO_ROOT, env.LOCAL_UPLOADS_DIR || 'backend/uploads'),
     concurrency: Math.max(1, parseInt(env.SYNC_CONCURRENCY || '4', 10)),
+    skipDbSync,
   }
 }
 
@@ -91,6 +96,22 @@ async function fetchManifest(apiUrl, token) {
   })
   if (!res.ok) {
     throw new Error(`Manifest fetch failed: HTTP ${res.status} ${res.statusText}`)
+  }
+  return res.json()
+}
+
+async function postImageMapping(apiUrl, token, mappings) {
+  const res = await fetch(`${apiUrl}/api/admin/uploads/image-mapping/sync`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ items: mappings }),
+  })
+  if (!res.ok) {
+    const body = await res.text().catch(() => '')
+    throw new Error(`Image-mapping sync failed: HTTP ${res.status} ${res.statusText} ${body}`)
   }
   return res.json()
 }
@@ -146,29 +167,58 @@ async function main() {
   const cfg = getConfig()
 
   log.step('Connecting to production')
-  log.dim(`  API:     ${cfg.apiUrl}`)
-  log.dim(`  Account: ${cfg.username}`)
-  log.dim(`  Target:  ${cfg.uploadsDir}`)
-  log.dim(`  Workers: ${cfg.concurrency}`)
+  log.dim(`  Prod API: ${cfg.prodApiUrl}`)
+  log.dim(`  Account:  ${cfg.prodUsername}`)
+  log.dim(`  Target:   ${cfg.uploadsDir}`)
+  log.dim(`  Workers:  ${cfg.concurrency}`)
 
-  const token = await login(cfg.apiUrl, cfg.username, cfg.password)
-  log.ok(`Authenticated as admin`)
+  const prodToken = await login(cfg.prodApiUrl, cfg.prodUsername, cfg.prodPassword)
+  log.ok('Authenticated to production as admin')
 
-  log.step('Fetching manifest')
-  const manifest = await fetchManifest(cfg.apiUrl, token)
+  log.step('Fetching production manifest')
+  const manifest = await fetchManifest(cfg.prodApiUrl, prodToken)
   log.ok(`Manifest: ${manifest.totalCount} entries (${manifest.presentCount} present, ${manifest.missingCount} missing on prod)`)
 
+  // ---------- Step 1: sync DB image_url mapping into the LOCAL backend ----
+  if (cfg.skipDbSync) {
+    log.warn('SKIP_DB_SYNC=1 — leaving local craft_items.image_url untouched.')
+  } else {
+    log.step('Syncing image_url mapping to local DB')
+    log.dim(`  Local API: ${cfg.localApiUrl}`)
+    log.dim(`  Account:   ${cfg.localUsername}`)
+
+    let localToken
+    try {
+      localToken = await login(cfg.localApiUrl, cfg.localUsername, cfg.localPassword)
+    } catch (err) {
+      log.err(`Could not log in to local backend: ${err.message}`)
+      log.dim('  Make sure the local backend is running, or set SKIP_DB_SYNC=1 to bypass DB sync.')
+      process.exit(1)
+    }
+
+    const mappings = manifest.items.map((e) => ({
+      itemId: e.itemId,
+      imageUrl: e.imageUrl,
+    }))
+    const result = await postImageMapping(cfg.localApiUrl, localToken, mappings)
+    log.ok(`DB sync: updated=${result.updated}, unchanged=${result.unchanged}, notFound=${result.notFound}`)
+    if (result.notFound > 0) {
+      log.dim(`  notFoundIds: ${result.notFoundIds.join(', ')}`)
+      log.dim('  These item IDs exist on prod but not locally — your local seed is older. ' +
+              'Their images will still be downloaded so they show up if you import the rows later.')
+    }
+  }
+
+  // ---------- Step 2: download missing files ------------------------------
   if (!existsSync(cfg.uploadsDir)) {
     mkdirSync(cfg.uploadsDir, { recursive: true })
     log.info(`Created ${cfg.uploadsDir}`)
   }
 
-  // Reconcile against LOCAL filesystem — manifest tells us which files
-  // SHOULD exist; we check each against the user's machine.
   const toDownload = []
   let alreadyHave = 0
   for (const entry of manifest.items) {
-    if (!entry.exists) continue // not on production either
+    if (!entry.exists) continue
     const local = join(cfg.uploadsDir, entry.filename)
     if (existsSync(local)) {
       const localSize = statSync(local).size
@@ -176,18 +226,17 @@ async function main() {
         alreadyHave++
         continue
       }
-      // Size mismatch — re-download.
     }
     toDownload.push(entry)
   }
 
-  log.step('Sync plan')
+  log.step('File-download plan')
   log.dim(`  Already in sync: ${alreadyHave}`)
   log.dim(`  Will download:   ${toDownload.length}`)
   log.dim(`  Skipped (missing on prod too): ${manifest.missingCount}`)
 
   if (toDownload.length === 0) {
-    log.ok('Everything is already up to date.')
+    log.ok('All files are already up to date.')
     return
   }
 
@@ -195,7 +244,7 @@ async function main() {
   let done = 0
   const results = await runPool(toDownload, cfg.concurrency, async (entry) => {
     const dest = join(cfg.uploadsDir, entry.filename)
-    await downloadFile(cfg.apiUrl, entry.filename, dest)
+    await downloadFile(cfg.prodApiUrl, entry.filename, dest)
     done++
     process.stdout.write(`  ${c.green}✓${c.reset} [${done}/${toDownload.length}] ${entry.filename} ${c.gray}(${fmtBytes(entry.sizeBytes)})${c.reset}\n`)
     return entry.sizeBytes ?? 0
