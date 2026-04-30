@@ -41,6 +41,12 @@
     "lockedTitle": "Craft konsoli tayyor, kirish kutilmoqda",
     "lockedDescription": "Kirish bilan craft interfeysi, itemlar bazasi va to'liq retsept daraxti ochiladi."
   },
+  "image": {
+    "notFound": "Rasm topilmadi",
+    "notFoundHint": "Bu element uchun rasm fayli serverda mavjud emas",
+    "loading": "Rasm yuklanmoqda…",
+    "syncHint": "Sinxronlash uchun: npm run sync:uploads"
+  },
   "detail": {
     "back": "Orqaga",
     "notFound": "Element topilmadi",

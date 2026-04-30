@@ -41,6 +41,12 @@
     "lockedTitle": "Craft console is ready, waiting for access",
     "lockedDescription": "Once you log in, the craft interface, item index, and full recipe tree open immediately."
   },
+  "image": {
+    "notFound": "Image not found",
+    "notFoundHint": "The image file for this item is missing on the server",
+    "loading": "Loading image…",
+    "syncHint": "To sync: npm run sync:uploads"
+  },
   "detail": {
     "back": "Back",
     "notFound": "Element not found",

@@ -12,7 +12,7 @@ import CategoryBadge from '../components/ui/CategoryBadge'
 import Spinner from '../components/ui/Spinner'
 import { ArrowLeft, ArrowRight, Clock, Beaker, Pencil, Save, X, Loader2, Check } from 'lucide-react'
 import ImageUpload from '../components/items/ImageUpload'
-import { resolveImageUrl } from '../utils/resolveImageUrl'
+import SafeImage from '../components/ui/SafeImage'
 
 export default function ItemDetailPage() {
   const { t } = useTranslation()
@@ -114,13 +114,18 @@ export default function ItemDetailPage() {
       <div className="bg-dark-card border border-dark-border rounded-lg overflow-hidden">
         {item.imageUrl && (
           <div className="bg-dark-panel flex items-center justify-center p-4 overflow-hidden">
-            <img
-              src={resolveImageUrl(item.imageUrl)}
+            <SafeImage
+              src={item.imageUrl}
               alt={itemName}
+              containerClassName={item.imageUrl.endsWith('.png')
+                ? 'w-16 h-16'
+                : 'max-w-md w-full min-h-[200px]'
+              }
               className={item.imageUrl.endsWith('.png')
                 ? 'w-16 h-16 object-contain'
                 : 'max-w-md w-full h-auto rounded'
               }
+              iconSize={item.imageUrl.endsWith('.png') ? 32 : 56}
             />
           </div>
         )}

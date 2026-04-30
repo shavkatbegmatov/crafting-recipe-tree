@@ -2,8 +2,8 @@ import { Link } from 'react-router-dom'
 import { Clock } from 'lucide-react'
 import type { CraftItem } from '../../api/types'
 import CategoryBadge from '../ui/CategoryBadge'
+import SafeImage from '../ui/SafeImage'
 import { formatTime } from '../../utils/formatTime'
-import { resolveImageUrl } from '../../utils/resolveImageUrl'
 import { useLocalizedField } from '../../hooks/useLanguage'
 
 interface Props {
@@ -12,7 +12,6 @@ interface Props {
 
 export default function ItemCard({ item }: Props) {
   const { getField } = useLocalizedField()
-  const imageSrc = resolveImageUrl(item.imageUrl)
   const isPng = item.imageUrl?.endsWith('.png') ?? false
 
   return (
@@ -20,18 +19,20 @@ export default function ItemCard({ item }: Props) {
       to={`/items/${item.id}`}
       className="block bg-dark-card border border-dark-border rounded-lg overflow-hidden hover:border-dark-gold/40 hover:bg-dark-hover transition-all group"
     >
-      {imageSrc && (
+      {item.imageUrl && (
         <div className={`bg-dark-panel overflow-hidden flex items-center justify-center ${
           isPng ? 'py-4' : 'aspect-[4/3]'
         }`}>
-          <img
-            src={imageSrc}
+          <SafeImage
+            src={item.imageUrl}
             alt={getField(item, 'name')}
+            containerClassName={isPng ? 'w-12 h-12' : 'w-full h-full'}
             className={`opacity-85 group-hover:opacity-100 transition-opacity ${
               isPng
                 ? 'w-12 h-12 object-contain'
                 : 'w-full h-full object-contain'
             }`}
+            iconSize={isPng ? 24 : 40}
           />
         </div>
       )}
