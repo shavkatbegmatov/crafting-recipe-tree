@@ -9,6 +9,8 @@ backend/.mvn/wrapper/maven-wrapper.jar
 # Frontend
 frontend/node_modules/
 frontend/dist/
+frontend/tsconfig.tsbuildinfo
+frontend/*.tsbuildinfo
 
 # IDE
 .idea/
@@ -25,6 +27,17 @@ pgdata/
 
 # Env
 .env
+.env.local
+.env.*.local
+frontend/.env.local
+frontend/.env.*.local
+
+# Local Spring profile (developer-specific overrides — not for commit)
+backend/src/main/resources/application-dev.yml
+backend/src/main/resources/application-local.yml
+
+# Sync script credentials (developer-specific — not for commit)
+scripts/.env.sync
 
 # Source images
 imges-erz-5/
