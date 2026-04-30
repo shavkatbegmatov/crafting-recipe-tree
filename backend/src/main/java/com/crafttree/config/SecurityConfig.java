@@ -34,6 +34,8 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .cors(Customizer.withDefaults())
             .authorizeHttpRequests(auth -> auth
+                // Admin-only API surface (must come BEFORE the public GET rule below)
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 // Public endpoints
                 .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
