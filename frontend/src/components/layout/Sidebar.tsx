@@ -24,7 +24,7 @@ function SidebarItemIcon({ src, alt, fallbackColor }: SidebarItemIconProps) {
   const showImage = !!src && !errored
 
   return (
-    <span className="relative flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded-md border border-dark-border/70 bg-dark-bg/70">
+    <span className="relative flex h-6 w-6 shrink-0 items-center justify-center">
       {showImage ? (
         <img
           src={src}
@@ -32,7 +32,7 @@ function SidebarItemIcon({ src, alt, fallbackColor }: SidebarItemIconProps) {
           loading="lazy"
           decoding="async"
           onError={() => setErrored(true)}
-          className="h-full w-full object-cover"
+          className="h-full w-full object-contain"
         />
       ) : (
         <span
