@@ -5,11 +5,43 @@ import { useLocalizedField } from '../../hooks/useLanguage'
 import { useState, useCallback } from 'react'
 import SearchBar from '../items/SearchBar'
 import { DEFAULT_CATEGORY_COLOR } from '../../utils/constants'
+import { resolveImageUrl } from '../../utils/resolveImageUrl'
 import { X } from 'lucide-react'
 
 interface Props {
   isOpen: boolean
   onClose: () => void
+}
+
+interface SidebarItemIconProps {
+  src: string | null | undefined
+  alt: string
+  fallbackColor: string
+}
+
+function SidebarItemIcon({ src, alt, fallbackColor }: SidebarItemIconProps) {
+  const [errored, setErrored] = useState(false)
+  const showImage = !!src && !errored
+
+  return (
+    <span className="relative flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded-md border border-dark-border/70 bg-dark-bg/70">
+      {showImage ? (
+        <img
+          src={src}
+          alt={alt}
+          loading="lazy"
+          decoding="async"
+          onError={() => setErrored(true)}
+          className="h-full w-full object-cover"
+        />
+      ) : (
+        <span
+          className="h-2 w-2 rounded-full"
+          style={{ backgroundColor: fallbackColor }}
+        />
+      )}
+    </span>
+  )
 }
 
 export default function Sidebar({ isOpen, onClose }: Props) {
@@ -80,22 +112,26 @@ export default function Sidebar({ isOpen, onClose }: Props) {
               {filteredItems?.map((item) => {
                 const cat = categories?.find((c) => c.code === item.categoryCode)
                 const dotColor = cat?.color || DEFAULT_CATEGORY_COLOR
+                const imageSrc = resolveImageUrl(item.imageUrl)
+                const isActive = String(item.id) === id
+                const itemName = getField(item, 'name')
 
                 return (
                   <button
                     key={item.id}
                     onClick={() => { navigate(`/items/${item.id}`); onClose() }}
-                    className={`w-full text-left px-3 py-2 rounded-md text-sm flex items-center gap-2 transition-colors ${
-                      String(item.id) === id
+                    className={`w-full text-left px-2.5 py-1.5 rounded-md text-sm flex items-center gap-2.5 transition-colors ${
+                      isActive
                         ? 'bg-dark-hover text-[#d4c4a0] border-l-2 border-dark-gold'
                         : 'text-[#8a7a60] hover:text-[#d4c4a0] hover:bg-dark-bg'
                     }`}
                   >
-                    <span
-                      className="w-2 h-2 rounded-full shrink-0"
-                      style={{ backgroundColor: dotColor }}
+                    <SidebarItemIcon
+                      src={imageSrc}
+                      alt={itemName}
+                      fallbackColor={dotColor}
                     />
-                    <span className="truncate">{getField(item, 'name')}</span>
+                    <span className="truncate">{itemName}</span>
                   </button>
                 )
               })}
