@@ -23,8 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.io.IOException;
@@ -34,7 +32,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -54,7 +51,6 @@ public class ImportService {
     private final CraftItemRepository craftItemRepository;
     private final RecipeIngredientRepository recipeIngredientRepository;
     private final TransactionTemplate transactionTemplate;
-    private final PlatformTransactionManager transactionManager;
 
     @Value("${app.uploads.path:uploads}")
     private String uploadsPath;
@@ -432,28 +428,25 @@ public class ImportService {
                              ImportOptionsDto.ConflictMode mode,
                              ImportReportDto report) {
         if (rows == null) rows = List.of();
-        List<RecipeIngredient> existing = recipeIngredientRepository.findByResultItemId(owner.getId());
 
-        Map<Long, RecipeIngredient> existingByIngredientId = new LinkedHashMap<>();
-        for (RecipeIngredient ri : existing) {
+        Map<Long, BigDecimal> existingByIngredientId = new LinkedHashMap<>();
+        for (RecipeIngredient ri : recipeIngredientRepository.findByResultItemId(owner.getId())) {
             if (ri.getIngredientItem() != null && ri.getIngredientItem().getId() != null) {
-                existingByIngredientId.put(ri.getIngredientItem().getId(), ri);
+                existingByIngredientId.put(ri.getIngredientItem().getId(), ri.getQuantity());
             }
         }
 
-        if (mode == ImportOptionsDto.ConflictMode.SKIP && !existing.isEmpty()) {
+        if (mode == ImportOptionsDto.ConflictMode.SKIP && !existingByIngredientId.isEmpty()) {
             applyToSummary(report.getRecipes(), Action.SKIP);
             return 0;
         }
 
         if (mode == ImportOptionsDto.ConflictMode.REPLACE) {
-            recipeIngredientRepository.deleteAll(existing);
-            recipeIngredientRepository.flush();
+            recipeIngredientRepository.deleteAllByResultItemId(owner.getId());
             existingByIngredientId.clear();
         }
 
         int writes = 0;
-        Set<Long> kept = new HashSet<>();
         Set<Long> seenInPackage = new HashSet<>();
 
         for (ExportItemDto.Recipe r : rows) {
@@ -471,40 +464,18 @@ public class ImportService {
             }
 
             BigDecimal qty = r.getQuantity() == null ? BigDecimal.ZERO : r.getQuantity();
+            BigDecimal currentQty = existingByIngredientId.get(ing.getId());
 
-            RecipeIngredient existingRow = existingByIngredientId.get(ing.getId());
-            if (existingRow == null) {
-                existingRow = recipeIngredientRepository
-                        .findByResultItemIdAndIngredientItemId(owner.getId(), ing.getId())
-                        .orElse(null);
-            }
-
-            if (existingRow == null) {
-                RecipeIngredient ri = RecipeIngredient.builder()
-                        .resultItem(owner)
-                        .ingredientItem(ing)
-                        .quantity(qty)
-                        .build();
-                recipeIngredientRepository.saveAndFlush(ri);
+            if (currentQty == null) {
+                recipeIngredientRepository.upsert(owner.getId(), ing.getId(), qty);
                 applyToSummary(report.getRecipes(), Action.CREATE);
                 writes++;
-            } else if (!Objects.equals(existingRow.getQuantity(), qty)) {
-                existingRow.setQuantity(qty);
-                recipeIngredientRepository.saveAndFlush(existingRow);
+            } else if (currentQty.compareTo(qty) != 0) {
+                recipeIngredientRepository.upsert(owner.getId(), ing.getId(), qty);
                 applyToSummary(report.getRecipes(), Action.UPDATE);
                 writes++;
             } else {
                 applyToSummary(report.getRecipes(), Action.UNCHANGED);
-            }
-            kept.add(ing.getId());
-        }
-
-        if (mode == ImportOptionsDto.ConflictMode.REPLACE) {
-            for (Map.Entry<Long, RecipeIngredient> e : existingByIngredientId.entrySet()) {
-                if (!kept.contains(e.getKey())) {
-                    recipeIngredientRepository.delete(e.getValue());
-                    applyToSummary(report.getRecipes(), Action.REPLACE);
-                }
             }
         }
         return writes;
