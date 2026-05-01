@@ -168,6 +168,7 @@
   },
   "admin": {
     "categories": "Categories",
+    "portage": "Export / Import",
     "addCategory": "Add category",
     "code": "Code",
     "name": "Name",
@@ -176,6 +177,68 @@
     "sortOrder": "Sort order",
     "actions": "Actions",
     "confirmDelete": "Are you sure you want to delete?"
+  },
+  "portage": {
+    "pageTitle": "Export / Import",
+    "pageHint": "Save items, recipes, categories, tags and images as a .craftpkg, or upload such a package and apply it to your database.",
+    "tab": { "export": "Export", "import": "Import" },
+    "mode": { "all": "Everything", "category": "Category", "tag": "Tag", "pick": "Pick" },
+    "export": {
+      "scope": "Export scope",
+      "scopeHint": "Choose what to export. With dependencies — the package becomes self-contained.",
+      "previewTitle": "Preview",
+      "previewHint": "Contents are computed live from your selection.",
+      "previewEmpty": "Pick a scope to begin.",
+      "withDependencies": "With dependencies",
+      "withDependenciesHint": "Automatically include required ingredients",
+      "searchItems": "Search by item name",
+      "selectAllShown": "Select all visible",
+      "clearSelection": "Clear",
+      "pickedCount": "{{n}} item(s) selected",
+      "download": "Download package"
+    },
+    "preview": {
+      "items": "Items",
+      "recipes": "Recipes",
+      "categories": "Categories",
+      "tags": "Tags",
+      "images": "Images",
+      "calculating": "calculating…"
+    },
+    "import": {
+      "fileTitle": "Package file",
+      "fileHint": "Upload a .craftpkg or .zip from a previous export.",
+      "dropOrClick": "Drop a file here or click to choose",
+      "removeFile": "Remove file",
+      "optionsTitle": "Options",
+      "importImages": "Import images too",
+      "overwriteImages": "Overwrite existing image files",
+      "overwriteImagesHint": "By default existing files are preserved",
+      "actionsTitle": "Actions",
+      "actionsHint": "Run dry-run first, then apply for real. Dry-run changes nothing.",
+      "dryRun": "Dry-run (preview)",
+      "apply": "Apply import",
+      "dryRunFirst": "Dry-run first — review the plan, then apply.",
+      "previewNotice": "This is a dry-run preview. Nothing has been written. Click \"Apply import\" to commit.",
+      "appliedNotice": "Import applied successfully.",
+      "warnings": "{{n}} warning(s)",
+      "errors": "{{n}} error(s)"
+    },
+    "conflict": {
+      "skipTitle": "Skip existing",
+      "skipDesc": "Existing rows are left alone. Only new ones are added.",
+      "updateTitle": "Update (recommended)",
+      "updateDesc": "Fills empty fields and updates changed ones. Existing recipes are preserved.",
+      "replaceTitle": "Full replace",
+      "replaceDesc": "Replaces fields and links with package contents. Stale recipe rows are removed."
+    },
+    "section": {
+      "categories": "Categories",
+      "tags": "Tags",
+      "items": "Items",
+      "recipes": "Recipes",
+      "images": "Images"
+    }
   },
   "profile": {
     "editProfile": "Edit profile",

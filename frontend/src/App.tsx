@@ -7,6 +7,7 @@ import NotFoundPage from './pages/NotFoundPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import AdminCategoriesPage from './pages/AdminCategoriesPage'
+import AdminPortagePage from './pages/AdminPortagePage'
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
           <Route index element={<HomePage />} />
           <Route path="items/:id" element={<ItemDetailPage />} />
           <Route path="admin/categories" element={<AdminCategoriesPage />} />
+          <Route path="admin/portage" element={<AdminPortagePage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>

@@ -18,6 +18,7 @@ import {
   User,
   Settings,
   Loader2,
+  Package,
 } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 
@@ -377,15 +378,26 @@ export default function UserDropdown() {
             {/* ── Actions ── */}
             <div className="px-2 py-1.5">
               {isAdmin && (
-                <Link
-                  to="/admin/categories"
-                  onClick={() => setOpen(false)}
-                  className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-[#d4c4a0]
-                    hover:bg-dark-hover transition-colors"
-                >
-                  <Shield className="w-3.5 h-3.5 text-dark-gold" />
-                  {t('admin.categories')}
-                </Link>
+                <>
+                  <Link
+                    to="/admin/categories"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-[#d4c4a0]
+                      hover:bg-dark-hover transition-colors"
+                  >
+                    <Shield className="w-3.5 h-3.5 text-dark-gold" />
+                    {t('admin.categories')}
+                  </Link>
+                  <Link
+                    to="/admin/portage"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-[#d4c4a0]
+                      hover:bg-dark-hover transition-colors"
+                  >
+                    <Package className="w-3.5 h-3.5 text-dark-gold" />
+                    {t('admin.portage')}
+                  </Link>
+                </>
               )}
 
               <button

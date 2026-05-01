@@ -10,7 +10,8 @@ import RecipeTree from '../components/tree/RecipeTree'
 import RawTotals from '../components/tree/RawTotals'
 import CategoryBadge from '../components/ui/CategoryBadge'
 import Spinner from '../components/ui/Spinner'
-import { ArrowLeft, ArrowRight, Clock, Beaker, Pencil, Save, X, Loader2, Check } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Clock, Beaker, Pencil, Save, X, Loader2, Check, Download } from 'lucide-react'
+import { downloadExport } from '../api/portage'
 import ImageUpload from '../components/items/ImageUpload'
 import SafeImage from '../components/ui/SafeImage'
 
@@ -136,13 +137,23 @@ export default function ItemDetailPage() {
             <div className="flex items-center gap-2">
               <CategoryBadge code={item.categoryCode} size="md" />
               {isAdmin && !editing && (
-                <button
-                  onClick={startEdit}
-                  className="flex items-center gap-1 text-xs text-[#8a7a60] hover:text-dark-gold transition-colors border border-dark-border rounded px-2 py-1 hover:border-dark-gold/40"
-                >
-                  <Pencil size={12} />
-                  {t('edit.button')}
-                </button>
+                <>
+                  <button
+                    onClick={() => downloadExport({ ids: [itemId], withDependencies: true })}
+                    className="flex items-center gap-1 text-xs text-[#8a7a60] hover:text-dark-gold transition-colors border border-dark-border rounded px-2 py-1 hover:border-dark-gold/40"
+                    title={t('portage.export.download')}
+                  >
+                    <Download size={12} />
+                    {t('portage.tab.export')}
+                  </button>
+                  <button
+                    onClick={startEdit}
+                    className="flex items-center gap-1 text-xs text-[#8a7a60] hover:text-dark-gold transition-colors border border-dark-border rounded px-2 py-1 hover:border-dark-gold/40"
+                  >
+                    <Pencil size={12} />
+                    {t('edit.button')}
+                  </button>
+                </>
               )}
             </div>
           </div>

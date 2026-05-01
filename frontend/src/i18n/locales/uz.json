@@ -168,6 +168,7 @@
   },
   "admin": {
     "categories": "Kategoriyalar",
+    "portage": "Eksport / Import",
     "addCategory": "Kategoriya qo'shish",
     "code": "Kod",
     "name": "Nomi",
@@ -176,6 +177,76 @@
     "sortOrder": "Tartib raqami",
     "actions": "Amallar",
     "confirmDelete": "Rostdan o'chirmoqchimisiz?"
+  },
+  "portage": {
+    "pageTitle": "Eksport / Import",
+    "pageHint": "Elementlar, retseptlar, kategoriyalar, teglar va rasmlarni .craftpkg paket sifatida saqlang yoki shunday paketni yuklab, mavjud bazaga qo'shing.",
+    "tab": {
+      "export": "Eksport",
+      "import": "Import"
+    },
+    "mode": {
+      "all": "Hammasi",
+      "category": "Kategoriya",
+      "tag": "Teg",
+      "pick": "Tanlash"
+    },
+    "export": {
+      "scope": "Eksport doirasi",
+      "scopeHint": "Nimalarni paketga olishni tanlang. Bog'liqliklar bilan birga olish — natija tugallangan paket bo'lishini ta'minlaydi.",
+      "previewTitle": "Oldindan ko'rish",
+      "previewHint": "Tanlovga ko'ra paket ichidagilar real vaqtda hisoblanadi.",
+      "previewEmpty": "Doirani tanlang.",
+      "withDependencies": "Bog'liqlik bilan",
+      "withDependenciesHint": "Tanlangan elementlarga kerakli ingredientlarni avtomatik qo'shish",
+      "searchItems": "Element nomi bo'yicha qidirish",
+      "selectAllShown": "Hammasini belgilash",
+      "clearSelection": "Tozalash",
+      "pickedCount": "{{n}} ta element tanlangan",
+      "download": "Paketni yuklab olish"
+    },
+    "preview": {
+      "items": "Element",
+      "recipes": "Retsept",
+      "categories": "Kategoriya",
+      "tags": "Teg",
+      "images": "Rasm",
+      "calculating": "hisoblanmoqda…"
+    },
+    "import": {
+      "fileTitle": "Paket fayli",
+      "fileHint": "Eksportda olingan .craftpkg yoki .zip ni yuklang.",
+      "dropOrClick": "Faylni shu yerga tashlang yoki bosib tanlang",
+      "removeFile": "Faylni olib tashlash",
+      "optionsTitle": "Sozlamalar",
+      "importImages": "Rasmlarni ham import qilish",
+      "overwriteImages": "Mavjud rasm fayllarini almashtirish",
+      "overwriteImagesHint": "Default — mavjud fayllar saqlanadi (tezroq, xavfsiz)",
+      "actionsTitle": "Amallar",
+      "actionsHint": "Avval dry-run, keyin haqiqiy import. Dry-run hech narsani o'zgartirmaydi.",
+      "dryRun": "Dry-run (tekshirish)",
+      "apply": "Importni qo'llash",
+      "dryRunFirst": "Avval dry-run qiling — natijani ko'rgach, qo'llash mumkin.",
+      "previewNotice": "Bu — dry-run natijasi. Hech narsa yozilmadi. Qo'llash uchun \"Importni qo'llash\" ni bosing.",
+      "appliedNotice": "Import muvaffaqiyatli yakunlandi.",
+      "warnings": "{{n}} ta ogohlantirish",
+      "errors": "{{n}} ta xato"
+    },
+    "conflict": {
+      "skipTitle": "O'tkazib yuborish",
+      "skipDesc": "Mavjud yozuvlar tegmaydi. Faqat yangi elementlar qo'shiladi.",
+      "updateTitle": "Yangilash (tavsiya etiladi)",
+      "updateDesc": "Bo'sh maydonlarni paketdagi qiymatlar bilan to'ldiradi va o'zgargan maydonlarni yangilaydi. Mavjud retseptlar saqlanadi.",
+      "replaceTitle": "To'liq almashtirish",
+      "replaceDesc": "Maydonlar to'liq paketdagilar bilan almashtiriladi. Eski retsept satrlari paketda yo'q bo'lsa o'chiriladi."
+    },
+    "section": {
+      "categories": "Kategoriyalar",
+      "tags": "Teglar",
+      "items": "Elementlar",
+      "recipes": "Retseptlar",
+      "images": "Rasmlar"
+    }
   },
   "profile": {
     "editProfile": "Profilni tahrirlash",
