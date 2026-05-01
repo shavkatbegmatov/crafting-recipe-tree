@@ -1,6 +1,10 @@
 server:
   port: 8080
   forward-headers-strategy: framework
+  error:
+    include-message: always
+    include-stacktrace: on_param
+    include-binding-errors: always
 
 spring:
   datasource:

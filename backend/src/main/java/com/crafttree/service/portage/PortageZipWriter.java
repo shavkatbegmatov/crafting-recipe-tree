@@ -70,14 +70,18 @@ public class PortageZipWriter {
 
             pkg.getManifest().setImages(imageEntries);
 
+            byte[] dataJson = MAPPER.writeValueAsBytes(pkg);
             ZipEntry dataEntry = new ZipEntry(PortageImagePaths.ARCHIVE_DATA_FILE);
+            dataEntry.setSize(dataJson.length);
             zos.putNextEntry(dataEntry);
-            MAPPER.writeValue(zos, pkg);
+            zos.write(dataJson);
             zos.closeEntry();
 
+            byte[] manifestJson = MAPPER.writeValueAsBytes(pkg.getManifest());
             ZipEntry manifestEntry = new ZipEntry(PortageImagePaths.ARCHIVE_MANIFEST_FILE);
+            manifestEntry.setSize(manifestJson.length);
             zos.putNextEntry(manifestEntry);
-            MAPPER.writeValue(zos, pkg.getManifest());
+            zos.write(manifestJson);
             zos.closeEntry();
         }
     }
