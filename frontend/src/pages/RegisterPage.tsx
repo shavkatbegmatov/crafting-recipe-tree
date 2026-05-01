@@ -13,6 +13,7 @@ import {
   Users,
   ArrowLeft,
 } from 'lucide-react'
+import AmbientBackdrop from '../components/layout/AmbientBackdrop'
 
 export default function RegisterPage() {
   const { t } = useTranslation()
@@ -94,7 +95,9 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="relative min-h-screen bg-dark-bg flex items-center justify-center p-4">
+    <div className="relative min-h-screen overflow-hidden bg-[#070509] flex items-center justify-center p-4">
+      <AmbientBackdrop showRings={false} showCenterHalo={false} intensity="soft" />
+
       <Link
         to="/"
         aria-label={t('common.back')}
@@ -104,7 +107,7 @@ export default function RegisterPage() {
         <span>{t('common.back')}</span>
       </Link>
 
-      <div className="bg-dark-card border border-dark-border rounded-2xl p-8 w-full max-w-md shadow-2xl shadow-black/30">
+      <div className="relative z-10 bg-dark-card/90 border border-dark-border rounded-2xl p-8 w-full max-w-md shadow-2xl shadow-black/50 backdrop-blur-md">
         {/* Logo */}
         <div className="flex items-center justify-center gap-2 mb-2">
           <Boxes size={28} className="text-dark-gold" />

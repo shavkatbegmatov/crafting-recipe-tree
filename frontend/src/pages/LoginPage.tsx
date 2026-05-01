@@ -22,15 +22,7 @@ import {
   UserPlus,
 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
-
-const particles = Array.from({ length: 7 }, (_, index) => ({
-  id: index,
-  size: 120 + Math.random() * 220,
-  x: 6 + Math.random() * 88,
-  y: 8 + Math.random() * 82,
-  duration: 18 + Math.random() * 14,
-  delay: index * 1.1,
-}))
+import AmbientBackdrop from '../components/layout/AmbientBackdrop'
 
 const cardVariants = {
   hidden: { opacity: 0, y: 32, scale: 0.97 },
@@ -160,9 +152,8 @@ export default function LoginPage() {
     }`
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-dark-bg">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(200,160,80,0.14),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(200,160,80,0.09),transparent_30%)]" />
-      <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(13,11,8,0.72),rgba(13,11,8,0.92))]" />
+    <div className="relative min-h-screen overflow-hidden bg-[#070509]">
+      <AmbientBackdrop showRings={false} showCenterHalo={false} intensity="soft" />
 
       <Link
         to="/"
@@ -172,35 +163,6 @@ export default function LoginPage() {
         <ArrowLeft size={14} className="transition-transform group-hover:-translate-x-0.5" />
         <span>{t('common.back')}</span>
       </Link>
-
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {particles.map((particle) => (
-          <motion.div
-            key={particle.id}
-            className="absolute rounded-full"
-            style={{
-              width: particle.size,
-              height: particle.size,
-              left: `${particle.x}%`,
-              top: `${particle.y}%`,
-              background:
-                'radial-gradient(circle, rgba(200,160,80,0.10) 0%, rgba(200,160,80,0.02) 42%, transparent 72%)',
-            }}
-            animate={{
-              x: [0, 34, -22, 12, 0],
-              y: [0, -22, 18, -28, 0],
-              scale: [1, 1.08, 0.92, 1.05, 1],
-            }}
-            transition={{
-              duration: particle.duration,
-              repeat: Infinity,
-              ease: 'easeInOut',
-              delay: particle.delay,
-            }}
-          />
-        ))}
-        <div className="absolute inset-0 opacity-[0.08]" style={backgroundGrid} />
-      </div>
 
       <div className="relative mx-auto flex min-h-screen w-full max-w-7xl items-center px-4 py-8 sm:px-6 lg:px-8">
         <div className="grid w-full items-center gap-6 lg:grid-cols-[1.15fr_0.85fr] xl:gap-8">
