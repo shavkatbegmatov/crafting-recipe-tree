@@ -23,6 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.io.IOException;
@@ -52,6 +54,7 @@ public class ImportService {
     private final CraftItemRepository craftItemRepository;
     private final RecipeIngredientRepository recipeIngredientRepository;
     private final TransactionTemplate transactionTemplate;
+    private final PlatformTransactionManager transactionManager;
 
     @Value("${app.uploads.path:uploads}")
     private String uploadsPath;
@@ -160,13 +163,21 @@ public class ImportService {
                         resolvedAfter, options.getConflictMode(), report);
                 report.getRecipes().setTotal(report.getRecipes().getTotal() + recipeWriteCount);
             } catch (Exception ex) {
-                log.warn("Recipe import failed for {}: {}", dto.getName(), ex.getMessage());
+                String msg = unwrapRoot(ex);
+                log.warn("Recipe import failed for {}: {}", dto.getName(), msg);
                 applyToSummary(report.getRecipes(), Action.FAIL);
-                report.getErrors().add("recipe of " + dto.getName() + ": " + ex.getMessage());
+                report.getErrors().add("recipe of " + dto.getName() + ": " + msg);
             }
         }
 
         return report;
+    }
+
+    private static String unwrapRoot(Throwable t) {
+        Throwable cur = t;
+        while (cur.getCause() != null && cur.getCause() != cur) cur = cur.getCause();
+        String msg = cur.getMessage();
+        return msg == null ? cur.getClass().getSimpleName() : msg.split("\\n")[0];
     }
 
     private Action upsertCategory(Category existing, ExportCategoryDto dto, ImportOptionsDto.ConflictMode mode) {
@@ -423,9 +434,11 @@ public class ImportService {
         if (rows == null) rows = List.of();
         List<RecipeIngredient> existing = recipeIngredientRepository.findByResultItemId(owner.getId());
 
-        Map<String, RecipeIngredient> existingByName = new LinkedHashMap<>();
+        Map<Long, RecipeIngredient> existingByIngredientId = new LinkedHashMap<>();
         for (RecipeIngredient ri : existing) {
-            existingByName.put(ri.getIngredientItem().getName(), ri);
+            if (ri.getIngredientItem() != null && ri.getIngredientItem().getId() != null) {
+                existingByIngredientId.put(ri.getIngredientItem().getId(), ri);
+            }
         }
 
         if (mode == ImportOptionsDto.ConflictMode.SKIP && !existing.isEmpty()) {
@@ -435,52 +448,68 @@ public class ImportService {
 
         if (mode == ImportOptionsDto.ConflictMode.REPLACE) {
             recipeIngredientRepository.deleteAll(existing);
-            existingByName.clear();
+            recipeIngredientRepository.flush();
+            existingByIngredientId.clear();
         }
 
         int writes = 0;
-        Set<String> kept = new HashSet<>();
+        Set<Long> kept = new HashSet<>();
+        Set<Long> seenInPackage = new HashSet<>();
+
         for (ExportItemDto.Recipe r : rows) {
             CraftItem ing = resolved.get(r.getIngredientName());
-            if (ing == null) {
+            if (ing == null || ing.getId() == null) {
                 report.getWarnings().add("recipe of " + owner.getName()
                         + ": ingredient missing → " + r.getIngredientName());
                 applyToSummary(report.getRecipes(), Action.FAIL);
                 continue;
             }
+            if (!seenInPackage.add(ing.getId())) {
+                report.getWarnings().add("recipe of " + owner.getName()
+                        + ": duplicate ingredient in package → " + r.getIngredientName());
+                continue;
+            }
+
             BigDecimal qty = r.getQuantity() == null ? BigDecimal.ZERO : r.getQuantity();
 
-            RecipeIngredient existingRow = existingByName.get(ing.getName());
+            RecipeIngredient existingRow = existingByIngredientId.get(ing.getId());
+            if (existingRow == null) {
+                existingRow = recipeIngredientRepository
+                        .findByResultItemIdAndIngredientItemId(owner.getId(), ing.getId())
+                        .orElse(null);
+            }
+
             if (existingRow == null) {
                 RecipeIngredient ri = RecipeIngredient.builder()
                         .resultItem(owner)
                         .ingredientItem(ing)
                         .quantity(qty)
                         .build();
-                recipeIngredientRepository.save(ri);
+                recipeIngredientRepository.saveAndFlush(ri);
                 applyToSummary(report.getRecipes(), Action.CREATE);
                 writes++;
             } else if (!Objects.equals(existingRow.getQuantity(), qty)) {
                 existingRow.setQuantity(qty);
-                recipeIngredientRepository.save(existingRow);
+                recipeIngredientRepository.saveAndFlush(existingRow);
                 applyToSummary(report.getRecipes(), Action.UPDATE);
                 writes++;
             } else {
                 applyToSummary(report.getRecipes(), Action.UNCHANGED);
             }
-            kept.add(ing.getName());
+            kept.add(ing.getId());
         }
 
         if (mode == ImportOptionsDto.ConflictMode.REPLACE) {
-            for (String stale : new ArrayList<>(existingByName.keySet())) {
-                if (!kept.contains(stale)) {
-                    recipeIngredientRepository.delete(existingByName.get(stale));
+            for (Map.Entry<Long, RecipeIngredient> e : existingByIngredientId.entrySet()) {
+                if (!kept.contains(e.getKey())) {
+                    recipeIngredientRepository.delete(e.getValue());
                     applyToSummary(report.getRecipes(), Action.REPLACE);
                 }
             }
         }
         return writes;
     }
+
 
     private static <T> boolean setIfChanged(T current, T incoming, java.util.function.Consumer<T> setter,
                                             ImportOptionsDto.ConflictMode mode) {
