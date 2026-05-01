@@ -9,6 +9,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import RecipeTree from '../components/tree/RecipeTree'
 import RawTotals from '../components/tree/RawTotals'
 import CategoryBadge from '../components/ui/CategoryBadge'
+import ItemImageIcon from '../components/ui/ItemImageIcon'
 import Spinner from '../components/ui/Spinner'
 import { ArrowLeft, ArrowRight, Clock, Beaker, Pencil, Save, X, Loader2, Check, Download } from 'lucide-react'
 import { downloadExport } from '../api/portage'
@@ -308,21 +309,31 @@ export default function ItemDetailPage() {
                     {t('detail.directIngredients')}
                   </h3>
                   <div className="space-y-1.5">
-                    {item.ingredients.map((ing) => (
-                      <div key={ing.ingredientItemId} className="flex items-center gap-2 text-sm">
-                        <Link
-                          to={`/items/${ing.ingredientItemId}`}
-                          className="text-[#d4c4a0] hover:text-dark-gold hover:underline transition-colors"
-                        >
-                          {getField(ing, 'ingredientName')}
-                        </Link>
-                        <span className="text-[#3a3228]">—</span>
-                        <span className="font-mono text-[#8a7a60]">
-                          {ing.quantity % 1 === 0 ? ing.quantity : Number(ing.quantity).toFixed(4)}
-                        </span>
-                        <CategoryBadge code={ing.ingredientCategory} />
-                      </div>
-                    ))}
+                    {item.ingredients.map((ing) => {
+                      const ingCat = categories?.find((c) => c.code === ing.ingredientCategory)
+                      const ingName = getField(ing, 'ingredientName')
+                      return (
+                        <div key={ing.ingredientItemId} className="flex items-center gap-2 text-sm">
+                          <ItemImageIcon
+                            imageUrl={ing.ingredientImageUrl}
+                            alt={ingName}
+                            size={22}
+                            fallbackColor={ingCat?.color}
+                          />
+                          <Link
+                            to={`/items/${ing.ingredientItemId}`}
+                            className="text-[#d4c4a0] hover:text-dark-gold hover:underline transition-colors"
+                          >
+                            {ingName}
+                          </Link>
+                          <span className="text-[#3a3228]">—</span>
+                          <span className="font-mono text-[#8a7a60]">
+                            {ing.quantity % 1 === 0 ? ing.quantity : Number(ing.quantity).toFixed(4)}
+                          </span>
+                          <CategoryBadge code={ing.ingredientCategory} />
+                        </div>
+                      )
+                    })}
                   </div>
                 </div>
               )}

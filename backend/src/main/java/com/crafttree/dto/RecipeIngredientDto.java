@@ -15,5 +15,6 @@ public class RecipeIngredientDto {
     private String ingredientNameEn;
     private String ingredientNameUzCyr;
     private String ingredientCategory;
+    private String ingredientImageUrl;
     private BigDecimal quantity;
 }

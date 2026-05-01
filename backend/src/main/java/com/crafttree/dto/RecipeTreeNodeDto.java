@@ -18,6 +18,7 @@ public class RecipeTreeNodeDto {
     private String nameUzCyr;
     private String category;
     private Integer craftTimeSeconds;
+    private String imageUrl;
     private BigDecimal quantity;
 
     @Builder.Default

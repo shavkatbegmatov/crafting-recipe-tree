@@ -146,6 +146,7 @@ public class CraftItemService {
                         .ingredientNameEn(ri.getIngredientItem().getNameEn())
                         .ingredientNameUzCyr(ri.getIngredientItem().getNameUzCyr())
                         .ingredientCategory(ri.getIngredientItem().getCategory().getCode())
+                        .ingredientImageUrl(ri.getIngredientItem().getImageUrl())
                         .quantity(ri.getQuantity())
                         .build())
                 .collect(Collectors.toList());

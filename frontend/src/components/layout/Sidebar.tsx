@@ -5,43 +5,12 @@ import { useLocalizedField } from '../../hooks/useLanguage'
 import { useState, useCallback } from 'react'
 import SearchBar from '../items/SearchBar'
 import { DEFAULT_CATEGORY_COLOR } from '../../utils/constants'
-import { resolveImageUrl } from '../../utils/resolveImageUrl'
+import ItemImageIcon from '../ui/ItemImageIcon'
 import { X } from 'lucide-react'
 
 interface Props {
   isOpen: boolean
   onClose: () => void
-}
-
-interface SidebarItemIconProps {
-  src: string | null | undefined
-  alt: string
-  fallbackColor: string
-}
-
-function SidebarItemIcon({ src, alt, fallbackColor }: SidebarItemIconProps) {
-  const [errored, setErrored] = useState(false)
-  const showImage = !!src && !errored
-
-  return (
-    <span className="relative flex h-6 w-6 shrink-0 items-center justify-center">
-      {showImage ? (
-        <img
-          src={src}
-          alt={alt}
-          loading="lazy"
-          decoding="async"
-          onError={() => setErrored(true)}
-          className="h-full w-full object-contain"
-        />
-      ) : (
-        <span
-          className="h-2 w-2 rounded-full"
-          style={{ backgroundColor: fallbackColor }}
-        />
-      )}
-    </span>
-  )
 }
 
 export default function Sidebar({ isOpen, onClose }: Props) {
@@ -112,7 +81,6 @@ export default function Sidebar({ isOpen, onClose }: Props) {
               {filteredItems?.map((item) => {
                 const cat = categories?.find((c) => c.code === item.categoryCode)
                 const dotColor = cat?.color || DEFAULT_CATEGORY_COLOR
-                const imageSrc = resolveImageUrl(item.imageUrl)
                 const isActive = String(item.id) === id
                 const itemName = getField(item, 'name')
 
@@ -126,9 +94,10 @@ export default function Sidebar({ isOpen, onClose }: Props) {
                         : 'text-[#8a7a60] hover:text-[#d4c4a0] hover:bg-dark-bg'
                     }`}
                   >
-                    <SidebarItemIcon
-                      src={imageSrc}
+                    <ItemImageIcon
+                      imageUrl={item.imageUrl}
                       alt={itemName}
+                      size={24}
                       fallbackColor={dotColor}
                     />
                     <span className="truncate">{itemName}</span>

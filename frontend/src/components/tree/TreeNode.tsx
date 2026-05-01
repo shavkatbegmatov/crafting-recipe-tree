@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ChevronRight, ChevronDown, Dot } from 'lucide-react'
+import { ChevronRight, ChevronDown } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { RecipeTreeNode } from '../../api/types'
 import { useCategories } from '../../hooks/useItems'
 import { DEFAULT_CATEGORY_COLOR } from '../../utils/constants'
 import { useLocalizedField } from '../../hooks/useLanguage'
+import ItemImageIcon from '../ui/ItemImageIcon'
 import CraftTimeBadge from './CraftTimeBadge'
 
 interface Props {
@@ -50,10 +51,15 @@ export default function TreeNode({ node, depth = 0, isLast = false }: Props) {
               {isOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
             </button>
           ) : (
-            <span className="shrink-0 w-5 h-5 flex items-center justify-center">
-              <Dot size={14} style={{ color }} />
-            </span>
+            <span className="shrink-0 w-5 h-5" />
           )}
+
+          <ItemImageIcon
+            imageUrl={node.imageUrl}
+            alt={name}
+            size={20}
+            fallbackColor={color}
+          />
 
           <Link
             to={`/items/${node.id}`}

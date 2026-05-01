@@ -49,6 +49,7 @@ export interface RecipeIngredient {
   ingredientNameEn: string
   ingredientNameUzCyr: string
   ingredientCategory: string
+  ingredientImageUrl: string | null
   quantity: number
 }
 
@@ -60,6 +61,7 @@ export interface RecipeTreeNode {
   nameUzCyr: string
   category: string
   craftTimeSeconds: number
+  imageUrl: string | null
   quantity: number
   children: RecipeTreeNode[]
 }

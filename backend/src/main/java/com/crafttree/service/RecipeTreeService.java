@@ -88,6 +88,7 @@ public class RecipeTreeService {
                     .nameUzCyr(item.getNameUzCyr())
                     .category(item.getCategory().getCode())
                     .craftTimeSeconds(item.getCraftTimeSeconds())
+                    .imageUrl(item.getImageUrl())
                     .quantity(quantity)
                     .children(Collections.emptyList())
                     .build();
@@ -101,6 +102,7 @@ public class RecipeTreeService {
                 .nameUzCyr(item.getNameUzCyr())
                 .category(item.getCategory().getCode())
                 .craftTimeSeconds(item.getCraftTimeSeconds())
+                .imageUrl(item.getImageUrl())
                 .quantity(quantity)
                 .children(new ArrayList<>())
                 .build();
