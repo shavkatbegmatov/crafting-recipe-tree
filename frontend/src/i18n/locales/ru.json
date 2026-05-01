@@ -3,6 +3,9 @@
     "title": "Craft Tree",
     "subtitle": "Управление рецептами"
   },
+  "common": {
+    "back": "Назад"
+  },
   "sidebar": {
     "elements": "Элементы",
     "all": "Все",

@@ -94,7 +94,16 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-dark-bg flex items-center justify-center p-4">
+    <div className="relative min-h-screen bg-dark-bg flex items-center justify-center p-4">
+      <Link
+        to="/"
+        aria-label={t('common.back')}
+        className="group absolute left-4 top-4 z-20 inline-flex items-center gap-2 rounded-full border border-dark-border/70 bg-black/40 px-3.5 py-2 text-xs font-medium uppercase tracking-[0.22em] text-[#a8916a] backdrop-blur-sm transition-all duration-200 hover:border-dark-gold/40 hover:bg-black/60 hover:text-[#f0dfb8] sm:left-6 sm:top-6"
+      >
+        <ArrowLeft size={14} className="transition-transform group-hover:-translate-x-0.5" />
+        <span>{t('common.back')}</span>
+      </Link>
+
       <div className="bg-dark-card border border-dark-border rounded-2xl p-8 w-full max-w-md shadow-2xl shadow-black/30">
         {/* Logo */}
         <div className="flex items-center justify-center gap-2 mb-2">

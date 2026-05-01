@@ -3,6 +3,9 @@
     "title": "Craft Tree",
     "subtitle": "Рецептлар бошқаруви"
   },
+  "common": {
+    "back": "Орқага"
+  },
   "sidebar": {
     "elements": "Элементлар",
     "all": "Барчаси",

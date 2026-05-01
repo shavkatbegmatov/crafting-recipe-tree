@@ -3,6 +3,9 @@
     "title": "Craft Tree",
     "subtitle": "Recipe Manager"
   },
+  "common": {
+    "back": "Back"
+  },
   "sidebar": {
     "elements": "Elements",
     "all": "All",

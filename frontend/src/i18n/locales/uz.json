@@ -3,6 +3,9 @@
     "title": "Craft Tree",
     "subtitle": "Retseptlar boshqaruvi"
   },
+  "common": {
+    "back": "Orqaga"
+  },
   "sidebar": {
     "elements": "Elementlar",
     "all": "Barchasi",

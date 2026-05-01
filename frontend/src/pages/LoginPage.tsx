@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import type { LucideIcon } from 'lucide-react'
 import {
   AlertCircle,
+  ArrowLeft,
   ArrowRight,
   Boxes,
   Eye,
@@ -162,6 +163,15 @@ export default function LoginPage() {
     <div className="relative min-h-screen overflow-hidden bg-dark-bg">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(200,160,80,0.14),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(200,160,80,0.09),transparent_30%)]" />
       <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(13,11,8,0.72),rgba(13,11,8,0.92))]" />
+
+      <Link
+        to="/"
+        aria-label={t('common.back')}
+        className="group absolute left-4 top-4 z-20 inline-flex items-center gap-2 rounded-full border border-dark-border/70 bg-black/40 px-3.5 py-2 text-xs font-medium uppercase tracking-[0.22em] text-[#a8916a] backdrop-blur-sm transition-all duration-200 hover:border-dark-gold/40 hover:bg-black/60 hover:text-[#f0dfb8] sm:left-6 sm:top-6"
+      >
+        <ArrowLeft size={14} className="transition-transform group-hover:-translate-x-0.5" />
+        <span>{t('common.back')}</span>
+      </Link>
 
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {particles.map((particle) => (
