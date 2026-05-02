@@ -123,9 +123,9 @@ export default function ItemDetailPage() {
       </Link>
 
       {/* Item info */}
-      <div className="bg-dark-card border border-dark-border rounded-lg overflow-hidden">
+      <div className="bg-dark-card border border-dark-border rounded-lg overflow-hidden xl:flex">
         {item.imageUrl && (
-          <div className="bg-dark-panel flex items-center justify-center p-4 overflow-hidden">
+          <div className="bg-dark-panel flex items-center justify-center p-4 overflow-hidden xl:w-80 xl:shrink-0 xl:border-r xl:border-dark-border xl:self-stretch">
             <SafeImage
               src={item.imageUrl}
               alt={itemName}
@@ -141,7 +141,7 @@ export default function ItemDetailPage() {
             />
           </div>
         )}
-        <div className="p-5">
+        <div className="p-5 flex-1 min-w-0">
           {/* Header with edit button */}
           <div className="flex items-start justify-between gap-4 mb-3">
             <h1 className="text-xl font-semibold text-[#d4c4a0]">{itemName}</h1>
@@ -219,7 +219,7 @@ export default function ItemDetailPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
                 {[
                   { key: 'name', label: t('edit.nameRu') },
                   { key: 'nameUz', label: t('edit.nameUz') },
@@ -237,7 +237,7 @@ export default function ItemDetailPage() {
                 ))}
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
                 {[
                   { key: 'description', label: t('edit.descRu') },
                   { key: 'descriptionUz', label: t('edit.descUz') },
@@ -318,7 +318,7 @@ export default function ItemDetailPage() {
                     <Beaker size={13} />
                     {t('detail.directIngredients')}
                   </h3>
-                  <div className="space-y-1.5">
+                  <div className="space-y-1.5 lg:grid lg:grid-cols-2 lg:gap-x-6 lg:gap-y-1.5 lg:space-y-0">
                     {item.ingredients.map((ing) => {
                       const ingCat = categories?.find((c) => c.code === ing.ingredientCategory)
                       const ingName = getField(ing, 'ingredientName')
