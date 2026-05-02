@@ -106,8 +106,18 @@ export default function ItemDetailPage() {
   const itemName = getField(item, 'name')
   const itemDesc = getField(item, 'description')
 
+  const showCraftBlocks = !editing && item.categoryCode !== 'RAW'
+  const showUsedIn = !editing && !!usedIn && usedIn.length > 0
+  const supplementaryCount = (showCraftBlocks ? 2 : 0) + (showUsedIn ? 1 : 0)
+  const supplementaryGridCols =
+    supplementaryCount >= 3
+      ? 'xl:grid-cols-3'
+      : supplementaryCount === 2
+        ? 'xl:grid-cols-2'
+        : ''
+
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6 max-w-7xl">
       <Link to="/" className="text-[#8a7a60] hover:text-[#d4c4a0] text-sm flex items-center gap-1 transition-colors">
         <ArrowLeft size={14} /> {t('detail.back')}
       </Link>
@@ -342,35 +352,35 @@ export default function ItemDetailPage() {
         </div>
       </div>
 
-      {/* Recipe tree */}
-      {!editing && item.categoryCode !== 'RAW' && <RecipeTree itemId={itemId} />}
-
-      {/* Raw totals */}
-      {!editing && item.categoryCode !== 'RAW' && <RawTotals itemId={itemId} itemName={itemName} />}
-
-      {/* Used in */}
-      {!editing && usedIn && usedIn.length > 0 && (
-        <div className="bg-dark-card border border-dark-border rounded-lg p-5">
-          <h2 className="text-sm font-semibold text-[#d4c4a0] mb-3 flex items-center gap-2">
-            <ArrowRight size={16} className="text-[#8a7a60]" />
-            {t('detail.usedIn')}
-          </h2>
-          <div className="space-y-1.5">
-            {usedIn.map((u) => (
-              <div key={u.itemId} className="flex items-center gap-2 text-sm">
-                <Link
-                  to={`/items/${u.itemId}`}
-                  className="text-[#d4c4a0] hover:text-dark-gold hover:underline transition-colors"
-                >
-                  {getField(u, 'itemName')}
-                </Link>
-                <span className="font-mono text-[#8a7a60]">
-                  x{u.quantity % 1 === 0 ? u.quantity : Number(u.quantity).toFixed(4)}
-                </span>
-                <CategoryBadge code={u.categoryCode} />
+      {/* Supplementary blocks: tree, raw totals, used-in */}
+      {supplementaryCount > 0 && (
+        <div className={`grid gap-6 ${supplementaryGridCols}`}>
+          {showCraftBlocks && <RecipeTree itemId={itemId} />}
+          {showCraftBlocks && <RawTotals itemId={itemId} itemName={itemName} />}
+          {showUsedIn && (
+            <div className="bg-dark-card border border-dark-border rounded-lg p-5">
+              <h2 className="text-sm font-semibold text-[#d4c4a0] mb-3 flex items-center gap-2">
+                <ArrowRight size={16} className="text-[#8a7a60]" />
+                {t('detail.usedIn')}
+              </h2>
+              <div className="space-y-1.5">
+                {usedIn!.map((u) => (
+                  <div key={u.itemId} className="flex items-center gap-2 text-sm">
+                    <Link
+                      to={`/items/${u.itemId}`}
+                      className="text-[#d4c4a0] hover:text-dark-gold hover:underline transition-colors"
+                    >
+                      {getField(u, 'itemName')}
+                    </Link>
+                    <span className="font-mono text-[#8a7a60]">
+                      x{u.quantity % 1 === 0 ? u.quantity : Number(u.quantity).toFixed(4)}
+                    </span>
+                    <CategoryBadge code={u.categoryCode} />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
+          )}
         </div>
       )}
     </div>
