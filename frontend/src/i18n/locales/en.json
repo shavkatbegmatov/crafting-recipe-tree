@@ -43,7 +43,9 @@
     "title": "Craft Tree",
     "loading": "Loading tree...",
     "error": "An error occurred",
-    "rawNoRecipe": "This is a raw material — no recipe"
+    "rawNoRecipe": "This is a raw material — no recipe",
+    "openDepth": "Levels",
+    "expandAll": "Expand all"
   },
   "rawTotals": {
     "title": "Total raw materials for 1x {{itemName}}",

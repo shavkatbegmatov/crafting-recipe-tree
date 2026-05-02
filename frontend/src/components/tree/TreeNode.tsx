@@ -13,10 +13,16 @@ interface Props {
   node: RecipeTreeNode
   depth?: number
   isLast?: boolean
+  defaultOpenDepth?: number
 }
 
-export default function TreeNode({ node, depth = 0, isLast = false }: Props) {
-  const [isOpen, setIsOpen] = useState(depth < 2)
+export default function TreeNode({
+  node,
+  depth = 0,
+  isLast = false,
+  defaultOpenDepth = 2,
+}: Props) {
+  const [isOpen, setIsOpen] = useState(depth < defaultOpenDepth)
   const { getField } = useLocalizedField()
   const { data: categories } = useCategories()
   const hasChildren = node.children && node.children.length > 0
@@ -94,6 +100,7 @@ export default function TreeNode({ node, depth = 0, isLast = false }: Props) {
                 node={child}
                 depth={depth + 1}
                 isLast={index === node.children.length - 1}
+                defaultOpenDepth={defaultOpenDepth}
               />
             ))}
           </motion.div>

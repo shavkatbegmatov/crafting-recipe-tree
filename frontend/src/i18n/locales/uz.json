@@ -43,7 +43,9 @@
     "title": "Kraft shajara",
     "loading": "Daraxt yuklanmoqda...",
     "error": "Xatolik yuz berdi",
-    "rawNoRecipe": "Bu xomashyo — retsepti yo'q"
+    "rawNoRecipe": "Bu xomashyo — retsepti yo'q",
+    "openDepth": "Darajalar",
+    "expandAll": "Hammasini ochish"
   },
   "rawTotals": {
     "title": "1 dona {{itemName}} uchun jami xomashyo",
