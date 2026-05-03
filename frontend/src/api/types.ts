@@ -67,10 +67,13 @@ export interface RecipeTreeNode {
 }
 
 export interface RawMaterialEntry {
+  id: number
   name: string
   nameUz: string
   nameEn: string
   nameUzCyr: string
+  categoryCode: string
+  imageUrl: string | null
   totalQuantity: number
 }
 

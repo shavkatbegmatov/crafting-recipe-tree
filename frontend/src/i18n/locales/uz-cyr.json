@@ -4,7 +4,8 @@
     "subtitle": "Рецептлар бошқаруви"
   },
   "common": {
-    "back": "Орқага"
+    "back": "Орқага",
+    "qty": "Сони"
   },
   "sidebar": {
     "elements": "Элементлар",
@@ -48,7 +49,7 @@
     "expandAll": "Ҳаммасини очиш"
   },
   "rawTotals": {
-    "title": "1 дона {{itemName}} учун жами хомашё",
+    "title": "{{count}} дона {{itemName}} учун жами хомашё",
     "rawMaterial": "Хомашё",
     "quantity": "Миқдор",
     "totalTime": "Жами крафт вақти (кетма-кет):"

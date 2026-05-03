@@ -49,10 +49,13 @@ public class RecipeTreeService {
                 .map(e -> {
                     CraftItem raw = itemLookup.get(e.getKey());
                     return RawTotalDto.RawMaterialEntry.builder()
+                            .id(raw.getId())
                             .name(raw.getName())
                             .nameUz(raw.getNameUz())
                             .nameEn(raw.getNameEn())
                             .nameUzCyr(raw.getNameUzCyr())
+                            .categoryCode(raw.getCategory().getCode())
+                            .imageUrl(raw.getImageUrl())
                             .totalQuantity(e.getValue().setScale(4, RoundingMode.HALF_UP))
                             .build();
                 })

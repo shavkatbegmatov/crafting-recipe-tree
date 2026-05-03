@@ -4,7 +4,8 @@
     "subtitle": "Управление рецептами"
   },
   "common": {
-    "back": "Назад"
+    "back": "Назад",
+    "qty": "Кол-во"
   },
   "sidebar": {
     "elements": "Элементы",
@@ -48,7 +49,7 @@
     "expandAll": "Раскрыть всё"
   },
   "rawTotals": {
-    "title": "Всего сырья для 1 шт. {{itemName}}",
+    "title": "Всего сырья для {{count}} шт. {{itemName}}",
     "rawMaterial": "Сырьё",
     "quantity": "Количество",
     "totalTime": "Общее время крафта (последовательно):"

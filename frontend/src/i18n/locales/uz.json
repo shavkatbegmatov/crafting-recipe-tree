@@ -4,7 +4,8 @@
     "subtitle": "Retseptlar boshqaruvi"
   },
   "common": {
-    "back": "Orqaga"
+    "back": "Orqaga",
+    "qty": "Soni"
   },
   "sidebar": {
     "elements": "Elementlar",
@@ -48,7 +49,7 @@
     "expandAll": "Hammasini ochish"
   },
   "rawTotals": {
-    "title": "1 dona {{itemName}} uchun jami xomashyo",
+    "title": "{{count}} dona {{itemName}} uchun jami xomashyo",
     "rawMaterial": "Xomashyo",
     "quantity": "Miqdor",
     "totalTime": "Jami kraft vaqti (ketma-ket):"

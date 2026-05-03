@@ -4,7 +4,8 @@
     "subtitle": "Recipe Manager"
   },
   "common": {
-    "back": "Back"
+    "back": "Back",
+    "qty": "Qty"
   },
   "sidebar": {
     "elements": "Elements",
@@ -48,7 +49,7 @@
     "expandAll": "Expand all"
   },
   "rawTotals": {
-    "title": "Total raw materials for 1x {{itemName}}",
+    "title": "Total raw materials for {{count}}x {{itemName}}",
     "rawMaterial": "Raw material",
     "quantity": "Quantity",
     "totalTime": "Total craft time (sequential):"

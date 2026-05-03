@@ -29,6 +29,7 @@ export default function ItemDetailPage() {
   const queryClient = useQueryClient()
 
   const [selectedTagIds, setSelectedTagIds] = useState<number[]>([])
+  const [craftQuantity, setCraftQuantity] = useState<number>(1)
 
   // Edit mode state
   const [editing, setEditing] = useState(false)
@@ -355,8 +356,21 @@ export default function ItemDetailPage() {
       {/* Supplementary blocks: tree, raw totals, used-in */}
       {supplementaryCount > 0 && (
         <div className={`grid gap-6 ${supplementaryGridCols}`}>
-          {showCraftBlocks && <RecipeTree itemId={itemId} />}
-          {showCraftBlocks && <RawTotals itemId={itemId} itemName={itemName} />}
+          {showCraftBlocks && (
+            <RecipeTree
+              itemId={itemId}
+              quantity={craftQuantity}
+              onQuantityChange={setCraftQuantity}
+            />
+          )}
+          {showCraftBlocks && (
+            <RawTotals
+              itemId={itemId}
+              itemName={itemName}
+              quantity={craftQuantity}
+              onQuantityChange={setCraftQuantity}
+            />
+          )}
           {showUsedIn && (
             <div className="bg-dark-card border border-dark-border rounded-lg p-5">
               <h2 className="text-sm font-semibold text-[#d4c4a0] mb-3 flex items-center gap-2">

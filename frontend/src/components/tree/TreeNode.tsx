@@ -14,6 +14,7 @@ interface Props {
   depth?: number
   isLast?: boolean
   defaultOpenDepth?: number
+  multiplier?: number
 }
 
 export default function TreeNode({
@@ -21,6 +22,7 @@ export default function TreeNode({
   depth = 0,
   isLast = false,
   defaultOpenDepth = 2,
+  multiplier = 1,
 }: Props) {
   const [isOpen, setIsOpen] = useState(depth < defaultOpenDepth)
   const { getField } = useLocalizedField()
@@ -28,6 +30,7 @@ export default function TreeNode({
   const hasChildren = node.children && node.children.length > 0
   const color = categories?.find((c) => c.code === node.category)?.color || DEFAULT_CATEGORY_COLOR
   const name = getField(node, 'name')
+  const displayQuantity = node.quantity * multiplier
 
   return (
     <div className={depth > 0 ? 'ml-5' : ''}>
@@ -75,9 +78,9 @@ export default function TreeNode({
             {name}
           </Link>
 
-          {node.quantity !== 1 && (
+          {displayQuantity !== 1 && (
             <span className="text-xs font-mono text-[#8a7a60]">
-              x{node.quantity % 1 === 0 ? node.quantity : node.quantity.toFixed(2)}
+              x{displayQuantity % 1 === 0 ? displayQuantity : displayQuantity.toFixed(2)}
             </span>
           )}
 
@@ -101,6 +104,7 @@ export default function TreeNode({
                 depth={depth + 1}
                 isLast={index === node.children.length - 1}
                 defaultOpenDepth={defaultOpenDepth}
+                multiplier={multiplier}
               />
             ))}
           </motion.div>

@@ -23,10 +23,13 @@ public class RawTotalDto {
     @AllArgsConstructor
     @Builder
     public static class RawMaterialEntry {
+        private Long id;
         private String name;
         private String nameUz;
         private String nameEn;
         private String nameUzCyr;
+        private String categoryCode;
+        private String imageUrl;
         private BigDecimal totalQuantity;
     }
 }
