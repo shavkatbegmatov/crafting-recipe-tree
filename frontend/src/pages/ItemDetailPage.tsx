@@ -378,20 +378,32 @@ export default function ItemDetailPage() {
                 {t('detail.usedIn')}
               </h2>
               <div className="space-y-1.5">
-                {usedIn!.map((u) => (
-                  <div key={u.itemId} className="flex items-center gap-2 text-sm">
-                    <Link
-                      to={`/items/${u.itemId}`}
-                      className="text-[#d4c4a0] hover:text-dark-gold hover:underline transition-colors"
-                    >
-                      {getField(u, 'itemName')}
-                    </Link>
-                    <span className="font-mono text-[#8a7a60]">
-                      x{u.quantity % 1 === 0 ? u.quantity : Number(u.quantity).toFixed(4)}
-                    </span>
-                    <CategoryBadge code={u.categoryCode} />
-                  </div>
-                ))}
+                {usedIn!.map((u) => {
+                  const usedInName = getField(u, 'itemName')
+                  const usedInColor =
+                    categories?.find((c) => c.code === u.categoryCode)?.color
+                  return (
+                    <div key={u.itemId} className="flex items-center gap-2 text-sm">
+                      <ItemImageIcon
+                        imageUrl={u.imageUrl}
+                        alt={usedInName}
+                        size={22}
+                        fallbackColor={usedInColor}
+                      />
+                      <Link
+                        to={`/items/${u.itemId}`}
+                        className="hover:underline transition-colors"
+                        style={{ color: usedInColor || '#d4c4a0' }}
+                      >
+                        {usedInName}
+                      </Link>
+                      <span className="font-mono text-[#8a7a60]">
+                        x{u.quantity % 1 === 0 ? u.quantity : Number(u.quantity).toFixed(4)}
+                      </span>
+                      <CategoryBadge code={u.categoryCode} />
+                    </div>
+                  )
+                })}
               </div>
             </div>
           )}

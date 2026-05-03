@@ -15,5 +15,6 @@ public class UsedInDto {
     private String itemNameEn;
     private String itemNameUzCyr;
     private String categoryCode;
+    private String imageUrl;
     private BigDecimal quantity;
 }

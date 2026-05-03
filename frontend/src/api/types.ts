@@ -94,6 +94,7 @@ export interface UsedIn {
   itemNameEn: string
   itemNameUzCyr: string
   categoryCode: string
+  imageUrl: string | null
   quantity: number
 }
 

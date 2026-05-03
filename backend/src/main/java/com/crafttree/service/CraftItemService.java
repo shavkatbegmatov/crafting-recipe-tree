@@ -97,6 +97,7 @@ public class CraftItemService {
                         .itemNameEn(ri.getResultItem().getNameEn())
                         .itemNameUzCyr(ri.getResultItem().getNameUzCyr())
                         .categoryCode(ri.getResultItem().getCategory().getCode())
+                        .imageUrl(ri.getResultItem().getImageUrl())
                         .quantity(ri.getQuantity())
                         .build())
                 .collect(Collectors.toList());
