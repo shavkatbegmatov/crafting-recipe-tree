@@ -2,16 +2,20 @@ package com.crafttree.service;
 
 import com.crafttree.dto.*;
 import com.crafttree.entity.CraftItem;
+import com.crafttree.entity.GameVersion;
+import com.crafttree.entity.Recipe;
 import com.crafttree.entity.RecipeIngredient;
 import com.crafttree.exception.ItemNotFoundException;
 import com.crafttree.repository.CategoryRepository;
 import com.crafttree.repository.CraftItemRepository;
 import com.crafttree.repository.RecipeIngredientRepository;
+import com.crafttree.repository.RecipeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,6 +26,8 @@ public class CraftItemService {
     private final CraftItemRepository craftItemRepository;
     private final CategoryRepository categoryRepository;
     private final RecipeIngredientRepository recipeIngredientRepository;
+    private final RecipeRepository recipeRepository;
+    private final GameVersionService gameVersionService;
 
     public List<CategoryDto> getAllCategories() {
         return categoryRepository.findAllByOrderBySortOrderAsc().stream()
@@ -50,9 +56,14 @@ public class CraftItemService {
     }
 
     public CraftItemDto getItemById(Long id) {
+        return getItemById(id, null);
+    }
+
+    public CraftItemDto getItemById(Long id, String version) {
         CraftItem item = craftItemRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id));
-        return toDtoWithIngredients(item);
+        GameVersion gv = gameVersionService.resolveOrCurrent(version);
+        return toDtoWithIngredients(item, gv);
     }
 
     public List<CraftItemDto> searchItems(String query) {
@@ -61,7 +72,7 @@ public class CraftItemService {
                 .collect(Collectors.toList());
     }
 
-    @org.springframework.transaction.annotation.Transactional
+    @Transactional
     public CraftItemDto updateItem(Long id, UpdateItemRequest request) {
         CraftItem item = craftItemRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id));
@@ -82,24 +93,30 @@ public class CraftItemService {
         item.setUpdatedAt(java.time.LocalDateTime.now());
         craftItemRepository.save(item);
 
-        return toDtoWithIngredients(item);
+        return toDtoWithIngredients(item, gameVersionService.getCurrent());
     }
 
-    public List<UsedInDto> getUsedIn(Long itemId) {
+    public List<UsedInDto> getUsedIn(Long itemId, String version) {
         if (!craftItemRepository.existsById(itemId)) {
             throw new ItemNotFoundException(itemId);
         }
-        return recipeIngredientRepository.findByIngredientItemId(itemId).stream()
-                .map(ri -> UsedInDto.builder()
-                        .itemId(ri.getResultItem().getId())
-                        .itemName(ri.getResultItem().getName())
-                        .itemNameUz(ri.getResultItem().getNameUz())
-                        .itemNameEn(ri.getResultItem().getNameEn())
-                        .itemNameUzCyr(ri.getResultItem().getNameUzCyr())
-                        .categoryCode(ri.getResultItem().getCategory().getCode())
-                        .imageUrl(ri.getResultItem().getImageUrl())
-                        .quantity(ri.getQuantity())
-                        .build())
+        GameVersion gv = gameVersionService.resolveOrCurrent(version);
+        return recipeIngredientRepository
+                .findByIngredientItemIdAndGameVersionId(itemId, gv.getId())
+                .stream()
+                .map(ri -> {
+                    CraftItem result = ri.getRecipe().getResultItem();
+                    return UsedInDto.builder()
+                            .itemId(result.getId())
+                            .itemName(result.getName())
+                            .itemNameUz(result.getNameUz())
+                            .itemNameEn(result.getNameEn())
+                            .itemNameUzCyr(result.getNameUzCyr())
+                            .categoryCode(result.getCategory().getCode())
+                            .imageUrl(result.getImageUrl())
+                            .quantity(ri.getQuantity())
+                            .build();
+                })
                 .collect(Collectors.toList());
     }
 
@@ -137,23 +154,27 @@ public class CraftItemService {
                 .build();
     }
 
-    private CraftItemDto toDtoWithIngredients(CraftItem item) {
-        List<RecipeIngredient> ingredients = recipeIngredientRepository.findByResultItemId(item.getId());
-        List<RecipeIngredientDto> ingredientDtos = ingredients.stream()
-                .map(ri -> RecipeIngredientDto.builder()
-                        .ingredientItemId(ri.getIngredientItem().getId())
-                        .ingredientName(ri.getIngredientItem().getName())
-                        .ingredientNameUz(ri.getIngredientItem().getNameUz())
-                        .ingredientNameEn(ri.getIngredientItem().getNameEn())
-                        .ingredientNameUzCyr(ri.getIngredientItem().getNameUzCyr())
-                        .ingredientCategory(ri.getIngredientItem().getCategory().getCode())
-                        .ingredientImageUrl(ri.getIngredientItem().getImageUrl())
-                        .quantity(ri.getQuantity())
-                        .build())
-                .collect(Collectors.toList());
+    private CraftItemDto toDtoWithIngredients(CraftItem item, GameVersion gv) {
+        Optional<Recipe> recipeOpt = recipeRepository.findByResultItemIdAndGameVersionId(item.getId(), gv.getId());
+        List<RecipeIngredientDto> ingredientDtos = recipeOpt.map(r -> r.getIngredients().stream()
+                        .map(ri -> RecipeIngredientDto.builder()
+                                .ingredientItemId(ri.getIngredientItem().getId())
+                                .ingredientName(ri.getIngredientItem().getName())
+                                .ingredientNameUz(ri.getIngredientItem().getNameUz())
+                                .ingredientNameEn(ri.getIngredientItem().getNameEn())
+                                .ingredientNameUzCyr(ri.getIngredientItem().getNameUzCyr())
+                                .ingredientCategory(ri.getIngredientItem().getCategory().getCode())
+                                .ingredientImageUrl(ri.getIngredientItem().getImageUrl())
+                                .quantity(ri.getQuantity())
+                                .build())
+                        .collect(Collectors.toList()))
+                .orElseGet(java.util.Collections::emptyList);
 
         CraftItemDto dto = toDto(item);
         dto.setIngredients(ingredientDtos);
+        // Item's effective craft time for this version: prefer recipe's, fall back to item's own.
+        Integer effectiveCraftTime = recipeOpt.map(Recipe::getCraftTimeSeconds).orElse(item.getCraftTimeSeconds());
+        dto.setCraftTimeSeconds(effectiveCraftTime);
         return dto;
     }
 }

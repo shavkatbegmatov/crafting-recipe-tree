@@ -26,9 +26,11 @@ public class CraftItemController {
     }
 
     @GetMapping("/items/{id}")
-    @Operation(summary = "Get item by ID with recipe ingredients")
-    public CraftItemDto getItem(@PathVariable Long id) {
-        return craftItemService.getItemById(id);
+    @Operation(summary = "Get item by ID with recipe ingredients (scoped to a game version, default current)")
+    public CraftItemDto getItem(
+            @PathVariable Long id,
+            @RequestParam(value = "version", required = false) String version) {
+        return craftItemService.getItemById(id, version);
     }
 
     @GetMapping("/items/search")
@@ -38,9 +40,11 @@ public class CraftItemController {
     }
 
     @GetMapping("/items/{id}/used-in")
-    @Operation(summary = "Get recipes where this item is used as ingredient")
-    public List<UsedInDto> getUsedIn(@PathVariable Long id) {
-        return craftItemService.getUsedIn(id);
+    @Operation(summary = "Get recipes where this item is used as ingredient (scoped to a game version)")
+    public List<UsedInDto> getUsedIn(
+            @PathVariable Long id,
+            @RequestParam(value = "version", required = false) String version) {
+        return craftItemService.getUsedIn(id, version);
     }
 
     @PutMapping("/items/{id}")

@@ -12,12 +12,16 @@ import com.crafttree.dto.portage.ImportReportDto.RowDto;
 import com.crafttree.dto.portage.ImportReportDto.SectionSummaryDto;
 import com.crafttree.entity.Category;
 import com.crafttree.entity.CraftItem;
+import com.crafttree.entity.GameVersion;
+import com.crafttree.entity.Recipe;
 import com.crafttree.entity.RecipeIngredient;
 import com.crafttree.entity.Tag;
 import com.crafttree.repository.CategoryRepository;
 import com.crafttree.repository.CraftItemRepository;
 import com.crafttree.repository.RecipeIngredientRepository;
+import com.crafttree.repository.RecipeRepository;
 import com.crafttree.repository.TagRepository;
+import com.crafttree.service.GameVersionService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +53,9 @@ public class ImportService {
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
     private final CraftItemRepository craftItemRepository;
+    private final RecipeRepository recipeRepository;
     private final RecipeIngredientRepository recipeIngredientRepository;
+    private final GameVersionService gameVersionService;
     private final TransactionTemplate transactionTemplate;
 
     @Value("${app.uploads.path:uploads}")
@@ -427,12 +433,30 @@ public class ImportService {
                              Map<String, CraftItem> resolved,
                              ImportOptionsDto.ConflictMode mode,
                              ImportReportDto report) {
-        if (rows == null) rows = List.of();
+        final List<ExportItemDto.Recipe> rowsList = (rows == null) ? List.of() : rows;
+
+        // Import always targets the current game version. (Multi-version import is a future feature.)
+        GameVersion currentVersion = gameVersionService.getCurrent();
+
+        // Find or create the Recipe row for (owner, currentVersion).
+        Recipe recipe = recipeRepository
+                .findByResultItemIdAndGameVersionId(owner.getId(), currentVersion.getId())
+                .orElseGet(() -> {
+                    if (rowsList.isEmpty()) return null;
+                    Recipe newRecipe = Recipe.builder()
+                            .resultItem(owner)
+                            .gameVersion(currentVersion)
+                            .craftTimeSeconds(owner.getCraftTimeSeconds() != null ? owner.getCraftTimeSeconds() : 0)
+                            .build();
+                    return recipeRepository.save(newRecipe);
+                });
 
         Map<Long, BigDecimal> existingByIngredientId = new LinkedHashMap<>();
-        for (RecipeIngredient ri : recipeIngredientRepository.findByResultItemId(owner.getId())) {
-            if (ri.getIngredientItem() != null && ri.getIngredientItem().getId() != null) {
-                existingByIngredientId.put(ri.getIngredientItem().getId(), ri.getQuantity());
+        if (recipe != null) {
+            for (RecipeIngredient ri : recipeIngredientRepository.findByRecipeId(recipe.getId())) {
+                if (ri.getIngredientItem() != null && ri.getIngredientItem().getId() != null) {
+                    existingByIngredientId.put(ri.getIngredientItem().getId(), ri.getQuantity());
+                }
             }
         }
 
@@ -441,15 +465,19 @@ public class ImportService {
             return 0;
         }
 
-        if (mode == ImportOptionsDto.ConflictMode.REPLACE) {
-            recipeIngredientRepository.deleteAllByResultItemId(owner.getId());
+        if (mode == ImportOptionsDto.ConflictMode.REPLACE && recipe != null) {
+            recipeIngredientRepository.deleteAllByRecipeId(recipe.getId());
             existingByIngredientId.clear();
+        }
+
+        if (rowsList.isEmpty() || recipe == null) {
+            return 0;
         }
 
         int writes = 0;
         Set<Long> seenInPackage = new HashSet<>();
 
-        for (ExportItemDto.Recipe r : rows) {
+        for (ExportItemDto.Recipe r : rowsList) {
             CraftItem ing = resolved.get(r.getIngredientName());
             if (ing == null || ing.getId() == null) {
                 report.getWarnings().add("recipe of " + owner.getName()
@@ -467,11 +495,11 @@ public class ImportService {
             BigDecimal currentQty = existingByIngredientId.get(ing.getId());
 
             if (currentQty == null) {
-                recipeIngredientRepository.upsert(owner.getId(), ing.getId(), qty);
+                recipeIngredientRepository.upsert(recipe.getId(), ing.getId(), qty);
                 applyToSummary(report.getRecipes(), Action.CREATE);
                 writes++;
             } else if (currentQty.compareTo(qty) != 0) {
-                recipeIngredientRepository.upsert(owner.getId(), ing.getId(), qty);
+                recipeIngredientRepository.upsert(recipe.getId(), ing.getId(), qty);
                 applyToSummary(report.getRecipes(), Action.UPDATE);
                 writes++;
             } else {

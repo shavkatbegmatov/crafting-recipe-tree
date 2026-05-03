@@ -67,7 +67,7 @@ public class CraftItem {
 
     @OneToMany(mappedBy = "resultItem", fetch = FetchType.LAZY)
     @Builder.Default
-    private List<RecipeIngredient> ingredients = new ArrayList<>();
+    private List<Recipe> recipes = new ArrayList<>();
 
     @OneToMany(mappedBy = "ingredientItem", fetch = FetchType.LAZY)
     @Builder.Default

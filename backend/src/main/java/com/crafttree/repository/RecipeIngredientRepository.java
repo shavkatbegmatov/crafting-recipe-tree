@@ -12,24 +12,35 @@ import java.util.Optional;
 
 public interface RecipeIngredientRepository extends JpaRepository<RecipeIngredient, Long> {
 
-    List<RecipeIngredient> findByResultItemId(Long resultItemId);
+    List<RecipeIngredient> findByRecipeId(Long recipeId);
 
-    List<RecipeIngredient> findByIngredientItemId(Long ingredientItemId);
+    /**
+     * Find all ingredient rows where the given item is used as an ingredient,
+     * scoped to a specific game version (i.e. only rows that belong to recipes of that version).
+     */
+    @Query("""
+            SELECT ri FROM RecipeIngredient ri
+            WHERE ri.ingredientItem.id = :ingredientItemId
+              AND ri.recipe.gameVersion.id = :gameVersionId
+            """)
+    List<RecipeIngredient> findByIngredientItemIdAndGameVersionId(
+            @Param("ingredientItemId") Long ingredientItemId,
+            @Param("gameVersionId") Long gameVersionId);
 
-    Optional<RecipeIngredient> findByResultItemIdAndIngredientItemId(Long resultItemId, Long ingredientItemId);
+    Optional<RecipeIngredient> findByRecipeIdAndIngredientItemId(Long recipeId, Long ingredientItemId);
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(value = """
-            INSERT INTO recipe_ingredients (result_item_id, ingredient_item_id, quantity)
-            VALUES (:resultItemId, :ingredientItemId, :quantity)
-            ON CONFLICT (result_item_id, ingredient_item_id)
+            INSERT INTO recipe_ingredients (recipe_id, ingredient_item_id, quantity)
+            VALUES (:recipeId, :ingredientItemId, :quantity)
+            ON CONFLICT (recipe_id, ingredient_item_id)
             DO UPDATE SET quantity = EXCLUDED.quantity
             """, nativeQuery = true)
-    int upsert(@Param("resultItemId") Long resultItemId,
+    int upsert(@Param("recipeId") Long recipeId,
                @Param("ingredientItemId") Long ingredientItemId,
                @Param("quantity") BigDecimal quantity);
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
-    @Query(value = "DELETE FROM recipe_ingredients WHERE result_item_id = :resultItemId", nativeQuery = true)
-    int deleteAllByResultItemId(@Param("resultItemId") Long resultItemId);
+    @Query(value = "DELETE FROM recipe_ingredients WHERE recipe_id = :recipeId", nativeQuery = true)
+    int deleteAllByRecipeId(@Param("recipeId") Long recipeId);
 }

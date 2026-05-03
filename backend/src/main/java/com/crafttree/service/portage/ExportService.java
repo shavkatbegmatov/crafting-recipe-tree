@@ -7,10 +7,12 @@ import com.crafttree.dto.portage.ExportPackageDto;
 import com.crafttree.dto.portage.ExportTagDto;
 import com.crafttree.entity.Category;
 import com.crafttree.entity.CraftItem;
+import com.crafttree.entity.Recipe;
 import com.crafttree.entity.RecipeIngredient;
 import com.crafttree.entity.Tag;
 import com.crafttree.repository.CraftItemRepository;
-import com.crafttree.repository.RecipeIngredientRepository;
+import com.crafttree.repository.RecipeRepository;
+import com.crafttree.service.GameVersionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +39,8 @@ public class ExportService {
     public static final String GENERATOR = "crafting-recipe-tree";
 
     private final CraftItemRepository craftItemRepository;
-    private final RecipeIngredientRepository recipeIngredientRepository;
+    private final RecipeRepository recipeRepository;
+    private final GameVersionService gameVersionService;
 
     public record ExportSelection(
             List<Long> itemIds,
@@ -87,15 +90,20 @@ public class ExportService {
             }
         }
 
+        // Export uses the current game version's recipes only. Multi-version export is a separate feature.
+        Long currentVersionId = gameVersionService.getCurrent().getId();
         Set<Long> itemIdSet = items.stream().map(CraftItem::getId).collect(Collectors.toSet());
-        List<RecipeIngredient> recipes = recipeIngredientRepository.findAll().stream()
-                .filter(ri -> itemIdSet.contains(ri.getResultItem().getId())
-                        && itemIdSet.contains(ri.getIngredientItem().getId()))
+
+        List<Recipe> versionRecipes = recipeRepository.findByGameVersionId(currentVersionId);
+        List<RecipeIngredient> recipes = versionRecipes.stream()
+                .filter(r -> itemIdSet.contains(r.getResultItem().getId()))
+                .flatMap(r -> r.getIngredients().stream())
+                .filter(ri -> itemIdSet.contains(ri.getIngredientItem().getId()))
                 .collect(Collectors.toList());
 
         Map<Long, List<RecipeIngredient>> recipesByResult = new LinkedHashMap<>();
         for (RecipeIngredient ri : recipes) {
-            recipesByResult.computeIfAbsent(ri.getResultItem().getId(), k -> new ArrayList<>()).add(ri);
+            recipesByResult.computeIfAbsent(ri.getRecipe().getResultItem().getId(), k -> new ArrayList<>()).add(ri);
         }
 
         List<ExportCategoryDto> categoriesDto = categoriesByCode.values().stream()
@@ -201,12 +209,16 @@ public class ExportService {
         Set<Long> visited = new TreeSet<>();
         List<CraftItem> ordered = new ArrayList<>();
         Deque<CraftItem> stack = new ArrayDeque<>(roots);
+        Long currentVersionId = gameVersionService.getCurrent().getId();
 
         while (!stack.isEmpty()) {
             CraftItem ci = stack.pop();
             if (ci.getId() == null || !visited.add(ci.getId())) continue;
             ordered.add(ci);
-            List<RecipeIngredient> ris = recipeIngredientRepository.findByResultItemId(ci.getId());
+            List<RecipeIngredient> ris = recipeRepository
+                    .findByResultItemIdAndGameVersionId(ci.getId(), currentVersionId)
+                    .map(Recipe::getIngredients)
+                    .orElseGet(List::of);
             for (RecipeIngredient ri : ris) {
                 CraftItem dep = ri.getIngredientItem();
                 if (dep != null && dep.getId() != null && !visited.contains(dep.getId())) {
