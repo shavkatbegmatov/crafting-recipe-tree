@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
+import { GameVersionProvider } from './contexts/GameVersionContext'
 import Layout from './components/layout/Layout'
 import HomePage from './pages/HomePage'
 import ItemDetailPage from './pages/ItemDetailPage'
@@ -12,17 +13,19 @@ import AdminPortagePage from './pages/AdminPortagePage'
 export default function App() {
   return (
     <AuthProvider>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/" element={<Layout />}>
-          <Route index element={<HomePage />} />
-          <Route path="items/:id" element={<ItemDetailPage />} />
-          <Route path="admin/categories" element={<AdminCategoriesPage />} />
-          <Route path="admin/portage" element={<AdminPortagePage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Route>
-      </Routes>
+      <GameVersionProvider>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/" element={<Layout />}>
+            <Route index element={<HomePage />} />
+            <Route path="items/:id" element={<ItemDetailPage />} />
+            <Route path="admin/categories" element={<AdminCategoriesPage />} />
+            <Route path="admin/portage" element={<AdminPortagePage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Route>
+        </Routes>
+      </GameVersionProvider>
     </AuthProvider>
   )
 }

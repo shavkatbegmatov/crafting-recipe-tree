@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { fetchCategories, fetchItems, fetchItem, searchItems, fetchUsedIn, fetchTags } from '../api/items'
+import { useGameVersion } from '../contexts/GameVersionContext'
 
 export function useCategories() {
   return useQuery({
@@ -16,9 +17,10 @@ export function useItems(category?: string) {
 }
 
 export function useItem(id: number) {
+  const { effectiveVersion } = useGameVersion()
   return useQuery({
-    queryKey: ['item', id],
-    queryFn: () => fetchItem(id),
+    queryKey: ['item', id, effectiveVersion],
+    queryFn: () => fetchItem(id, effectiveVersion ?? undefined),
     enabled: id > 0,
   })
 }
@@ -39,9 +41,10 @@ export function useTags() {
 }
 
 export function useUsedIn(id: number) {
+  const { effectiveVersion } = useGameVersion()
   return useQuery({
-    queryKey: ['usedIn', id],
-    queryFn: () => fetchUsedIn(id),
+    queryKey: ['usedIn', id, effectiveVersion],
+    queryFn: () => fetchUsedIn(id, effectiveVersion ?? undefined),
     enabled: id > 0,
   })
 }

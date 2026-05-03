@@ -246,6 +246,27 @@
     "empty": "Ҳали хабарлар йўқ",
     "loginRequired": "Хабар юбориш учун киринг"
   },
+  "gameVersion": {
+    "title": "Ўйин версияси",
+    "selectorTitle": "Рецептлар учун ўйин версиясини танланг",
+    "current": "Жорий",
+    "followCurrent": "Жорий версия",
+    "manage": "Версияларни бошқариш",
+    "addNew": "Янги версия",
+    "version": "Версия",
+    "releasedAt": "Чиқарилган сана",
+    "notes": "Эслатмалар",
+    "isCurrent": "Жорий қилиш",
+    "create": "Яратиш",
+    "update": "Сақлаш",
+    "delete": "Ўчириш",
+    "setCurrent": "Жорий деб белгилаш",
+    "deleteConfirm": "Бу версияни ўчириш керакми?",
+    "noRecipes": "Бу версияда рецепт йўқ",
+    "copyFrom": "...дан кўчириш",
+    "history": "Рецепт тарихи",
+    "noHistory": "Бошқа версиялар йўқ"
+  },
   "time": {
     "seconds": "{{count}}с",
     "minutes": "{{count}}д",

@@ -99,3 +99,13 @@ export interface UsedIn {
 }
 
 export type CategoryCode = 'RAW' | 'MATERIAL' | 'ITEM' | 'MODULE'
+
+export interface GameVersion {
+  id: number
+  version: string
+  releasedAt: string
+  notes: string | null
+  isCurrent: boolean
+  createdAt: string
+  updatedAt: string
+}

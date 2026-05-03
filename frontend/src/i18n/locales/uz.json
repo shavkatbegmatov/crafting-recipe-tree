@@ -254,6 +254,27 @@
     "empty": "Hali xabarlar yo'q",
     "loginRequired": "Xabar yuborish uchun kiring"
   },
+  "gameVersion": {
+    "title": "O'yin versiyasi",
+    "selectorTitle": "Retseptlar uchun o'yin versiyasini tanlang",
+    "current": "Joriy",
+    "followCurrent": "Joriy versiya",
+    "manage": "Versiyalarni boshqarish",
+    "addNew": "Yangi versiya",
+    "version": "Versiya",
+    "releasedAt": "Chiqarilgan sana",
+    "notes": "Eslatmalar",
+    "isCurrent": "Joriy qilish",
+    "create": "Yaratish",
+    "update": "Saqlash",
+    "delete": "O'chirish",
+    "setCurrent": "Joriy deb belgilash",
+    "deleteConfirm": "Bu versiyani o'chirilsinmi?",
+    "noRecipes": "Bu versiyada retsept yo'q",
+    "copyFrom": "...dan ko'chirish",
+    "history": "Retsept tarixi",
+    "noHistory": "Boshqa versiyalar yo'q"
+  },
   "time": {
     "seconds": "{{count}}s",
     "minutes": "{{count}}m",

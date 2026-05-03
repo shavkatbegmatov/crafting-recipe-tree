@@ -56,6 +56,11 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/tags/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/tags/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/tags/**").hasRole("ADMIN")
+                // Admin endpoints — game versions
+                .requestMatchers(HttpMethod.POST, "/api/game-versions/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/game-versions/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PATCH, "/api/game-versions/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/game-versions/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

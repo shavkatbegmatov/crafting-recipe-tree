@@ -246,6 +246,27 @@
     "empty": "Сообщений пока нет",
     "loginRequired": "Войдите, чтобы отправлять сообщения"
   },
+  "gameVersion": {
+    "title": "Версия игры",
+    "selectorTitle": "Выберите версию игры для рецептов",
+    "current": "Текущая",
+    "followCurrent": "Текущая версия",
+    "manage": "Управление версиями",
+    "addNew": "Новая версия",
+    "version": "Версия",
+    "releasedAt": "Дата выхода",
+    "notes": "Заметки",
+    "isCurrent": "Сделать текущей",
+    "create": "Создать",
+    "update": "Сохранить",
+    "delete": "Удалить",
+    "setCurrent": "Сделать текущей",
+    "deleteConfirm": "Удалить эту версию?",
+    "noRecipes": "Нет рецептов в этой версии",
+    "copyFrom": "Копировать из...",
+    "history": "История рецепта",
+    "noHistory": "Нет других версий"
+  },
   "time": {
     "seconds": "{{count}}с",
     "minutes": "{{count}}м",

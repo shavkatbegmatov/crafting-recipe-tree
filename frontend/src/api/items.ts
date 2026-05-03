@@ -37,8 +37,9 @@ export async function fetchItems(category?: string): Promise<CraftItem[]> {
   return data
 }
 
-export async function fetchItem(id: number): Promise<CraftItem> {
-  const { data } = await client.get(`/items/${id}`)
+export async function fetchItem(id: number, version?: string): Promise<CraftItem> {
+  const params = version ? { version } : undefined
+  const { data } = await client.get(`/items/${id}`, { params })
   return data
 }
 
@@ -47,13 +48,15 @@ export async function searchItems(query: string): Promise<CraftItem[]> {
   return data
 }
 
-export async function fetchRecipeTree(id: number): Promise<RecipeTreeNode> {
-  const { data } = await client.get(`/items/${id}/recipe-tree`)
+export async function fetchRecipeTree(id: number, version?: string): Promise<RecipeTreeNode> {
+  const params = version ? { version } : undefined
+  const { data } = await client.get(`/items/${id}/recipe-tree`, { params })
   return data
 }
 
-export async function fetchRawTotals(id: number): Promise<RawTotal> {
-  const { data } = await client.get(`/items/${id}/raw-totals`)
+export async function fetchRawTotals(id: number, version?: string): Promise<RawTotal> {
+  const params = version ? { version } : undefined
+  const { data } = await client.get(`/items/${id}/raw-totals`, { params })
   return data
 }
 
@@ -62,8 +65,9 @@ export async function fetchTotalCraftTime(id: number): Promise<{ itemId: number;
   return data
 }
 
-export async function fetchUsedIn(id: number): Promise<UsedIn[]> {
-  const { data } = await client.get(`/items/${id}/used-in`)
+export async function fetchUsedIn(id: number, version?: string): Promise<UsedIn[]> {
+  const params = version ? { version } : undefined
+  const { data } = await client.get(`/items/${id}/used-in`, { params })
   return data
 }
 

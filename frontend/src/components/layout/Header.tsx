@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useAuth } from '../../contexts/AuthContext'
 import { LANGUAGES } from '../../i18n'
 import UserDropdown from './UserDropdown'
+import GameVersionSelector from './GameVersionSelector'
 
 interface Props {
   onToggleSidebar: () => void
@@ -30,6 +31,9 @@ export default function Header({ onToggleSidebar }: Props) {
       <span className="text-xs text-[#8a7a60] ml-2 hidden sm:inline">{t('app.subtitle')}</span>
 
       <div className="ml-auto flex items-center gap-2">
+        {/* Game version selector — only when authenticated, since it gates recipe data */}
+        {user && <GameVersionSelector />}
+
         {/* Language switcher */}
         <div className="flex items-center gap-1">
           {LANGUAGES.map((lang) => (

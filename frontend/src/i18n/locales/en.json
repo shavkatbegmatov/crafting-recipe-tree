@@ -246,6 +246,27 @@
     "empty": "No messages yet",
     "loginRequired": "Sign in to send messages"
   },
+  "gameVersion": {
+    "title": "Game version",
+    "selectorTitle": "Pick a game version to scope recipes",
+    "current": "Current",
+    "followCurrent": "Follow current",
+    "manage": "Manage versions",
+    "addNew": "New version",
+    "version": "Version",
+    "releasedAt": "Released at",
+    "notes": "Notes",
+    "isCurrent": "Make current",
+    "create": "Create",
+    "update": "Save",
+    "delete": "Delete",
+    "setCurrent": "Set as current",
+    "deleteConfirm": "Delete this version?",
+    "noRecipes": "No recipes in this version",
+    "copyFrom": "Copy from…",
+    "history": "Recipe history",
+    "noHistory": "No other versions"
+  },
   "time": {
     "seconds": "{{count}}s",
     "minutes": "{{count}}m",
