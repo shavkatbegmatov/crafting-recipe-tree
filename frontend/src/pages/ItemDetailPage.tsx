@@ -11,10 +11,11 @@ import RawTotals from '../components/tree/RawTotals'
 import CategoryBadge from '../components/ui/CategoryBadge'
 import ItemImageIcon from '../components/ui/ItemImageIcon'
 import Spinner from '../components/ui/Spinner'
-import { ArrowLeft, ArrowRight, Clock, Beaker, Pencil, Save, X, Loader2, Check, Download } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Clock, Beaker, Pencil, Save, X, Loader2, Check, Download, GitBranchPlus } from 'lucide-react'
 import { downloadExport } from '../api/portage'
 import ImageUpload from '../components/items/ImageUpload'
 import SafeImage from '../components/ui/SafeImage'
+import RecipeEditor from '../components/items/RecipeEditor'
 
 export default function ItemDetailPage() {
   const { t } = useTranslation()
@@ -30,6 +31,7 @@ export default function ItemDetailPage() {
 
   const [selectedTagIds, setSelectedTagIds] = useState<number[]>([])
   const [craftQuantity, setCraftQuantity] = useState<number>(1)
+  const [editingRecipe, setEditingRecipe] = useState<boolean>(false)
 
   // Edit mode state
   const [editing, setEditing] = useState(false)
@@ -158,6 +160,20 @@ export default function ItemDetailPage() {
                     <Download size={12} />
                     {t('portage.tab.export')}
                   </button>
+                  {item.categoryCode !== 'RAW' && (
+                    <button
+                      onClick={() => setEditingRecipe((v) => !v)}
+                      className={`flex items-center gap-1 text-xs transition-colors border rounded px-2 py-1 ${
+                        editingRecipe
+                          ? 'bg-dark-gold/15 text-dark-gold border-dark-gold/40'
+                          : 'text-[#8a7a60] hover:text-dark-gold border-dark-border hover:border-dark-gold/40'
+                      }`}
+                      title={t('recipeEditor.toggleTitle')}
+                    >
+                      <GitBranchPlus size={12} />
+                      {t('recipeEditor.button')}
+                    </button>
+                  )}
                   <button
                     onClick={startEdit}
                     className="flex items-center gap-1 text-xs text-[#8a7a60] hover:text-dark-gold transition-colors border border-dark-border rounded px-2 py-1 hover:border-dark-gold/40"
@@ -352,6 +368,15 @@ export default function ItemDetailPage() {
           )}
         </div>
       </div>
+
+      {/* Recipe editor (admin) */}
+      {!editing && editingRecipe && isAdmin && item.categoryCode !== 'RAW' && (
+        <RecipeEditor
+          itemId={itemId}
+          itemName={itemName}
+          onClose={() => setEditingRecipe(false)}
+        />
+      )}
 
       {/* Supplementary blocks: tree, raw totals, used-in */}
       {supplementaryCount > 0 && (

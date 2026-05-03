@@ -109,3 +109,28 @@ export interface GameVersion {
   createdAt: string
   updatedAt: string
 }
+
+export interface RecipeIngredientView {
+  ingredientItemId: number
+  ingredientName: string
+  ingredientNameUz: string
+  ingredientNameEn: string
+  ingredientNameUzCyr: string
+  ingredientCategory: string
+  ingredientImageUrl: string | null
+  quantity: number
+}
+
+export interface Recipe {
+  id: number
+  resultItemId: number
+  resultItemName: string
+  gameVersion: string
+  gameVersionId: number
+  craftTimeSeconds: number
+  notes: string | null
+  createdByUsername: string | null
+  createdAt: string
+  updatedAt: string
+  ingredients: RecipeIngredientView[]
+}

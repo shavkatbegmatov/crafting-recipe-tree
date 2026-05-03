@@ -246,6 +246,18 @@
     "empty": "Сообщений пока нет",
     "loginRequired": "Войдите, чтобы отправлять сообщения"
   },
+  "recipeEditor": {
+    "button": "Рецепт",
+    "toggleTitle": "Редактировать рецепт",
+    "title": "Рецепт: {{itemName}}",
+    "notes": "Заметки",
+    "notesPlaceholder": "Например: ребаланс 5.7.0",
+    "empty": "Ингредиентов пока нет — добавьте ниже",
+    "addIngredientPlaceholder": "Найти и добавить ингредиент...",
+    "copyFromTitle": "Скопировать из другой версии",
+    "deleteVersion": "Удалить рецепт в этой версии",
+    "deleteConfirm": "Удалить рецепт в текущей версии?"
+  },
   "gameVersion": {
     "title": "Версия игры",
     "selectorTitle": "Выберите версию игры для рецептов",

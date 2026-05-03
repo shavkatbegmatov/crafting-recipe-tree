@@ -254,6 +254,18 @@
     "empty": "Hali xabarlar yo'q",
     "loginRequired": "Xabar yuborish uchun kiring"
   },
+  "recipeEditor": {
+    "button": "Retsept",
+    "toggleTitle": "Retseptni tahrirlash",
+    "title": "Retsept: {{itemName}}",
+    "notes": "Eslatmalar",
+    "notesPlaceholder": "Masalan: 5.7.0 balans o'zgarishi",
+    "empty": "Hali ingredient yo'q — quyida qo'shing",
+    "addIngredientPlaceholder": "Ingredient qidirish va qo'shish...",
+    "copyFromTitle": "Boshqa versiyadan ko'chirish",
+    "deleteVersion": "Bu versiyadagi retseptni o'chirish",
+    "deleteConfirm": "Joriy versiyadagi retseptni o'chirilsinmi?"
+  },
   "gameVersion": {
     "title": "O'yin versiyasi",
     "selectorTitle": "Retseptlar uchun o'yin versiyasini tanlang",

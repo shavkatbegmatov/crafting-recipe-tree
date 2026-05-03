@@ -246,6 +246,18 @@
     "empty": "No messages yet",
     "loginRequired": "Sign in to send messages"
   },
+  "recipeEditor": {
+    "button": "Recipe",
+    "toggleTitle": "Edit recipe",
+    "title": "Recipe: {{itemName}}",
+    "notes": "Notes",
+    "notesPlaceholder": "e.g. 5.7.0 rebalance",
+    "empty": "No ingredients yet — add some below",
+    "addIngredientPlaceholder": "Search and add ingredient...",
+    "copyFromTitle": "Copy from another version",
+    "deleteVersion": "Delete recipe in this version",
+    "deleteConfirm": "Delete the recipe in the current version?"
+  },
   "gameVersion": {
     "title": "Game version",
     "selectorTitle": "Pick a game version to scope recipes",
