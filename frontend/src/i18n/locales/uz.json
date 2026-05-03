@@ -285,7 +285,9 @@
     "noRecipes": "Bu versiyada retsept yo'q",
     "copyFrom": "...dan ko'chirish",
     "history": "Retsept tarixi",
-    "noHistory": "Boshqa versiyalar yo'q"
+    "noHistory": "Boshqa versiyalar yo'q",
+    "view": "O'tish",
+    "viewThisVersion": "Shu versiyaga o'tish"
   },
   "time": {
     "seconds": "{{count}}s",

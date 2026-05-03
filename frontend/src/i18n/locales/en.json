@@ -277,7 +277,9 @@
     "noRecipes": "No recipes in this version",
     "copyFrom": "Copy from…",
     "history": "Recipe history",
-    "noHistory": "No other versions"
+    "noHistory": "No other versions",
+    "view": "View",
+    "viewThisVersion": "Switch to this version"
   },
   "time": {
     "seconds": "{{count}}s",

@@ -19,6 +19,7 @@ import {
   Settings,
   Loader2,
   Package,
+  Tag as TagIcon,
 } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 
@@ -396,6 +397,15 @@ export default function UserDropdown() {
                   >
                     <Package className="w-3.5 h-3.5 text-dark-gold" />
                     {t('admin.portage')}
+                  </Link>
+                  <Link
+                    to="/admin/game-versions"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-[#d4c4a0]
+                      hover:bg-dark-hover transition-colors"
+                  >
+                    <TagIcon className="w-3.5 h-3.5 text-dark-gold" />
+                    {t('gameVersion.manage')}
                   </Link>
                 </>
               )}

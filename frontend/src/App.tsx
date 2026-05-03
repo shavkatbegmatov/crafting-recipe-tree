@@ -9,6 +9,7 @@ import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import AdminCategoriesPage from './pages/AdminCategoriesPage'
 import AdminPortagePage from './pages/AdminPortagePage'
+import AdminGameVersionsPage from './pages/AdminGameVersionsPage'
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
             <Route path="items/:id" element={<ItemDetailPage />} />
             <Route path="admin/categories" element={<AdminCategoriesPage />} />
             <Route path="admin/portage" element={<AdminPortagePage />} />
+            <Route path="admin/game-versions" element={<AdminGameVersionsPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>

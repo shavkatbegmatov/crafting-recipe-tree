@@ -277,7 +277,9 @@
     "noRecipes": "Бу версияда рецепт йўқ",
     "copyFrom": "...дан кўчириш",
     "history": "Рецепт тарихи",
-    "noHistory": "Бошқа версиялар йўқ"
+    "noHistory": "Бошқа версиялар йўқ",
+    "view": "Ўтиш",
+    "viewThisVersion": "Шу версияга ўтиш"
   },
   "time": {
     "seconds": "{{count}}с",

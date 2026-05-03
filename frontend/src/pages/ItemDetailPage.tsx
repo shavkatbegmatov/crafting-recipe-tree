@@ -16,6 +16,7 @@ import { downloadExport } from '../api/portage'
 import ImageUpload from '../components/items/ImageUpload'
 import SafeImage from '../components/ui/SafeImage'
 import RecipeEditor from '../components/items/RecipeEditor'
+import RecipeHistorySection from '../components/items/RecipeHistorySection'
 
 export default function ItemDetailPage() {
   const { t } = useTranslation()
@@ -434,6 +435,9 @@ export default function ItemDetailPage() {
           )}
         </div>
       )}
+
+      {/* Recipe history (versions) */}
+      {!editing && item.categoryCode !== 'RAW' && <RecipeHistorySection itemId={itemId} />}
     </div>
   )
 }
