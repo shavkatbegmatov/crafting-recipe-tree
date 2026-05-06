@@ -22,6 +22,7 @@ import {
   UserPlus,
 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
+import { useGoBack } from '../hooks/useGoBack'
 import AmbientBackdrop from '../components/layout/AmbientBackdrop'
 
 const cardVariants = {
@@ -94,6 +95,7 @@ export default function LoginPage() {
   const { t } = useTranslation()
   const { login } = useAuth()
   const navigate = useNavigate()
+  const goBack = useGoBack('/')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -155,14 +157,15 @@ export default function LoginPage() {
     <div className="relative min-h-screen overflow-hidden bg-[#070509]">
       <AmbientBackdrop showRings={false} showCenterHalo={false} intensity="soft" />
 
-      <Link
-        to="/"
+      <button
+        type="button"
+        onClick={goBack}
         aria-label={t('common.back')}
         className="group absolute left-4 top-4 z-20 inline-flex items-center gap-2 rounded-full border border-dark-border/70 bg-black/40 px-3.5 py-2 text-xs font-medium uppercase tracking-[0.22em] text-[#a8916a] backdrop-blur-sm transition-all duration-200 hover:border-dark-gold/40 hover:bg-black/60 hover:text-[#f0dfb8] sm:left-6 sm:top-6"
       >
         <ArrowLeft size={14} className="transition-transform group-hover:-translate-x-0.5" />
         <span>{t('common.back')}</span>
-      </Link>
+      </button>
 
       <div className="relative mx-auto flex min-h-screen w-full max-w-7xl items-center px-4 py-8 sm:px-6 lg:px-8">
         <div className="grid w-full items-center gap-6 lg:grid-cols-[1.15fr_0.85fr] xl:gap-8">

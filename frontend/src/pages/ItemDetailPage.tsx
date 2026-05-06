@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useLocalizedField } from '../hooks/useLanguage'
+import { useGoBack } from '../hooks/useGoBack'
 import { useItem, useUsedIn, useCategories, useTags } from '../hooks/useItems'
 import { useAuth } from '../contexts/AuthContext'
 import { updateItem, setItemTags } from '../api/items'
@@ -21,6 +22,7 @@ import RecipeHistorySection from '../components/items/RecipeHistorySection'
 export default function ItemDetailPage() {
   const { t } = useTranslation()
   const { getField } = useLocalizedField()
+  const goBack = useGoBack('/')
   const { isAdmin } = useAuth()
   const { id } = useParams<{ id: string }>()
   const itemId = Number(id)
@@ -122,9 +124,13 @@ export default function ItemDetailPage() {
 
   return (
     <div className="space-y-6 max-w-7xl">
-      <Link to="/" className="text-[#8a7a60] hover:text-[#d4c4a0] text-sm flex items-center gap-1 transition-colors">
+      <button
+        type="button"
+        onClick={goBack}
+        className="text-[#8a7a60] hover:text-[#d4c4a0] text-sm flex items-center gap-1 transition-colors"
+      >
         <ArrowLeft size={14} /> {t('detail.back')}
-      </Link>
+      </button>
 
       {/* Item info */}
       <div className="bg-dark-card border border-dark-border rounded-lg overflow-hidden xl:flex">

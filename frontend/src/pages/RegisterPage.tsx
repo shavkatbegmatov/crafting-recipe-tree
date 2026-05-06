@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../contexts/AuthContext'
+import { useGoBack } from '../hooks/useGoBack'
 import { lookupReferrer } from '../api/auth'
 import {
   Boxes,
@@ -19,6 +20,7 @@ export default function RegisterPage() {
   const { t } = useTranslation()
   const { register } = useAuth()
   const navigate = useNavigate()
+  const goBack = useGoBack('/')
   const [searchParams] = useSearchParams()
 
   const [username, setUsername] = useState('')
@@ -98,14 +100,15 @@ export default function RegisterPage() {
     <div className="relative min-h-screen overflow-hidden bg-[#070509] flex items-center justify-center p-4">
       <AmbientBackdrop showRings={false} showCenterHalo={false} intensity="soft" />
 
-      <Link
-        to="/"
+      <button
+        type="button"
+        onClick={goBack}
         aria-label={t('common.back')}
         className="group absolute left-4 top-4 z-20 inline-flex items-center gap-2 rounded-full border border-dark-border/70 bg-black/40 px-3.5 py-2 text-xs font-medium uppercase tracking-[0.22em] text-[#a8916a] backdrop-blur-sm transition-all duration-200 hover:border-dark-gold/40 hover:bg-black/60 hover:text-[#f0dfb8] sm:left-6 sm:top-6"
       >
         <ArrowLeft size={14} className="transition-transform group-hover:-translate-x-0.5" />
         <span>{t('common.back')}</span>
-      </Link>
+      </button>
 
       <div className="relative z-10 bg-dark-card/90 border border-dark-border rounded-2xl p-8 w-full max-w-md shadow-2xl shadow-black/50 backdrop-blur-md">
         {/* Logo */}

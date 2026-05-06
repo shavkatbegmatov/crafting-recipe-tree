@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { Link, Navigate } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ArrowLeft, Download, Upload } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
+import { useGoBack } from '../hooks/useGoBack'
 import ExportPanel from '../components/portage/ExportPanel'
 import ImportPanel from '../components/portage/ImportPanel'
 
@@ -11,6 +12,7 @@ type Tab = 'export' | 'import'
 export default function AdminPortagePage() {
   const { t } = useTranslation()
   const { isAdmin } = useAuth()
+  const goBack = useGoBack('/')
   const [tab, setTab] = useState<Tab>('export')
 
   if (!isAdmin) return <Navigate to="/" />
@@ -19,12 +21,13 @@ export default function AdminPortagePage() {
     <div className="max-w-6xl mx-auto space-y-5">
       <header className="flex items-center justify-between">
         <div>
-          <Link
-            to="/"
+          <button
+            type="button"
+            onClick={goBack}
             className="text-xs text-[#8a7a60] hover:text-dark-gold inline-flex items-center gap-1 mb-2"
           >
-            <ArrowLeft size={12} /> {t('detail.back')}
-          </Link>
+            <ArrowLeft size={12} /> {t('common.back')}
+          </button>
           <h1 className="text-xl font-semibold text-[#d4c4a0]">{t('portage.pageTitle')}</h1>
           <p className="text-xs text-[#8a7a60] mt-1 max-w-2xl">{t('portage.pageHint')}</p>
         </div>

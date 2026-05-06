@@ -7,8 +7,9 @@ import { createCategory, updateCategory, deleteCategory } from '../api/items'
 import type { Category } from '../api/types'
 import type { UpdateCategoryData } from '../api/items'
 import { useQueryClient } from '@tanstack/react-query'
-import { Link, Navigate } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import { ArrowLeft, Plus, Pencil, Trash2, Save, X, Loader2, Check } from 'lucide-react'
+import { useGoBack } from '../hooks/useGoBack'
 
 const AVAILABLE_ICONS = ['Package', 'Layers', 'Box', 'Cpu', 'Gem', 'Zap', 'Wrench', 'FlaskConical']
 
@@ -16,6 +17,7 @@ export default function AdminCategoriesPage() {
   const { t } = useTranslation()
   const { isAdmin } = useAuth()
   const { getField } = useLocalizedField()
+  const goBack = useGoBack('/')
   const { data: categories, isLoading } = useCategories()
   const queryClient = useQueryClient()
 
@@ -90,9 +92,14 @@ export default function AdminCategoriesPage() {
     <div className="space-y-6 max-w-4xl">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Link to="/" className="text-[#8a7a60] hover:text-[#d4c4a0] transition-colors">
+          <button
+            type="button"
+            onClick={goBack}
+            aria-label={t('common.back')}
+            className="text-[#8a7a60] hover:text-[#d4c4a0] transition-colors"
+          >
             <ArrowLeft size={18} />
-          </Link>
+          </button>
           <h1 className="text-xl font-semibold text-[#d4c4a0]">{t('admin.categories')}</h1>
         </div>
         {!isEditing && (

@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, Navigate } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import { ArrowLeft, Plus, Pencil, Trash2, Save, X, Loader2, Check, Star, Tag as TagIcon } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
+import { useGoBack } from '../hooks/useGoBack'
 import {
   useGameVersions,
   useCreateGameVersion,
@@ -30,6 +31,7 @@ const emptyForm: FormState = {
 export default function AdminGameVersionsPage() {
   const { t } = useTranslation()
   const { isAdmin } = useAuth()
+  const goBack = useGoBack('/')
   const { data: versions, isLoading } = useGameVersions()
 
   const createMutation = useCreateGameVersion()
@@ -109,9 +111,13 @@ export default function AdminGameVersionsPage() {
 
   return (
     <div className="space-y-5 max-w-5xl">
-      <Link to="/" className="text-[#8a7a60] hover:text-[#d4c4a0] text-sm flex items-center gap-1 transition-colors">
+      <button
+        type="button"
+        onClick={goBack}
+        className="text-[#8a7a60] hover:text-[#d4c4a0] text-sm flex items-center gap-1 transition-colors"
+      >
         <ArrowLeft size={14} /> {t('common.back')}
-      </Link>
+      </button>
 
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <h1 className="text-xl font-semibold text-[#d4c4a0] flex items-center gap-2">
