@@ -1,6 +1,8 @@
 package com.crafttree.service;
 
+import com.crafttree.dto.CopyTreeReportDto;
 import com.crafttree.dto.RecipeDto;
+import com.crafttree.entity.Category;
 import com.crafttree.entity.CraftItem;
 import com.crafttree.entity.GameVersion;
 import com.crafttree.entity.Recipe;
@@ -20,14 +22,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class RecipeService {
+
+    private static final int MAX_DEPTH = 20;
+    private static final String RAW_CATEGORY = "RAW";
 
     private final RecipeRepository recipeRepository;
     private final RecipeIngredientRepository recipeIngredientRepository;
@@ -64,9 +73,19 @@ public class RecipeService {
             @CacheEvict(value = "craftTimes",   allEntries = true),
     })
     public RecipeDto upsertRecipe(Long itemId, String version, UpsertRequest request) {
+        GameVersion gv = gameVersionService.resolveOrCurrent(version);
+        Recipe reloaded = writeRecipeNoCacheEvict(itemId, gv, request);
+        return RecipeDto.from(reloaded);
+    }
+
+    /**
+     * Internal write — same semantics as {@link #upsertRecipe} but without the cache eviction
+     * annotation, so callers performing many writes in a single unit of work (e.g. the tree copy)
+     * can evict the cache once at the end instead of once per recipe.
+     */
+    private Recipe writeRecipeNoCacheEvict(Long itemId, GameVersion gv, UpsertRequest request) {
         CraftItem item = craftItemRepository.findById(itemId)
                 .orElseThrow(() -> new ItemNotFoundException(itemId));
-        GameVersion gv = gameVersionService.resolveOrCurrent(version);
 
         Recipe recipe = recipeRepository.findByResultItemIdAndGameVersionId(itemId, gv.getId())
                 .orElseGet(() -> Recipe.builder()
@@ -103,8 +122,7 @@ public class RecipeService {
         }
 
         // Re-load to pick up freshly inserted ingredient rows.
-        Recipe reloaded = recipeRepository.findById(recipe.getId()).orElseThrow();
-        return RecipeDto.from(reloaded);
+        return recipeRepository.findById(recipe.getId()).orElseThrow();
     }
 
     /**
@@ -141,6 +159,156 @@ public class RecipeService {
                         .toList()
         );
         return upsertRecipe(itemId, target.getVersion(), payload);
+    }
+
+    /**
+     * Copy the entire recipe sub-tree rooted at {@code rootItemId} from {@code fromVersion}
+     * to {@code toVersion}. Traversal is bounded by {@link #MAX_DEPTH} and protected against
+     * cycles, RAW items have no recipe (skipped).
+     *
+     * @param dryRun  when true, no DB writes happen — only the report is computed
+     */
+    @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "recipeTrees",  allEntries = true),
+            @CacheEvict(value = "rawTotals",    allEntries = true),
+            @CacheEvict(value = "craftTimes",   allEntries = true),
+    })
+    public CopyTreeReportDto copyTreeFromVersion(
+            Long rootItemId, String fromVersion, String toVersion,
+            ConflictPolicy policy, boolean dryRun) {
+
+        if (fromVersion == null || fromVersion.isBlank()) {
+            throw new IllegalArgumentException("fromVersion is required");
+        }
+        if (policy == null) policy = ConflictPolicy.SKIP_EXISTING;
+
+        GameVersion source = gameVersionService.resolveOrCurrent(fromVersion);
+        GameVersion target = gameVersionService.resolveOrCurrent(toVersion);
+        if (source.getId().equals(target.getId())) {
+            throw new IllegalArgumentException("fromVersion and toVersion must differ");
+        }
+
+        // Sanity-check the root item exists at all.
+        if (!craftItemRepository.existsById(rootItemId)) {
+            throw new ItemNotFoundException(rootItemId);
+        }
+
+        // Bulk-fetch source recipes (with ingredients eagerly loaded) to avoid N+1 during traversal.
+        Map<Long, Recipe> sourceByItemId = new HashMap<>();
+        for (Recipe r : recipeRepository.findAllWithIngredientsByGameVersionId(source.getId())) {
+            sourceByItemId.put(r.getResultItem().getId(), r);
+        }
+        // Set of item ids that already have a recipe in the target version.
+        Set<Long> targetExistingItemIds = new HashSet<>();
+        for (Recipe r : recipeRepository.findByGameVersionId(target.getId())) {
+            targetExistingItemIds.add(r.getResultItem().getId());
+        }
+
+        Recipe rootSource = sourceByItemId.get(rootItemId);
+        if (rootSource == null) {
+            throw new IllegalStateException(
+                    "No source recipe for item " + rootItemId + " in version " + source.getVersion());
+        }
+
+        CopyTreeReportDto report = CopyTreeReportDto.builder()
+                .fromVersion(source.getVersion())
+                .toVersion(target.getVersion())
+                .rootItemId(rootItemId)
+                .conflictPolicy(policy.name())
+                .dryRun(dryRun)
+                .build();
+
+        Set<Long> visited = new HashSet<>();
+        Deque<Long> stack = new ArrayDeque<>();
+        Map<Long, Integer> depthOf = new HashMap<>();
+        stack.push(rootItemId);
+        depthOf.put(rootItemId, 0);
+
+        while (!stack.isEmpty()) {
+            Long itemId = stack.pop();
+            if (!visited.add(itemId)) continue;
+
+            int depth = depthOf.getOrDefault(itemId, 0);
+            if (depth > MAX_DEPTH) {
+                report.setMaxDepthReached(true);
+                continue;
+            }
+
+            Recipe sourceRecipe = sourceByItemId.get(itemId);
+            CraftItem item = sourceRecipe != null
+                    ? sourceRecipe.getResultItem()
+                    : craftItemRepository.findById(itemId).orElse(null);
+            if (item == null) {
+                // Item was removed since the report was started — skip silently.
+                continue;
+            }
+
+            // RAW items don't carry recipes; record and move on (don't recurse).
+            if (item.getCategory() != null && RAW_CATEGORY.equals(item.getCategory().getCode())) {
+                report.getMissingInSource().add(toEntry(item, null));
+                continue;
+            }
+
+            if (sourceRecipe == null) {
+                // Reached a non-RAW leaf with no source recipe — record but don't recurse.
+                report.getMissingInSource().add(toEntry(item, null));
+                continue;
+            }
+
+            boolean exists = targetExistingItemIds.contains(itemId);
+            boolean shouldWrite;
+            switch (policy) {
+                case OVERWRITE_ALL -> shouldWrite = true;
+                case SKIP_EXISTING, FILL_GAPS_ONLY -> shouldWrite = !exists;
+                default -> shouldWrite = !exists;
+            }
+
+            if (shouldWrite) {
+                if (!dryRun) {
+                    UpsertRequest payload = new UpsertRequest(
+                            sourceRecipe.getCraftTimeSeconds(),
+                            sourceRecipe.getNotes(),
+                            sourceRecipe.getIngredients().stream()
+                                    .map(ri -> new IngredientLine(ri.getIngredientItem().getId(), ri.getQuantity()))
+                                    .toList()
+                    );
+                    writeRecipeNoCacheEvict(itemId, target, payload);
+                }
+                if (exists) {
+                    report.getOverwritten().add(toEntry(item, sourceRecipe.getId()));
+                } else {
+                    report.getCopied().add(toEntry(item, sourceRecipe.getId()));
+                }
+            } else {
+                report.getSkipped().add(toEntry(item, sourceRecipe.getId()));
+            }
+
+            // Recurse into ingredients regardless of whether we wrote — children may still need copying.
+            for (RecipeIngredient ri : sourceRecipe.getIngredients()) {
+                Long childId = ri.getIngredientItem().getId();
+                if (visited.contains(childId)) continue;
+                stack.push(childId);
+                depthOf.merge(childId, depth + 1, Math::min);
+            }
+        }
+
+        report.setVisited(visited.size());
+        return report;
+    }
+
+    private static CopyTreeReportDto.Entry toEntry(CraftItem item, Long sourceRecipeId) {
+        Category cat = item.getCategory();
+        return CopyTreeReportDto.Entry.builder()
+                .itemId(item.getId())
+                .itemName(item.getName())
+                .itemNameUz(item.getNameUz())
+                .itemNameEn(item.getNameEn())
+                .itemNameUzCyr(item.getNameUzCyr())
+                .categoryCode(cat != null ? cat.getCode() : null)
+                .imageUrl(item.getImageUrl())
+                .sourceRecipeId(sourceRecipeId)
+                .build();
     }
 
     @Transactional

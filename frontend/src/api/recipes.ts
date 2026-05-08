@@ -43,6 +43,46 @@ export async function copyRecipeFromVersion(
   return data
 }
 
+export type ConflictPolicy = 'SKIP_EXISTING' | 'OVERWRITE_ALL' | 'FILL_GAPS_ONLY'
+
+export interface CopyTreeReportEntry {
+  itemId: number
+  itemName: string
+  itemNameUz: string | null
+  itemNameEn: string | null
+  itemNameUzCyr: string | null
+  categoryCode: string | null
+  imageUrl: string | null
+  sourceRecipeId: number | null
+}
+
+export interface CopyTreeReport {
+  fromVersion: string
+  toVersion: string
+  rootItemId: number
+  conflictPolicy: ConflictPolicy
+  dryRun: boolean
+  copied: CopyTreeReportEntry[]
+  skipped: CopyTreeReportEntry[]
+  overwritten: CopyTreeReportEntry[]
+  missingInSource: CopyTreeReportEntry[]
+  visited: number
+  maxDepthReached: boolean
+}
+
+export async function copyRecipeTreeFromVersion(
+  itemId: number,
+  fromVersion: string,
+  toVersion: string | undefined,
+  policy: ConflictPolicy,
+  dryRun: boolean,
+): Promise<CopyTreeReport> {
+  const params: Record<string, string | boolean> = { fromVersion, policy, dryRun }
+  if (toVersion) params.toVersion = toVersion
+  const { data } = await client.post(`/items/${itemId}/recipe/copy-tree-from`, undefined, { params })
+  return data
+}
+
 export async function deleteRecipe(itemId: number, version?: string): Promise<void> {
   const params = version ? { version } : undefined
   await client.delete(`/items/${itemId}/recipe`, { params })

@@ -4,8 +4,10 @@ import {
   fetchRecipeHistory,
   upsertRecipe,
   copyRecipeFromVersion,
+  copyRecipeTreeFromVersion,
   deleteRecipe,
   type UpsertRecipeData,
+  type ConflictPolicy,
 } from '../api/recipes'
 import { useGameVersion } from '../contexts/GameVersionContext'
 
@@ -55,6 +57,30 @@ export function useCopyRecipeFromVersion(itemId: number) {
     }: { fromVersion: string; toVersion?: string; overwrite?: boolean }) =>
       copyRecipeFromVersion(itemId, fromVersion, toVersion, overwrite),
     onSuccess: () => invalidateRecipeData(qc, itemId),
+  })
+}
+
+export function useCopyRecipeTreeFromVersion(itemId: number) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({
+      fromVersion,
+      toVersion,
+      policy,
+      dryRun,
+    }: { fromVersion: string; toVersion?: string; policy: ConflictPolicy; dryRun: boolean }) =>
+      copyRecipeTreeFromVersion(itemId, fromVersion, toVersion, policy, dryRun),
+    onSuccess: (_data, vars) => {
+      // dry-run never writes, so don't bust caches.
+      if (vars.dryRun) return
+      // A tree copy can affect any number of items; bust caches broadly.
+      qc.invalidateQueries({ queryKey: ['recipe'] })
+      qc.invalidateQueries({ queryKey: ['recipeHistory'] })
+      qc.invalidateQueries({ queryKey: ['recipeTree'] })
+      qc.invalidateQueries({ queryKey: ['rawTotals'] })
+      qc.invalidateQueries({ queryKey: ['usedIn'] })
+      qc.invalidateQueries({ queryKey: ['item'] })
+    },
   })
 }
 

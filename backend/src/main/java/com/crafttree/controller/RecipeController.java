@@ -1,6 +1,8 @@
 package com.crafttree.controller;
 
+import com.crafttree.dto.CopyTreeReportDto;
 import com.crafttree.dto.RecipeDto;
+import com.crafttree.service.ConflictPolicy;
 import com.crafttree.service.RecipeService;
 import com.crafttree.service.RecipeService.UpsertRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -51,6 +53,17 @@ public class RecipeController {
             @RequestParam(value = "toVersion", required = false) String toVersion,
             @RequestParam(value = "overwrite", required = false, defaultValue = "false") boolean overwrite) {
         return recipeService.copyFromVersion(id, fromVersion, toVersion, overwrite);
+    }
+
+    @PostMapping("/recipe/copy-tree-from")
+    @Operation(summary = "Copy the entire recipe sub-tree from one game version to another — admin only")
+    public CopyTreeReportDto copyTreeFrom(
+            @PathVariable Long id,
+            @RequestParam("fromVersion") String fromVersion,
+            @RequestParam(value = "toVersion", required = false) String toVersion,
+            @RequestParam(value = "policy", required = false, defaultValue = "SKIP_EXISTING") ConflictPolicy policy,
+            @RequestParam(value = "dryRun", required = false, defaultValue = "false") boolean dryRun) {
+        return recipeService.copyTreeFromVersion(id, fromVersion, toVersion, policy, dryRun);
     }
 
     @DeleteMapping("/recipe")

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Plus, Trash2, Save, X, Loader2, Check, Search, Copy } from 'lucide-react'
+import { Plus, Trash2, Save, X, Loader2, Check, Search, Copy, GitBranch } from 'lucide-react'
 import type { CraftItem, Recipe } from '../../api/types'
 import { useItems, useCategories } from '../../hooks/useItems'
 import { useLocalizedField } from '../../hooks/useLanguage'
@@ -8,6 +8,7 @@ import { useGameVersion } from '../../contexts/GameVersionContext'
 import { useRecipe, useUpsertRecipe, useCopyRecipeFromVersion, useRecipeHistory, useDeleteRecipe } from '../../hooks/useRecipes'
 import ItemImageIcon from '../ui/ItemImageIcon'
 import { DEFAULT_CATEGORY_COLOR } from '../../utils/constants'
+import CopyTreeDialog from './CopyTreeDialog'
 
 interface Props {
   itemId: number
@@ -41,6 +42,7 @@ export default function RecipeEditor({ itemId, itemName, onClose }: Props) {
   const [lines, setLines] = useState<DraftLine[]>([])
   const [search, setSearch] = useState<string>('')
   const [savedFlash, setSavedFlash] = useState<boolean>(false)
+  const [treeCopySource, setTreeCopySource] = useState<string | null>(null)
 
   // Load existing recipe (or empty draft) when version changes / data arrives.
   useEffect(() => {
@@ -284,19 +286,47 @@ export default function RecipeEditor({ itemId, itemName, onClose }: Props) {
             <Copy size={12} />
             {t('recipeEditor.copyFromTitle')}
           </summary>
-          <div className="mt-2 flex flex-wrap gap-1.5">
+          <div className="mt-2 space-y-2">
             {otherVersionsForCopy.map((r) => (
-              <button
+              <div
                 key={r.id}
-                onClick={() => handleCopyFrom(r.gameVersion)}
-                className="text-xs px-2.5 py-1 rounded border border-dark-border hover:border-dark-gold/40 hover:text-[#d4c4a0] transition-colors font-mono"
-                disabled={copyMutation.isPending}
+                className="flex items-center gap-1.5 flex-wrap"
               >
-                {r.gameVersion}
-              </button>
+                <span className="text-xs font-mono text-[#8a7a60] min-w-[3.5rem]">
+                  {r.gameVersion}
+                </span>
+                <button
+                  onClick={() => handleCopyFrom(r.gameVersion)}
+                  className="flex items-center gap-1 text-xs px-2.5 py-1 rounded border border-dark-border hover:border-dark-gold/40 hover:text-[#d4c4a0] transition-colors"
+                  disabled={copyMutation.isPending}
+                  title={t('recipeEditor.copyOnlyThisRecipe')}
+                >
+                  <Copy size={11} />
+                  {t('recipeEditor.copyOnlyButton')}
+                </button>
+                <button
+                  onClick={() => setTreeCopySource(r.gameVersion)}
+                  className="flex items-center gap-1 text-xs px-2.5 py-1 rounded border border-dark-border hover:border-dark-gold/40 hover:text-[#d4c4a0] transition-colors"
+                  title={t('recipeEditor.copyTreeButtonTitle')}
+                >
+                  <GitBranch size={11} />
+                  {t('recipeEditor.copyTreeButton')}
+                </button>
+              </div>
             ))}
           </div>
         </details>
+      )}
+
+      {treeCopySource && effectiveVersion && (
+        <CopyTreeDialog
+          itemId={itemId}
+          itemName={itemName}
+          fromVersion={treeCopySource}
+          toVersion={effectiveVersion}
+          onClose={() => setTreeCopySource(null)}
+          onSuccess={() => setTreeCopySource(null)}
+        />
       )}
 
       {/* Actions */}
