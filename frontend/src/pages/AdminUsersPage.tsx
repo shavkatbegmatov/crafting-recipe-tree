@@ -14,6 +14,7 @@ import {
 } from '../hooks/useAdminUsers'
 import type { AdminUser, UserRole } from '../api/users'
 import Spinner from '../components/ui/Spinner'
+import { useContentWidth } from '../hooks/useContentWidth'
 
 const ROLES: UserRole[] = ['USER', 'ADMIN', 'SUPER_ADMIN']
 const PAGE_SIZE = 20
@@ -67,6 +68,7 @@ export default function AdminUsersPage() {
   const { t } = useTranslation()
   const { isAdmin, isSuperAdmin, user } = useAuth()
   const goBack = useGoBack('/')
+  const contentWidth = useContentWidth('max-w-6xl')
 
   const [search, setSearch] = useState('')
   const [appliedSearch, setAppliedSearch] = useState('')
@@ -161,7 +163,7 @@ export default function AdminUsersPage() {
   const totalPages = data?.totalPages ?? 0
 
   return (
-    <div className="space-y-5 max-w-6xl">
+    <div className={`space-y-5 ${contentWidth}`}>
       {/* Sarlavha */}
       <button
         type="button"

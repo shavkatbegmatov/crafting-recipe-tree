@@ -311,6 +311,11 @@
     "copyLink": "Copy link",
     "copied": "Copied!"
   },
+  "settings": {
+    "layoutWidth": "Layout width",
+    "centered": "Centered",
+    "full": "Full width"
+  },
   "chat": {
     "title": "Chat",
     "placeholder": "Type a message...",

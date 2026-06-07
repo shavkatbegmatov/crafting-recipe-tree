@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { useGoBack } from '../hooks/useGoBack'
 import ExportPanel from '../components/portage/ExportPanel'
 import ImportPanel from '../components/portage/ImportPanel'
+import { useContentWidth } from '../hooks/useContentWidth'
 
 type Tab = 'export' | 'import'
 
@@ -13,12 +14,13 @@ export default function AdminPortagePage() {
   const { t } = useTranslation()
   const { isAdmin } = useAuth()
   const goBack = useGoBack('/')
+  const contentWidth = useContentWidth('max-w-6xl')
   const [tab, setTab] = useState<Tab>('export')
 
   if (!isAdmin) return <Navigate to="/" />
 
   return (
-    <div className="max-w-6xl mx-auto space-y-5">
+    <div className={`${contentWidth} space-y-5`}>
       <header className="flex items-center justify-between">
         <div>
           <button

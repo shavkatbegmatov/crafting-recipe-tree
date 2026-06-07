@@ -5,6 +5,7 @@ import com.crafttree.dto.RegisterRequest;
 import com.crafttree.dto.RegisterResponse;
 import com.crafttree.dto.UpdateProfileRequest;
 import com.crafttree.dto.UserProfileDto;
+import com.crafttree.entity.LayoutWidth;
 import com.crafttree.entity.User;
 import com.crafttree.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -67,6 +68,7 @@ public class AuthService {
                 .displayName(user.getDisplayName())
                 .role(user.getRole())
                 .referralCode(user.getReferralCode())
+                .layoutWidth(user.getLayoutWidth())
                 .build();
     }
 
@@ -82,6 +84,7 @@ public class AuthService {
                 .referralCode(user.getReferralCode())
                 .referralCount((int) referralCount)
                 .createdAt(user.getCreatedAt())
+                .layoutWidth(user.getLayoutWidth())
                 .build();
     }
 
@@ -102,6 +105,15 @@ public class AuthService {
                 throw new IllegalArgumentException("WRONG_PASSWORD");
             }
             user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
+        }
+
+        // Layout kengligi sozlamasi (ixtiyoriy)
+        if (request.getLayoutWidth() != null && !request.getLayoutWidth().isBlank()) {
+            String lw = request.getLayoutWidth().trim().toUpperCase();
+            if (!LayoutWidth.ALL.contains(lw)) {
+                throw new IllegalArgumentException("INVALID_LAYOUT_WIDTH");
+            }
+            user.setLayoutWidth(lw);
         }
 
         userRepository.save(user);

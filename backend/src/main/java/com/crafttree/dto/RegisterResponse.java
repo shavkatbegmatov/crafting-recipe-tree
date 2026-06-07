@@ -15,4 +15,5 @@ public class RegisterResponse {
     private String displayName;
     private String role;
     private String referralCode;
+    private String layoutWidth;
 }

@@ -18,4 +18,5 @@ public class UserProfileDto {
     private String referralCode;
     private int referralCount;
     private LocalDateTime createdAt;
+    private String layoutWidth;
 }

@@ -1,6 +1,7 @@
 import { useItems, useCategories } from '../hooks/useItems'
 import { useTranslation } from 'react-i18next'
 import { useLocalizedField } from '../hooks/useLanguage'
+import { useContentWidth } from '../hooks/useContentWidth'
 import ItemList from '../components/items/ItemList'
 import { Package, Layers, Cpu, Box, Gem, Zap, Wrench, FlaskConical } from 'lucide-react'
 
@@ -11,6 +12,7 @@ const ICON_MAP: Record<string, React.ComponentType<any>> = {
 export default function HomePage() {
   const { t } = useTranslation()
   const { getField } = useLocalizedField()
+  const contentWidth = useContentWidth('max-w-7xl')
   const { data: items, isLoading } = useItems()
   const { data: categories } = useCategories()
 
@@ -21,7 +23,7 @@ export default function HomePage() {
   })
 
   return (
-    <div className="space-y-6">
+    <div className={`space-y-6 ${contentWidth}`}>
       <div>
         <h1 className="text-xl font-semibold text-[#d4c4a0] mb-1">{t('home.title')}</h1>
         <p className="text-sm text-[#8a7a60]">{t('home.subtitle')}</p>

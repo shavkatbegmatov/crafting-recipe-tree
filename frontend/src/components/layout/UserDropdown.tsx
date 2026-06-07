@@ -20,8 +20,12 @@ import {
   Loader2,
   Package,
   Tag as TagIcon,
+  LayoutGrid,
+  AlignCenter,
+  StretchHorizontal,
 } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
+import type { LayoutWidth } from '../../api/auth'
 
 /* ─── Avatar ─── */
 
@@ -53,7 +57,7 @@ function Divider() {
 
 export default function UserDropdown() {
   const { t } = useTranslation()
-  const { user, isAdmin, logout, updateProfile } = useAuth()
+  const { user, isAdmin, layoutWidth, logout, updateProfile } = useAuth()
 
   const [open, setOpen] = useState(false)
   const [editMode, setEditMode] = useState(false)
@@ -130,6 +134,16 @@ export default function UserDropdown() {
       )
     } finally {
       setSaving(false)
+    }
+  }
+
+  // Layout kengligini darhol DB'ga saqlaydi (hisobga bog'langan, qurilmalararo eslab qoladi).
+  async function handleLayoutChange(lw: LayoutWidth) {
+    if (lw === layoutWidth) return
+    try {
+      await updateProfile({ layoutWidth: lw })
+    } catch {
+      /* xato bo'lsa jimgina o'tkazamiz — keyingi urinishda qayta sinab ko'riladi */
     }
   }
 
@@ -372,6 +386,40 @@ export default function UserDropdown() {
                   </span>
                 )}
               </button>
+            </div>
+
+            <Divider />
+
+            {/* ── Layout width ── */}
+            <div className="px-4 py-2.5">
+              <span className="flex items-center gap-1 text-[10px] font-medium text-[#8a7a60] uppercase tracking-wider mb-2">
+                <LayoutGrid className="w-3 h-3" />
+                {t('settings.layoutWidth')}
+              </span>
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={() => handleLayoutChange('CENTERED')}
+                  className={`flex-1 flex items-center justify-center gap-1.5 text-[11px] py-1.5 rounded-lg border transition-colors ${
+                    layoutWidth === 'CENTERED'
+                      ? 'bg-dark-gold/20 text-dark-gold border-dark-gold/40'
+                      : 'bg-dark-bg text-[#8a7a60] border-dark-border hover:text-[#d4c4a0]'
+                  }`}
+                >
+                  <AlignCenter className="w-3 h-3" />
+                  {t('settings.centered')}
+                </button>
+                <button
+                  onClick={() => handleLayoutChange('FULL')}
+                  className={`flex-1 flex items-center justify-center gap-1.5 text-[11px] py-1.5 rounded-lg border transition-colors ${
+                    layoutWidth === 'FULL'
+                      ? 'bg-dark-gold/20 text-dark-gold border-dark-gold/40'
+                      : 'bg-dark-bg text-[#8a7a60] border-dark-border hover:text-[#d4c4a0]'
+                  }`}
+                >
+                  <StretchHorizontal className="w-3 h-3" />
+                  {t('settings.full')}
+                </button>
+              </div>
             </div>
 
             <Divider />

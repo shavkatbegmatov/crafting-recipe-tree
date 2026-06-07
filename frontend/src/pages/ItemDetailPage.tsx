@@ -18,12 +18,14 @@ import ImageUpload from '../components/items/ImageUpload'
 import SafeImage from '../components/ui/SafeImage'
 import RecipeEditor from '../components/items/RecipeEditor'
 import RecipeHistorySection from '../components/items/RecipeHistorySection'
+import { useContentWidth } from '../hooks/useContentWidth'
 
 export default function ItemDetailPage() {
   const { t } = useTranslation()
   const { getField } = useLocalizedField()
   const goBack = useGoBack('/')
   const { isAdmin } = useAuth()
+  const contentWidth = useContentWidth('max-w-7xl')
   const { id } = useParams<{ id: string }>()
   const itemId = Number(id)
   const { data: item, isLoading, error } = useItem(itemId)
@@ -123,7 +125,7 @@ export default function ItemDetailPage() {
         : ''
 
   return (
-    <div className="space-y-6 max-w-7xl">
+    <div className={`space-y-6 ${contentWidth}`}>
       <button
         type="button"
         onClick={goBack}

@@ -311,6 +311,11 @@
     "copyLink": "Нусхалаш",
     "copied": "Нусхаланди!"
   },
+  "settings": {
+    "layoutWidth": "Кўриниш кенглиги",
+    "centered": "Марказ",
+    "full": "Тўлиқ"
+  },
   "chat": {
     "title": "Чат",
     "placeholder": "Хабар ёзинг...",

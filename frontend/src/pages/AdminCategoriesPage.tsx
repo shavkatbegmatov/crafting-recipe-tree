@@ -10,12 +10,14 @@ import { useQueryClient } from '@tanstack/react-query'
 import { Navigate } from 'react-router-dom'
 import { ArrowLeft, Plus, Pencil, Trash2, Save, X, Loader2, Check } from 'lucide-react'
 import { useGoBack } from '../hooks/useGoBack'
+import { useContentWidth } from '../hooks/useContentWidth'
 
 const AVAILABLE_ICONS = ['Package', 'Layers', 'Box', 'Cpu', 'Gem', 'Zap', 'Wrench', 'FlaskConical']
 
 export default function AdminCategoriesPage() {
   const { t } = useTranslation()
   const { isAdmin } = useAuth()
+  const contentWidth = useContentWidth('max-w-4xl')
   const { getField } = useLocalizedField()
   const goBack = useGoBack('/')
   const { data: categories, isLoading } = useCategories()
@@ -89,7 +91,7 @@ export default function AdminCategoriesPage() {
   const isEditing = editingId !== null || creating
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className={`space-y-6 ${contentWidth}`}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button

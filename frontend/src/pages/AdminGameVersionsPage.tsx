@@ -13,6 +13,7 @@ import {
 } from '../hooks/useGameVersions'
 import type { GameVersion } from '../api/types'
 import Spinner from '../components/ui/Spinner'
+import { useContentWidth } from '../hooks/useContentWidth'
 
 interface FormState {
   version: string
@@ -32,6 +33,7 @@ export default function AdminGameVersionsPage() {
   const { t } = useTranslation()
   const { isAdmin } = useAuth()
   const goBack = useGoBack('/')
+  const contentWidth = useContentWidth('max-w-5xl')
   const { data: versions, isLoading } = useGameVersions()
 
   const createMutation = useCreateGameVersion()
@@ -110,7 +112,7 @@ export default function AdminGameVersionsPage() {
   const saving = createMutation.isPending || updateMutation.isPending
 
   return (
-    <div className="space-y-5 max-w-5xl">
+    <div className={`space-y-5 ${contentWidth}`}>
       <button
         type="button"
         onClick={goBack}

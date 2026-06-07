@@ -48,6 +48,7 @@ public class AuthController {
                     .token(token)
                     .username(user.getUsername())
                     .role(user.getRole())
+                    .layoutWidth(user.getLayoutWidth())
                     .build());
         } catch (DisabledException e) {
             // Bloklangan akkaunt — parol to'g'ri bo'lsa ham kirishga ruxsat berilmaydi.

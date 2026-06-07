@@ -12,6 +12,8 @@ export interface RegisterRequest {
   referralCode?: string
 }
 
+export type LayoutWidth = 'CENTERED' | 'FULL'
+
 export interface AuthUser {
   token?: string
   username: string
@@ -20,6 +22,7 @@ export interface AuthUser {
   referralCode?: string
   referralCount?: number
   createdAt?: string
+  layoutWidth?: LayoutWidth
 }
 
 export interface LoginResponse {
@@ -28,6 +31,7 @@ export interface LoginResponse {
   username?: string
   role?: string
   errorCode?: string
+  layoutWidth?: LayoutWidth
 }
 
 export async function login(data: LoginRequest): Promise<LoginResponse> {
@@ -49,6 +53,7 @@ export interface UpdateProfileRequest {
   displayName?: string
   newPassword?: string
   currentPassword?: string
+  layoutWidth?: LayoutWidth
 }
 
 export async function updateProfile(data: UpdateProfileRequest): Promise<AuthUser> {

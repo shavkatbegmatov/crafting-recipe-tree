@@ -319,6 +319,11 @@
     "copyLink": "Nusxalash",
     "copied": "Nusxalandi!"
   },
+  "settings": {
+    "layoutWidth": "Ko'rinish kengligi",
+    "centered": "Markaz",
+    "full": "To'liq"
+  },
   "chat": {
     "title": "Chat",
     "placeholder": "Xabar yozing...",

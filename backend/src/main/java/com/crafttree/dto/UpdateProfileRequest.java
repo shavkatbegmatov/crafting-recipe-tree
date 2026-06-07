@@ -18,4 +18,7 @@ public class UpdateProfileRequest {
 
     /** Required when changing password */
     private String currentPassword;
+
+    /** Sahifa kengligi sozlamasi: CENTERED yoki FULL (ixtiyoriy). */
+    private String layoutWidth;
 }

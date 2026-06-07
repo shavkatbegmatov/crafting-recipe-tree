@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
-import type { AuthUser, RegisterRequest, UpdateProfileRequest } from '../api/auth'
+import type { AuthUser, RegisterRequest, UpdateProfileRequest, LayoutWidth } from '../api/auth'
 import {
   login as apiLogin,
   register as apiRegister,
@@ -15,6 +15,7 @@ interface AuthContextType {
   user: AuthUser | null
   isAdmin: boolean
   isSuperAdmin: boolean
+  layoutWidth: LayoutWidth
   isLoading: boolean
   login: (username: string, password: string) => Promise<LoginResult>
   register: (data: RegisterRequest) => Promise<void>
@@ -27,6 +28,7 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   isAdmin: false,
   isSuperAdmin: false,
+  layoutWidth: 'CENTERED',
   isLoading: true,
   login: async () => ({ success: false as const, errorCode: 'LOGIN_FAILED' }),
   register: async () => {},
@@ -43,6 +45,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // SUPER_ADMIN barcha ADMIN huquqlariga ega (backend RoleHierarchy bilan mos).
   const isAdmin = user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN'
   const isSuperAdmin = user?.role === 'SUPER_ADMIN'
+  const layoutWidth: LayoutWidth = user?.layoutWidth ?? 'CENTERED'
 
   // Check existing token on mount
   useEffect(() => {
@@ -75,6 +78,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       token: res.token,
       username: res.username,
       role: res.role,
+      layoutWidth: res.layoutWidth,
     }
 
     localStorage.setItem('token', res.token)
@@ -111,7 +115,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, isAdmin, isSuperAdmin, isLoading, login, register, updateProfile, logout, error }}
+      value={{ user, isAdmin, isSuperAdmin, layoutWidth, isLoading, login, register, updateProfile, logout, error }}
     >
       {children}
     </AuthContext.Provider>

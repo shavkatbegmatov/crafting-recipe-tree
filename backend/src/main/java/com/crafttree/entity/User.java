@@ -37,6 +37,11 @@ public class User implements UserDetails {
     @Builder.Default
     private boolean enabled = true;
 
+    /** Sahifa kontenti kengligi sozlamasi: CENTERED (markaz) yoki FULL (to'liq). */
+    @Column(name = "layout_width", nullable = false, length = 20)
+    @Builder.Default
+    private String layoutWidth = LayoutWidth.CENTERED;
+
     @Column(name = "display_name", length = 50)
     private String displayName;
 
