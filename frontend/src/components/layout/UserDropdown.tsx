@@ -381,6 +381,15 @@ export default function UserDropdown() {
               {isAdmin && (
                 <>
                   <Link
+                    to="/admin/users"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-[#d4c4a0]
+                      hover:bg-dark-hover transition-colors"
+                  >
+                    <Users className="w-3.5 h-3.5 text-dark-gold" />
+                    {t('admin.users')}
+                  </Link>
+                  <Link
                     to="/admin/categories"
                     onClick={() => setOpen(false)}
                     className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-[#d4c4a0]

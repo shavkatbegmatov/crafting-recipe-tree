@@ -155,6 +155,7 @@
   },
   "admin": {
     "categories": "Категориялар",
+    "users": "Фойдаланувчилар",
     "portage": "Экспорт / Импорт",
     "addCategory": "Категория қўшиш",
     "code": "Код",
@@ -164,6 +165,76 @@
     "sortOrder": "Тартиб рақами",
     "actions": "Амаллар",
     "confirmDelete": "Ростдан ўчирмоқчимисиз?"
+  },
+  "adminUsers": {
+    "title": "Фойдаланувчилар",
+    "subtitle": "Рўйхатдан ўтган фойдаланувчиларни бошқариш",
+    "search": "Username ёки исм бўйича қидириш...",
+    "self": "Сиз",
+    "empty": "Фойдаланувчи топилмади",
+    "pageInfo": "{{current}} / {{total}}",
+    "confirmDelete": "{{name}}ни бутунлай ўчирмоқчимисиз?",
+    "invitedBy": "{{name}} таклиф қилган",
+    "referralsCount": "{{count}} та таклиф",
+    "stats": {
+      "total": "Жами",
+      "superAdmins": "Супер-админ",
+      "admins": "Админлар",
+      "users": "Фойдаланувчилар",
+      "blocked": "Блокланган"
+    },
+    "filter": {
+      "allRoles": "Барча роллар",
+      "all": "Ҳаммаси",
+      "active": "Фаол",
+      "blocked": "Блокланган"
+    },
+    "role": {
+      "USER": "Фойдаланувчи",
+      "ADMIN": "Админ",
+      "SUPER_ADMIN": "Супер-админ"
+    },
+    "col": {
+      "user": "Фойдаланувчи",
+      "role": "Рол",
+      "status": "Ҳолат",
+      "referral": "Реферал",
+      "joined": "Қўшилган",
+      "actions": "Амаллар"
+    },
+    "status": {
+      "active": "Фаол",
+      "blocked": "Блокланган"
+    },
+    "action": {
+      "block": "Блоклаш",
+      "unblock": "Фаоллаштириш",
+      "resetPassword": "Паролни тиклаш",
+      "delete": "Ўчириш"
+    },
+    "reset": {
+      "title": "Паролни тиклаш",
+      "forUser": "{{name}} учун",
+      "passwordLabel": "Янги парол (ихтиёрий)",
+      "passwordHint": "Бўш қолдирсангиз тасодифий парол яратилади",
+      "generate": "Ўрнатиш",
+      "resultLabel": "Янги парол:",
+      "resultHint": "Бу паролни фойдаланувчига етказинг — у бошқа кўрсатилмайди",
+      "copy": "Нусхалаш",
+      "copied": "Нусхаланди!",
+      "close": "Ёпиш"
+    },
+    "errors": {
+      "CANNOT_MODIFY_SELF_ROLE": "Ўз ролингизни ўзгартира олмайсиз",
+      "CANNOT_BLOCK_SELF": "Ўзингизни блоклай олмайсиз",
+      "CANNOT_DELETE_SELF": "Ўзингизни ўчира олмайсиз",
+      "ONLY_SUPER_ADMIN_CAN_ASSIGN_ROLES": "Рол тайинлашни фақат супер-админ амалга ошира олади",
+      "ADMIN_CANNOT_MANAGE_ADMIN": "Админ бошқа админ ёки супер-админни бошқара олмайди",
+      "CANNOT_DEMOTE_LAST_SUPER_ADMIN": "Охирги супер-админни пасайтириб бўлмайди",
+      "CANNOT_BLOCK_LAST_SUPER_ADMIN": "Охирги супер-админни блоклаб бўлмайди",
+      "CANNOT_DELETE_LAST_SUPER_ADMIN": "Охирги супер-админни ўчириб бўлмайди",
+      "INVALID_ROLE": "Нотўғри рол қиймати"
+    }
   },
   "portage": {
     "pageTitle": "Экспорт / Импорт",

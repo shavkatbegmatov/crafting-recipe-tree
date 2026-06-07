@@ -10,6 +10,7 @@ import RegisterPage from './pages/RegisterPage'
 import AdminCategoriesPage from './pages/AdminCategoriesPage'
 import AdminPortagePage from './pages/AdminPortagePage'
 import AdminGameVersionsPage from './pages/AdminGameVersionsPage'
+import AdminUsersPage from './pages/AdminUsersPage'
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
             <Route path="admin/categories" element={<AdminCategoriesPage />} />
             <Route path="admin/portage" element={<AdminPortagePage />} />
             <Route path="admin/game-versions" element={<AdminGameVersionsPage />} />
+            <Route path="admin/users" element={<AdminUsersPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>

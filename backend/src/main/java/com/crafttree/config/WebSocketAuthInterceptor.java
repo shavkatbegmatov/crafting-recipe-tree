@@ -36,7 +36,9 @@ public class WebSocketAuthInterceptor implements ChannelInterceptor {
                 try {
                     String username = jwtService.extractUsername(token);
                     UserDetails user = userRepository.findByUsername(username).orElse(null);
-                    if (user != null && jwtService.isTokenValid(token, user)) {
+                    // isEnabled() tekshiruvi REST'dagi JwtAuthFilter bilan izchil bo'lishi shart —
+                    // aks holda bloklangan foydalanuvchi WebSocket (chat) orqali kira olaveradi.
+                    if (user != null && user.isEnabled() && jwtService.isTokenValid(token, user)) {
                         UsernamePasswordAuthenticationToken auth =
                                 new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                         accessor.setUser(auth);

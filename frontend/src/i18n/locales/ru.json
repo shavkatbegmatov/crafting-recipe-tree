@@ -155,6 +155,7 @@
   },
   "admin": {
     "categories": "Категории",
+    "users": "Пользователи",
     "portage": "Экспорт / Импорт",
     "addCategory": "Добавить категорию",
     "code": "Код",
@@ -164,6 +165,76 @@
     "sortOrder": "Порядок",
     "actions": "Действия",
     "confirmDelete": "Вы уверены, что хотите удалить?"
+  },
+  "adminUsers": {
+    "title": "Пользователи",
+    "subtitle": "Управление зарегистрированными пользователями",
+    "search": "Поиск по логину или имени...",
+    "self": "Вы",
+    "empty": "Пользователи не найдены",
+    "pageInfo": "{{current}} / {{total}}",
+    "confirmDelete": "Удалить пользователя {{name}} навсегда?",
+    "invitedBy": "Пригласил {{name}}",
+    "referralsCount": "Приглашений: {{count}}",
+    "stats": {
+      "total": "Всего",
+      "superAdmins": "Супер-админы",
+      "admins": "Админы",
+      "users": "Пользователи",
+      "blocked": "Заблокировано"
+    },
+    "filter": {
+      "allRoles": "Все роли",
+      "all": "Все",
+      "active": "Активные",
+      "blocked": "Заблокированные"
+    },
+    "role": {
+      "USER": "Пользователь",
+      "ADMIN": "Админ",
+      "SUPER_ADMIN": "Супер-админ"
+    },
+    "col": {
+      "user": "Пользователь",
+      "role": "Роль",
+      "status": "Статус",
+      "referral": "Реферал",
+      "joined": "Регистрация",
+      "actions": "Действия"
+    },
+    "status": {
+      "active": "Активен",
+      "blocked": "Заблокирован"
+    },
+    "action": {
+      "block": "Заблокировать",
+      "unblock": "Активировать",
+      "resetPassword": "Сбросить пароль",
+      "delete": "Удалить"
+    },
+    "reset": {
+      "title": "Сброс пароля",
+      "forUser": "Для {{name}}",
+      "passwordLabel": "Новый пароль (необязательно)",
+      "passwordHint": "Оставьте пустым — будет сгенерирован случайный пароль",
+      "generate": "Установить",
+      "resultLabel": "Новый пароль:",
+      "resultHint": "Передайте этот пароль пользователю — он больше не отобразится",
+      "copy": "Копировать",
+      "copied": "Скопировано!",
+      "close": "Закрыть"
+    },
+    "errors": {
+      "CANNOT_MODIFY_SELF_ROLE": "Нельзя изменить свою роль",
+      "CANNOT_BLOCK_SELF": "Нельзя заблокировать себя",
+      "CANNOT_DELETE_SELF": "Нельзя удалить себя",
+      "ONLY_SUPER_ADMIN_CAN_ASSIGN_ROLES": "Назначать роли может только супер-админ",
+      "ADMIN_CANNOT_MANAGE_ADMIN": "Админ не может управлять другим админом или супер-админом",
+      "CANNOT_DEMOTE_LAST_SUPER_ADMIN": "Нельзя понизить последнего супер-админа",
+      "CANNOT_BLOCK_LAST_SUPER_ADMIN": "Нельзя заблокировать последнего супер-админа",
+      "CANNOT_DELETE_LAST_SUPER_ADMIN": "Нельзя удалить последнего супер-админа",
+      "INVALID_ROLE": "Недопустимое значение роли"
+    }
   },
   "portage": {
     "pageTitle": "Экспорт / Импорт",

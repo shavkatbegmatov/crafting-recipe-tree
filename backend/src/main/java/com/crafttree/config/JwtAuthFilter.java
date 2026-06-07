@@ -40,7 +40,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userRepository.findByUsername(username).orElse(null);
 
-                if (userDetails != null && jwtService.isTokenValid(jwt, userDetails)) {
+                // Bloklangan (enabled=false) akkaunt amaldagi token bilan ham kira olmasligi kerak.
+                if (userDetails != null && userDetails.isEnabled() && jwtService.isTokenValid(jwt, userDetails)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities()
                     );

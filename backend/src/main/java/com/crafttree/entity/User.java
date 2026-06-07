@@ -32,6 +32,11 @@ public class User implements UserDetails {
     @Column(nullable = false, length = 20)
     private String role;
 
+    /** Akkaunt faolligi. false bo'lsa — bloklangan: login ham, JWT ham qabul qilinmaydi. */
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean enabled = true;
+
     @Column(name = "display_name", length = 50)
     private String displayName;
 
@@ -72,5 +77,5 @@ public class User implements UserDetails {
     public boolean isCredentialsNonExpired() { return true; }
 
     @Override
-    public boolean isEnabled() { return true; }
+    public boolean isEnabled() { return enabled; }
 }

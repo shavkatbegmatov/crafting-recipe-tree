@@ -14,6 +14,7 @@ type LoginResult =
 interface AuthContextType {
   user: AuthUser | null
   isAdmin: boolean
+  isSuperAdmin: boolean
   isLoading: boolean
   login: (username: string, password: string) => Promise<LoginResult>
   register: (data: RegisterRequest) => Promise<void>
@@ -25,6 +26,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType>({
   user: null,
   isAdmin: false,
+  isSuperAdmin: false,
   isLoading: true,
   login: async () => ({ success: false as const, errorCode: 'LOGIN_FAILED' }),
   register: async () => {},
@@ -38,7 +40,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const isAdmin = user?.role === 'ADMIN'
+  // SUPER_ADMIN barcha ADMIN huquqlariga ega (backend RoleHierarchy bilan mos).
+  const isAdmin = user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN'
+  const isSuperAdmin = user?.role === 'SUPER_ADMIN'
 
   // Check existing token on mount
   useEffect(() => {
@@ -107,7 +111,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, isAdmin, isLoading, login, register, updateProfile, logout, error }}
+      value={{ user, isAdmin, isSuperAdmin, isLoading, login, register, updateProfile, logout, error }}
     >
       {children}
     </AuthContext.Provider>

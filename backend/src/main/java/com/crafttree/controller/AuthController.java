@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,6 +48,12 @@ public class AuthController {
                     .token(token)
                     .username(user.getUsername())
                     .role(user.getRole())
+                    .build());
+        } catch (DisabledException e) {
+            // Bloklangan akkaunt — parol to'g'ri bo'lsa ham kirishga ruxsat berilmaydi.
+            return ResponseEntity.ok(LoginResponse.builder()
+                    .authenticated(false)
+                    .errorCode("ACCOUNT_DISABLED")
                     .build());
         } catch (BadCredentialsException e) {
             return ResponseEntity.ok(LoginResponse.builder()

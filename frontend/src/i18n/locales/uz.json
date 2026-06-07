@@ -155,6 +155,7 @@
   },
   "admin": {
     "categories": "Kategoriyalar",
+    "users": "Foydalanuvchilar",
     "portage": "Eksport / Import",
     "addCategory": "Kategoriya qo'shish",
     "code": "Kod",
@@ -164,6 +165,76 @@
     "sortOrder": "Tartib raqami",
     "actions": "Amallar",
     "confirmDelete": "Rostdan o'chirmoqchimisiz?"
+  },
+  "adminUsers": {
+    "title": "Foydalanuvchilar",
+    "subtitle": "Ro'yxatdan o'tgan foydalanuvchilarni boshqarish",
+    "search": "Username yoki ism bo'yicha qidirish...",
+    "self": "Siz",
+    "empty": "Foydalanuvchi topilmadi",
+    "pageInfo": "{{current}} / {{total}}",
+    "confirmDelete": "{{name}}ni butunlay o'chirmoqchimisiz?",
+    "invitedBy": "{{name}} taklif qilgan",
+    "referralsCount": "{{count}} ta taklif",
+    "stats": {
+      "total": "Jami",
+      "superAdmins": "Super-admin",
+      "admins": "Adminlar",
+      "users": "Foydalanuvchilar",
+      "blocked": "Bloklangan"
+    },
+    "filter": {
+      "allRoles": "Barcha rollar",
+      "all": "Hammasi",
+      "active": "Faol",
+      "blocked": "Bloklangan"
+    },
+    "role": {
+      "USER": "Foydalanuvchi",
+      "ADMIN": "Admin",
+      "SUPER_ADMIN": "Super-admin"
+    },
+    "col": {
+      "user": "Foydalanuvchi",
+      "role": "Rol",
+      "status": "Holat",
+      "referral": "Referal",
+      "joined": "Qo'shilgan",
+      "actions": "Amallar"
+    },
+    "status": {
+      "active": "Faol",
+      "blocked": "Bloklangan"
+    },
+    "action": {
+      "block": "Bloklash",
+      "unblock": "Faollashtirish",
+      "resetPassword": "Parolni tiklash",
+      "delete": "O'chirish"
+    },
+    "reset": {
+      "title": "Parolni tiklash",
+      "forUser": "{{name}} uchun",
+      "passwordLabel": "Yangi parol (ixtiyoriy)",
+      "passwordHint": "Bo'sh qoldirsangiz tasodifiy parol yaratiladi",
+      "generate": "O'rnatish",
+      "resultLabel": "Yangi parol:",
+      "resultHint": "Bu parolni foydalanuvchiga yetkazing — u boshqa ko'rsatilmaydi",
+      "copy": "Nusxalash",
+      "copied": "Nusxalandi!",
+      "close": "Yopish"
+    },
+    "errors": {
+      "CANNOT_MODIFY_SELF_ROLE": "O'z rolingizni o'zgartira olmaysiz",
+      "CANNOT_BLOCK_SELF": "O'zingizni bloklay olmaysiz",
+      "CANNOT_DELETE_SELF": "O'zingizni o'chira olmaysiz",
+      "ONLY_SUPER_ADMIN_CAN_ASSIGN_ROLES": "Rol tayinlashni faqat super-admin amalga oshira oladi",
+      "ADMIN_CANNOT_MANAGE_ADMIN": "Admin boshqa admin yoki super-adminni boshqara olmaydi",
+      "CANNOT_DEMOTE_LAST_SUPER_ADMIN": "Oxirgi super-adminni pasaytirib bo'lmaydi",
+      "CANNOT_BLOCK_LAST_SUPER_ADMIN": "Oxirgi super-adminni bloklab bo'lmaydi",
+      "CANNOT_DELETE_LAST_SUPER_ADMIN": "Oxirgi super-adminni o'chirib bo'lmaydi",
+      "INVALID_ROLE": "Noto'g'ri rol qiymati"
+    }
   },
   "portage": {
     "pageTitle": "Eksport / Import",

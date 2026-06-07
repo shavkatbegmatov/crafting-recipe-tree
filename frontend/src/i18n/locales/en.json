@@ -155,6 +155,7 @@
   },
   "admin": {
     "categories": "Categories",
+    "users": "Users",
     "portage": "Export / Import",
     "addCategory": "Add category",
     "code": "Code",
@@ -164,6 +165,76 @@
     "sortOrder": "Sort order",
     "actions": "Actions",
     "confirmDelete": "Are you sure you want to delete?"
+  },
+  "adminUsers": {
+    "title": "Users",
+    "subtitle": "Manage registered users",
+    "search": "Search by username or name...",
+    "self": "You",
+    "empty": "No users found",
+    "pageInfo": "{{current}} / {{total}}",
+    "confirmDelete": "Permanently delete {{name}}?",
+    "invitedBy": "Invited by {{name}}",
+    "referralsCount": "{{count}} referral(s)",
+    "stats": {
+      "total": "Total",
+      "superAdmins": "Super admins",
+      "admins": "Admins",
+      "users": "Users",
+      "blocked": "Blocked"
+    },
+    "filter": {
+      "allRoles": "All roles",
+      "all": "All",
+      "active": "Active",
+      "blocked": "Blocked"
+    },
+    "role": {
+      "USER": "User",
+      "ADMIN": "Admin",
+      "SUPER_ADMIN": "Super admin"
+    },
+    "col": {
+      "user": "User",
+      "role": "Role",
+      "status": "Status",
+      "referral": "Referral",
+      "joined": "Joined",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "blocked": "Blocked"
+    },
+    "action": {
+      "block": "Block",
+      "unblock": "Unblock",
+      "resetPassword": "Reset password",
+      "delete": "Delete"
+    },
+    "reset": {
+      "title": "Reset password",
+      "forUser": "For {{name}}",
+      "passwordLabel": "New password (optional)",
+      "passwordHint": "Leave empty to generate a random password",
+      "generate": "Set password",
+      "resultLabel": "New password:",
+      "resultHint": "Share this password with the user — it won't be shown again",
+      "copy": "Copy",
+      "copied": "Copied!",
+      "close": "Close"
+    },
+    "errors": {
+      "CANNOT_MODIFY_SELF_ROLE": "You can't change your own role",
+      "CANNOT_BLOCK_SELF": "You can't block yourself",
+      "CANNOT_DELETE_SELF": "You can't delete yourself",
+      "ONLY_SUPER_ADMIN_CAN_ASSIGN_ROLES": "Only a super admin can assign roles",
+      "ADMIN_CANNOT_MANAGE_ADMIN": "An admin can't manage another admin or super admin",
+      "CANNOT_DEMOTE_LAST_SUPER_ADMIN": "Can't demote the last super admin",
+      "CANNOT_BLOCK_LAST_SUPER_ADMIN": "Can't block the last super admin",
+      "CANNOT_DELETE_LAST_SUPER_ADMIN": "Can't delete the last super admin",
+      "INVALID_ROLE": "Invalid role value"
+    }
   },
   "portage": {
     "pageTitle": "Export / Import",
