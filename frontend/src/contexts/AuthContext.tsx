@@ -20,6 +20,8 @@ interface AuthContextType {
   login: (username: string, password: string) => Promise<LoginResult>
   register: (data: RegisterRequest) => Promise<void>
   updateProfile: (data: UpdateProfileRequest) => Promise<void>
+  /** Profilni serverdan qayta yuklaydi — masalan, admin huquqi berilgach yangi rolni olish uchun. */
+  refreshUser: () => Promise<void>
   logout: () => void
   error: string | null
 }
@@ -33,6 +35,7 @@ const AuthContext = createContext<AuthContextType>({
   login: async () => ({ success: false as const, errorCode: 'LOGIN_FAILED' }),
   register: async () => {},
   updateProfile: async () => {},
+  refreshUser: async () => {},
   logout: () => {},
   error: null,
 })
@@ -108,6 +111,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser({ ...res, token: token || undefined })
   }, [])
 
+  // Serverdan profilni qayta o'qiydi. Rol DB'dan olinadi, shuning uchun admin huquqi
+  // berilganidan keyin token o'zgarmasa ham yangi rol bu yerda aks etadi.
+  const refreshUser = useCallback(async () => {
+    const token = localStorage.getItem('token')
+    if (!token) return
+    try {
+      const u = await getMe()
+      setUser({ ...u, token })
+    } catch {
+      localStorage.removeItem('token')
+      setUser(null)
+    }
+  }, [])
+
   const logout = useCallback(() => {
     localStorage.removeItem('token')
     setUser(null)
@@ -115,7 +132,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, isAdmin, isSuperAdmin, layoutWidth, isLoading, login, register, updateProfile, logout, error }}
+      value={{ user, isAdmin, isSuperAdmin, layoutWidth, isLoading, login, register, updateProfile, refreshUser, logout, error }}
     >
       {children}
     </AuthContext.Provider>

@@ -40,6 +40,9 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // Admin-only API surface (must come BEFORE the public GET rule below)
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                // Foydalanuvchi o'z "admin huquqi" arizasini boshqaradi — autentifikatsiya shart.
+                // GET'lar ham himoyalanishi uchun quyidagi umumiy GET permitAll'dan OLDIN turadi.
+                .requestMatchers("/api/access-requests/**").authenticated()
                 // Public endpoints
                 .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
