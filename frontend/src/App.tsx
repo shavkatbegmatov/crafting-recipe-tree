@@ -13,6 +13,7 @@ import AdminGameVersionsPage from './pages/AdminGameVersionsPage'
 import AdminUsersPage from './pages/AdminUsersPage'
 import AdminAccessRequestsPage from './pages/AdminAccessRequestsPage'
 import AdminAuditPage from './pages/AdminAuditPage'
+import CalculatorPage from './pages/CalculatorPage'
 
 export default function App() {
   return (
@@ -30,6 +31,7 @@ export default function App() {
             <Route path="admin/users" element={<AdminUsersPage />} />
             <Route path="admin/access-requests" element={<AdminAccessRequestsPage />} />
             <Route path="admin/audit" element={<AdminAuditPage />} />
+            <Route path="calculator" element={<CalculatorPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>

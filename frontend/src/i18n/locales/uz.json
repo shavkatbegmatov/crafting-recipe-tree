@@ -385,6 +385,21 @@
     "centered": "Markaz",
     "full": "To'liq"
   },
+  "calculator": {
+    "title": "Kraft kalkulyatori",
+    "subtitle": "Bir nechta maqsadni tanlab, kerakli jami xomashyoni hisoblang",
+    "menuLink": "Kalkulyator",
+    "search": "Element qidirib qo'shing...",
+    "empty": "Hisoblash uchun yuqoridan element qo'shing",
+    "targets": "Maqsadlar",
+    "remove": "Olib tashlash",
+    "result": "Jami xomashyo",
+    "error": "Hisoblashda xatolik",
+    "noMaterials": "Xomashyo talab qilinmaydi",
+    "material": "Xomashyo",
+    "quantity": "Miqdor",
+    "totalTime": "Jami kraft vaqti"
+  },
   "audit": {
     "title": "Audit jurnali",
     "subtitle": "Tizimdagi muhim amallar tarixi: kim, qachon, nima qildi",
