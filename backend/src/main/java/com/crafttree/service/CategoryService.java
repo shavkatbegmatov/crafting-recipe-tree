@@ -2,6 +2,7 @@ package com.crafttree.service;
 
 import com.crafttree.dto.CategoryDto;
 import com.crafttree.dto.UpdateCategoryRequest;
+import com.crafttree.entity.AuditAction;
 import com.crafttree.entity.Category;
 import com.crafttree.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final AuditService auditService;
 
     @Transactional(readOnly = true)
     public List<CategoryDto> getAll() {
@@ -42,7 +44,9 @@ public class CategoryService {
                 .icon(request.getIcon())
                 .sortOrder(request.getSortOrder() != null ? request.getSortOrder() : 0)
                 .build();
-        return toDto(categoryRepository.save(category));
+        Category saved = categoryRepository.save(category);
+        auditService.log(AuditAction.CREATE, "CATEGORY", saved.getId(), saved.getCode());
+        return toDto(saved);
     }
 
     @Transactional
@@ -59,12 +63,15 @@ public class CategoryService {
         if (request.getIcon() != null) category.setIcon(request.getIcon());
         if (request.getSortOrder() != null) category.setSortOrder(request.getSortOrder());
 
-        return toDto(categoryRepository.save(category));
+        categoryRepository.save(category);
+        auditService.log(AuditAction.UPDATE, "CATEGORY", category.getId(), category.getCode());
+        return toDto(category);
     }
 
     @Transactional
     public void delete(Long id) {
         categoryRepository.deleteById(id);
+        auditService.log(AuditAction.DELETE, "CATEGORY", id, "Kategoriya #" + id + " o'chirildi");
     }
 
     private CategoryDto toDto(Category c) {

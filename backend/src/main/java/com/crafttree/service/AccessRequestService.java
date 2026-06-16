@@ -5,6 +5,7 @@ import com.crafttree.dto.MyAccessRequestDto;
 import com.crafttree.dto.PagedResponse;
 import com.crafttree.entity.AccessRequest;
 import com.crafttree.entity.AccessRequestStatus;
+import com.crafttree.entity.AuditAction;
 import com.crafttree.entity.NotificationType;
 import com.crafttree.entity.Role;
 import com.crafttree.entity.User;
@@ -37,6 +38,7 @@ public class AccessRequestService {
     private final AccessRequestRepository accessRequestRepository;
     private final UserRepository userRepository;
     private final NotificationService notificationService;
+    private final AuditService auditService;
 
     // Hozircha foydalanuvchi faqat ADMIN darajasini so'ray oladi (mahsulot qarori).
     private static final String REQUESTABLE_ROLE = Role.ADMIN;
@@ -130,6 +132,8 @@ public class AccessRequestService {
             userRepository.save(target);
         }
         finishReview(request, AccessRequestStatus.APPROVED, reviewer, note);
+        auditService.log(AuditAction.APPROVE, "ACCESS_REQUEST", request.getId(),
+                target.getUsername() + " arizasi tasdiqlandi");
         // Foydalanuvchiga huquq berilgani haqida xabar.
         notificationService.notifyUser(
                 target, NotificationType.ACCESS_REQUEST_APPROVED, reviewer.getUsername(), "/");
@@ -142,6 +146,8 @@ public class AccessRequestService {
         AccessRequest request = getRequest(requestId);
         requirePending(request);
         finishReview(request, AccessRequestStatus.REJECTED, reviewer, note);
+        auditService.log(AuditAction.REJECT, "ACCESS_REQUEST", request.getId(),
+                request.getUser().getUsername() + " arizasi rad etildi");
         // Foydalanuvchiga ariza rad etilgani haqida xabar.
         notificationService.notifyUser(
                 request.getUser(), NotificationType.ACCESS_REQUEST_REJECTED, reviewer.getUsername(), "/");

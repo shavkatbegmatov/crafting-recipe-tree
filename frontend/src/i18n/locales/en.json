@@ -377,6 +377,42 @@
     "centered": "Centered",
     "full": "Full width"
   },
+  "audit": {
+    "title": "Audit log",
+    "subtitle": "History of important system actions: who, when, what",
+    "actorSearch": "Search by user...",
+    "allActions": "All actions",
+    "allTargets": "All objects",
+    "empty": "No records found",
+    "system": "system",
+    "menuLink": "Audit log",
+    "col": {
+      "time": "Time",
+      "actor": "Who",
+      "action": "Action",
+      "target": "Object",
+      "summary": "Details"
+    },
+    "action": {
+      "CREATE": "Created",
+      "UPDATE": "Updated",
+      "DELETE": "Deleted",
+      "ROLE_CHANGE": "Role changed",
+      "STATUS_CHANGE": "Status changed",
+      "PASSWORD_RESET": "Password reset",
+      "APPROVE": "Approved",
+      "REJECT": "Rejected",
+      "SET_CURRENT": "Set as current"
+    },
+    "target": {
+      "USER": "User",
+      "ACCESS_REQUEST": "Request",
+      "CATEGORY": "Category",
+      "ITEM": "Item",
+      "TAG": "Tag",
+      "GAME_VERSION": "Game version"
+    }
+  },
   "notification": {
     "title": "Notifications",
     "empty": "No notifications yet",

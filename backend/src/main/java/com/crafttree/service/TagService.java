@@ -1,6 +1,7 @@
 package com.crafttree.service;
 
 import com.crafttree.dto.TagDto;
+import com.crafttree.entity.AuditAction;
 import com.crafttree.entity.CraftItem;
 import com.crafttree.entity.Tag;
 import com.crafttree.exception.ItemNotFoundException;
@@ -21,6 +22,7 @@ public class TagService {
 
     private final TagRepository tagRepository;
     private final CraftItemRepository craftItemRepository;
+    private final AuditService auditService;
 
     @Transactional(readOnly = true)
     public List<TagDto> getAll() {
@@ -40,7 +42,9 @@ public class TagService {
                 .color(request.getColor())
                 .sortOrder(request.getSortOrder() != null ? request.getSortOrder() : 0)
                 .build();
-        return toDto(tagRepository.save(tag));
+        Tag saved = tagRepository.save(tag);
+        auditService.log(AuditAction.CREATE, "TAG", saved.getId(), saved.getCode());
+        return toDto(saved);
     }
 
     @Transactional
@@ -54,12 +58,15 @@ public class TagService {
         if (request.getNameUzCyr() != null) tag.setNameUzCyr(request.getNameUzCyr());
         if (request.getColor() != null) tag.setColor(request.getColor());
         if (request.getSortOrder() != null) tag.setSortOrder(request.getSortOrder());
-        return toDto(tagRepository.save(tag));
+        tagRepository.save(tag);
+        auditService.log(AuditAction.UPDATE, "TAG", tag.getId(), tag.getCode());
+        return toDto(tag);
     }
 
     @Transactional
     public void delete(Long id) {
         tagRepository.deleteById(id);
+        auditService.log(AuditAction.DELETE, "TAG", id, "Teg #" + id + " o'chirildi");
     }
 
     @Transactional
@@ -69,6 +76,7 @@ public class TagService {
         Set<Tag> tags = new HashSet<>(tagRepository.findAllById(tagIds));
         item.setTags(tags);
         craftItemRepository.save(item);
+        auditService.log(AuditAction.UPDATE, "ITEM", itemId, "Teglar yangilandi");
         return tags.stream().map(this::toDto).collect(Collectors.toList());
     }
 

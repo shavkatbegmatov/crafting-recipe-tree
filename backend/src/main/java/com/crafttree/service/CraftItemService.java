@@ -1,6 +1,7 @@
 package com.crafttree.service;
 
 import com.crafttree.dto.*;
+import com.crafttree.entity.AuditAction;
 import com.crafttree.entity.CraftItem;
 import com.crafttree.entity.GameVersion;
 import com.crafttree.entity.Recipe;
@@ -28,6 +29,7 @@ public class CraftItemService {
     private final RecipeIngredientRepository recipeIngredientRepository;
     private final RecipeRepository recipeRepository;
     private final GameVersionService gameVersionService;
+    private final AuditService auditService;
 
     public List<CategoryDto> getAllCategories() {
         return categoryRepository.findAllByOrderBySortOrderAsc().stream()
@@ -92,6 +94,7 @@ public class CraftItemService {
 
         item.setUpdatedAt(java.time.LocalDateTime.now());
         craftItemRepository.save(item);
+        auditService.log(AuditAction.UPDATE, "ITEM", item.getId(), item.getName());
 
         return toDtoWithIngredients(item, gameVersionService.getCurrent());
     }
