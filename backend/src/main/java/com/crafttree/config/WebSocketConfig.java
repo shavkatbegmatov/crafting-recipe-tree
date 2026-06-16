@@ -18,10 +18,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        // /topic — outgoing messages from server to clients
-        registry.enableSimpleBroker("/topic");
+        // /topic — broadcast (server → barcha clientlar); /queue — shaxsiy (per-user)
+        registry.enableSimpleBroker("/topic", "/queue");
         // /app — incoming messages from clients to server
         registry.setApplicationDestinationPrefixes("/app");
+        // /user — shaxsiy xabarlar prefiksi; convertAndSendToUser(...) shu orqali ishlaydi
+        registry.setUserDestinationPrefix("/user");
     }
 
     @Override

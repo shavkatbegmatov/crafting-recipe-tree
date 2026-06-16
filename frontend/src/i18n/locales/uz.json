@@ -385,6 +385,16 @@
     "centered": "Markaz",
     "full": "To'liq"
   },
+  "notification": {
+    "title": "Bildirishnomalar",
+    "empty": "Hozircha bildirishnoma yo'q",
+    "markAllRead": "Hammasini o'qish",
+    "type": {
+      "ACCESS_REQUEST_SUBMITTED": "{{actor}} admin huquqini so'radi",
+      "ACCESS_REQUEST_APPROVED": "Admin huquqingiz tasdiqlandi 🎉",
+      "ACCESS_REQUEST_REJECTED": "Admin huquqi arizangiz rad etildi"
+    }
+  },
   "chat": {
     "title": "Chat",
     "placeholder": "Xabar yozing...",

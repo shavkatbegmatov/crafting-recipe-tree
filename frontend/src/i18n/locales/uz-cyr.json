@@ -377,6 +377,16 @@
     "centered": "Марказ",
     "full": "Тўлиқ"
   },
+  "notification": {
+    "title": "Билдиришномалар",
+    "empty": "Ҳозирча билдиришнома йўқ",
+    "markAllRead": "Ҳаммасини ўқиш",
+    "type": {
+      "ACCESS_REQUEST_SUBMITTED": "{{actor}} админ ҳуқуқини сўради",
+      "ACCESS_REQUEST_APPROVED": "Админ ҳуқуқингиз тасдиқланди 🎉",
+      "ACCESS_REQUEST_REJECTED": "Админ ҳуқуқи аризангиз рад этилди"
+    }
+  },
   "chat": {
     "title": "Чат",
     "placeholder": "Хабар ёзинг...",

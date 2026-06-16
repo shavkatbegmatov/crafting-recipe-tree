@@ -5,6 +5,7 @@ import com.crafttree.dto.MyAccessRequestDto;
 import com.crafttree.dto.PagedResponse;
 import com.crafttree.entity.AccessRequest;
 import com.crafttree.entity.AccessRequestStatus;
+import com.crafttree.entity.NotificationType;
 import com.crafttree.entity.Role;
 import com.crafttree.entity.User;
 import com.crafttree.exception.ItemNotFoundException;
@@ -35,6 +36,7 @@ public class AccessRequestService {
 
     private final AccessRequestRepository accessRequestRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     // Hozircha foydalanuvchi faqat ADMIN darajasini so'ray oladi (mahsulot qarori).
     private static final String REQUESTABLE_ROLE = Role.ADMIN;
@@ -66,6 +68,9 @@ public class AccessRequestService {
         } catch (DataIntegrityViolationException e) {
             throw new IllegalStateException("REQUEST_ALREADY_PENDING");
         }
+        // Super-adminlarni yangi ariza haqida xabardor qilamiz.
+        notificationService.notifySuperAdmins(
+                NotificationType.ACCESS_REQUEST_SUBMITTED, actor.getUsername(), "/admin/access-requests");
         return MyAccessRequestDto.from(request);
     }
 
@@ -125,6 +130,9 @@ public class AccessRequestService {
             userRepository.save(target);
         }
         finishReview(request, AccessRequestStatus.APPROVED, reviewer, note);
+        // Foydalanuvchiga huquq berilgani haqida xabar.
+        notificationService.notifyUser(
+                target, NotificationType.ACCESS_REQUEST_APPROVED, reviewer.getUsername(), "/");
         return AccessRequestDto.from(request);
     }
 
@@ -134,6 +142,9 @@ public class AccessRequestService {
         AccessRequest request = getRequest(requestId);
         requirePending(request);
         finishReview(request, AccessRequestStatus.REJECTED, reviewer, note);
+        // Foydalanuvchiga ariza rad etilgani haqida xabar.
+        notificationService.notifyUser(
+                request.getUser(), NotificationType.ACCESS_REQUEST_REJECTED, reviewer.getUsername(), "/");
         return AccessRequestDto.from(request);
     }
 

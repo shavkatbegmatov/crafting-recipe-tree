@@ -2,22 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Client } from '@stomp/stompjs'
 import type { ChatMessageDto } from '../api/chat'
 import { fetchChatHistory } from '../api/chat'
-
-/**
- * Resolves the WebSocket URL from the current environment.
- * In dev mode, Vite proxy is used so we connect to the same origin.
- * In prod, VITE_API_BASE_URL points to the backend's public URL.
- */
-function getWsUrl(): string {
-  const apiBase = import.meta.env.VITE_API_BASE_URL
-  if (apiBase) {
-    // Production: convert http(s)://host to ws(s)://host/ws
-    return apiBase.replace(/^http/, 'ws') + '/ws'
-  }
-  // Dev: same origin via Vite proxy
-  const proto = location.protocol === 'https:' ? 'wss' : 'ws'
-  return `${proto}://${location.host}/ws`
-}
+import { getWsUrl } from '../utils/wsUrl'
 
 interface UseChatReturn {
   messages: ChatMessageDto[]
