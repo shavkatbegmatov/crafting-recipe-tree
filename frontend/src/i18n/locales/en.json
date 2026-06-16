@@ -456,7 +456,9 @@
     "title": "Chat",
     "placeholder": "Type a message...",
     "empty": "No messages yet",
-    "loginRequired": "Sign in to send messages"
+    "loginRequired": "Sign in to send messages",
+    "connecting": "Connecting...",
+    "onlineCount": "{{count}} online"
   },
   "recipeEditor": {
     "button": "Recipe",
