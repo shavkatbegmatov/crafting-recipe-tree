@@ -377,6 +377,21 @@
     "centered": "Centered",
     "full": "Full width"
   },
+  "calculator": {
+    "title": "Craft calculator",
+    "subtitle": "Pick several targets and compute the total raw materials needed",
+    "menuLink": "Calculator",
+    "search": "Search and add an item...",
+    "empty": "Add an item above to start calculating",
+    "targets": "Targets",
+    "remove": "Remove",
+    "result": "Total raw materials",
+    "error": "Calculation error",
+    "noMaterials": "No raw materials required",
+    "material": "Material",
+    "quantity": "Quantity",
+    "totalTime": "Total craft time"
+  },
   "audit": {
     "title": "Audit log",
     "subtitle": "History of important system actions: who, when, what",

@@ -1,4 +1,4 @@
-import { Boxes, Menu, LogIn, UserPlus } from 'lucide-react'
+import { Boxes, Menu, LogIn, UserPlus, Calculator } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../../contexts/AuthContext'
@@ -30,6 +30,17 @@ export default function Header({ onToggleSidebar }: Props) {
         <span className="font-semibold text-lg">{t('app.title')}</span>
       </Link>
       <span className="text-xs text-[#8a7a60] ml-2 hidden sm:inline">{t('app.subtitle')}</span>
+
+      {user && (
+        <Link
+          to="/calculator"
+          className="flex items-center gap-1 text-xs px-2 py-1 ml-1 rounded text-[#8a7a60]
+            hover:text-dark-gold hover:bg-dark-hover/60 transition-colors"
+        >
+          <Calculator size={14} />
+          <span className="hidden sm:inline">{t('calculator.menuLink')}</span>
+        </Link>
+      )}
 
       <div className="ml-auto flex items-center gap-2">
         {/* Game version selector — only when authenticated, since it gates recipe data */}
