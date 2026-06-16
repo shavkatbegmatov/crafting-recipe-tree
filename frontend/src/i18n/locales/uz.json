@@ -385,6 +385,42 @@
     "centered": "Markaz",
     "full": "To'liq"
   },
+  "audit": {
+    "title": "Audit jurnali",
+    "subtitle": "Tizimdagi muhim amallar tarixi: kim, qachon, nima qildi",
+    "actorSearch": "Foydalanuvchi bo'yicha qidirish...",
+    "allActions": "Barcha amallar",
+    "allTargets": "Barcha ob'ektlar",
+    "empty": "Yozuv topilmadi",
+    "system": "tizim",
+    "menuLink": "Audit jurnali",
+    "col": {
+      "time": "Vaqt",
+      "actor": "Kim",
+      "action": "Amal",
+      "target": "Ob'ekt",
+      "summary": "Tafsilot"
+    },
+    "action": {
+      "CREATE": "Yaratildi",
+      "UPDATE": "Tahrirlandi",
+      "DELETE": "O'chirildi",
+      "ROLE_CHANGE": "Rol o'zgardi",
+      "STATUS_CHANGE": "Holat o'zgardi",
+      "PASSWORD_RESET": "Parol tiklandi",
+      "APPROVE": "Tasdiqlandi",
+      "REJECT": "Rad etildi",
+      "SET_CURRENT": "Joriy qilindi"
+    },
+    "target": {
+      "USER": "Foydalanuvchi",
+      "ACCESS_REQUEST": "Ariza",
+      "CATEGORY": "Kategoriya",
+      "ITEM": "Element",
+      "TAG": "Teg",
+      "GAME_VERSION": "O'yin versiyasi"
+    }
+  },
   "notification": {
     "title": "Bildirishnomalar",
     "empty": "Hozircha bildirishnoma yo'q",

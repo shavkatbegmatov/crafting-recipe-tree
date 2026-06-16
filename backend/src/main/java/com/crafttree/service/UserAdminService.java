@@ -3,6 +3,7 @@ package com.crafttree.service;
 import com.crafttree.dto.AdminUserDto;
 import com.crafttree.dto.PagedResponse;
 import com.crafttree.dto.UserStatsDto;
+import com.crafttree.entity.AuditAction;
 import com.crafttree.entity.Role;
 import com.crafttree.entity.User;
 import com.crafttree.exception.ItemNotFoundException;
@@ -32,6 +33,7 @@ public class UserAdminService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuditService auditService;
 
     // Chalkashtirmaslik uchun o'xshash belgilarsiz (0/O, 1/l/I) parol alifbosi.
     private static final String TEMP_PWD_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
@@ -87,6 +89,8 @@ public class UserAdminService {
         }
         target.setRole(role);
         userRepository.save(target);
+        auditService.log(AuditAction.ROLE_CHANGE, "USER", target.getId(),
+                target.getUsername() + " → " + role);
         return toDto(target);
     }
 
@@ -100,6 +104,8 @@ public class UserAdminService {
         }
         target.setEnabled(enabled);
         userRepository.save(target);
+        auditService.log(AuditAction.STATUS_CHANGE, "USER", target.getId(),
+                target.getUsername() + (enabled ? " faollashtirildi" : " bloklandi"));
         return toDto(target);
     }
 
@@ -111,6 +117,8 @@ public class UserAdminService {
         String password = (newPassword != null && !newPassword.isBlank()) ? newPassword : generateTempPassword();
         target.setPasswordHash(passwordEncoder.encode(password));
         userRepository.save(target);
+        auditService.log(AuditAction.PASSWORD_RESET, "USER", target.getId(),
+                target.getUsername() + " paroli tiklandi");
         return password;
     }
 
@@ -122,6 +130,9 @@ public class UserAdminService {
         if (isLastSuperAdmin(target)) {
             throw new IllegalStateException("CANNOT_DELETE_LAST_SUPER_ADMIN");
         }
+        // Audit yozuvini o'chirishdan OLDIN qoldiramiz (keyin username yo'qoladi).
+        auditService.log(AuditAction.DELETE, "USER", target.getId(),
+                target.getUsername() + " o'chirildi");
         // Bu foydalanuvchi taklif qilganlarning referral bog'lanishini uzamiz (FK cheklovi).
         userRepository.clearReferrerReferences(target.getId());
         userRepository.delete(target);

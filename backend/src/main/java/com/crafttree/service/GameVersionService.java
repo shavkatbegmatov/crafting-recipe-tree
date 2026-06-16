@@ -1,5 +1,6 @@
 package com.crafttree.service;
 
+import com.crafttree.entity.AuditAction;
 import com.crafttree.entity.GameVersion;
 import com.crafttree.exception.ItemNotFoundException;
 import com.crafttree.repository.GameVersionRepository;
@@ -17,6 +18,7 @@ public class GameVersionService {
 
     private final GameVersionRepository gameVersionRepository;
     private final RecipeRepository recipeRepository;
+    private final AuditService auditService;
 
     @Transactional(readOnly = true)
     public List<GameVersion> findAll() {
@@ -62,7 +64,9 @@ public class GameVersionService {
                 .notes(notes)
                 .isCurrent(makeCurrent)
                 .build();
-        return gameVersionRepository.save(gv);
+        GameVersion saved = gameVersionRepository.save(gv);
+        auditService.log(AuditAction.CREATE, "GAME_VERSION", saved.getId(), saved.getVersion());
+        return saved;
     }
 
     @Transactional
@@ -76,7 +80,9 @@ public class GameVersionService {
         }
         if (releasedAt != null) gv.setReleasedAt(releasedAt);
         if (notes != null) gv.setNotes(notes);
-        return gameVersionRepository.save(gv);
+        gameVersionRepository.save(gv);
+        auditService.log(AuditAction.UPDATE, "GAME_VERSION", gv.getId(), gv.getVersion());
+        return gv;
     }
 
     @Transactional
@@ -84,7 +90,9 @@ public class GameVersionService {
         GameVersion gv = findById(id);
         gameVersionRepository.clearAllCurrent();
         gv.setIsCurrent(true);
-        return gameVersionRepository.save(gv);
+        gameVersionRepository.save(gv);
+        auditService.log(AuditAction.SET_CURRENT, "GAME_VERSION", gv.getId(), gv.getVersion() + " joriy qilindi");
+        return gv;
     }
 
     @Transactional
@@ -96,6 +104,7 @@ public class GameVersionService {
         if (recipeRepository.existsByGameVersionId(id)) {
             throw new IllegalStateException("Cannot delete game version with existing recipes. Remove recipes first.");
         }
+        auditService.log(AuditAction.DELETE, "GAME_VERSION", gv.getId(), gv.getVersion() + " o'chirildi");
         gameVersionRepository.delete(gv);
     }
 }
