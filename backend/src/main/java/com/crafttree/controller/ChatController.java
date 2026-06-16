@@ -19,6 +19,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -42,9 +43,12 @@ public class ChatController {
             @RequestParam(defaultValue = "50") int limit) {
 
         limit = Math.min(limit, 200); // cap
-        List<ChatMessageDto> msgs = chatRepo.findAllWithUser(PageRequest.of(0, limit))
-                .map(ChatMessageDto::from)
-                .getContent();
+        // getContent() o'zgarmas (immutable) ro'yxat qaytaradi — reverse() uni o'zgartira olishi
+        // uchun mutable nusxaga olamiz (aks holda 2+ xabarda UnsupportedOperationException).
+        List<ChatMessageDto> msgs = new ArrayList<>(
+                chatRepo.findAllByOrderByCreatedAtDesc(PageRequest.of(0, limit))
+                        .map(ChatMessageDto::from)
+                        .getContent());
 
         // Repo returns DESC; reverse to chronological order for the client
         Collections.reverse(msgs);

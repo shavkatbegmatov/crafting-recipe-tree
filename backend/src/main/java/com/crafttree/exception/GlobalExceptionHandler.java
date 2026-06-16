@@ -1,5 +1,6 @@
 package com.crafttree.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.time.LocalDateTime;
 import java.util.Map;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -47,8 +49,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGeneral(Exception ex) {
-        return body(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error",
-                ex.getMessage() != null ? ex.getMessage() : "Unexpected error");
+        // Kutilmagan xatolarni serverda to'liq log qilamiz (keyinchalik tahlil uchun), lekin
+        // tafsilotni mijozga oshkor qilmaymiz.
+        log.error("Unhandled exception", ex);
+        return body(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", "Unexpected error");
     }
 
     private ResponseEntity<Map<String, Object>> body(HttpStatus status, String error, String message) {
