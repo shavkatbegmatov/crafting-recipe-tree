@@ -377,6 +377,16 @@
     "centered": "Centered",
     "full": "Full width"
   },
+  "notification": {
+    "title": "Notifications",
+    "empty": "No notifications yet",
+    "markAllRead": "Mark all read",
+    "type": {
+      "ACCESS_REQUEST_SUBMITTED": "{{actor}} requested admin access",
+      "ACCESS_REQUEST_APPROVED": "You've been granted admin access 🎉",
+      "ACCESS_REQUEST_REJECTED": "Your admin access request was rejected"
+    }
+  },
   "chat": {
     "title": "Chat",
     "placeholder": "Type a message...",

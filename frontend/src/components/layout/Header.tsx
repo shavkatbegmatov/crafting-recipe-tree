@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useAuth } from '../../contexts/AuthContext'
 import { LANGUAGES } from '../../i18n'
 import UserDropdown from './UserDropdown'
+import NotificationBell from './NotificationBell'
 import GameVersionSelector from './GameVersionSelector'
 
 interface Props {
@@ -51,6 +52,9 @@ export default function Header({ onToggleSidebar }: Props) {
             </button>
           ))}
         </div>
+
+        {/* Bildirishnomalar — faqat tizimga kirgan foydalanuvchiga */}
+        {user && <NotificationBell />}
 
         {/* Auth */}
         <div className="border-l border-dark-border pl-2">

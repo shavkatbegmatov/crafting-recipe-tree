@@ -43,6 +43,8 @@ public class SecurityConfig {
                 // Foydalanuvchi o'z "admin huquqi" arizasini boshqaradi — autentifikatsiya shart.
                 // GET'lar ham himoyalanishi uchun quyidagi umumiy GET permitAll'dan OLDIN turadi.
                 .requestMatchers("/api/access-requests/**").authenticated()
+                // Foydalanuvchining shaxsiy bildirishnomalari — autentifikatsiya shart (GET ham).
+                .requestMatchers("/api/notifications/**").authenticated()
                 // Public endpoints
                 .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
