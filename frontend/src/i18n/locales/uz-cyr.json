@@ -456,7 +456,9 @@
     "title": "Чат",
     "placeholder": "Хабар ёзинг...",
     "empty": "Ҳали хабарлар йўқ",
-    "loginRequired": "Хабар юбориш учун киринг"
+    "loginRequired": "Хабар юбориш учун киринг",
+    "connecting": "Уланмоқда...",
+    "onlineCount": "{{count}} онлайн"
   },
   "recipeEditor": {
     "button": "Рецепт",

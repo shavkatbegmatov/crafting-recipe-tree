@@ -14,3 +14,13 @@ export async function fetchChatHistory(limit = 50): Promise<ChatMessageDto[]> {
   })
   return data
 }
+
+export interface PresenceDto {
+  users: string[]
+  count: number
+}
+
+export async function fetchOnline(): Promise<PresenceDto> {
+  const { data } = await client.get<PresenceDto>('/chat/online')
+  return data
+}

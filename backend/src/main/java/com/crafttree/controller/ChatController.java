@@ -2,9 +2,11 @@ package com.crafttree.controller;
 
 import com.crafttree.dto.ChatMessageDto;
 import com.crafttree.dto.ChatSendRequest;
+import com.crafttree.dto.PresenceDto;
 import com.crafttree.entity.ChatMessage;
 import com.crafttree.entity.User;
 import com.crafttree.repository.ChatMessageRepository;
+import com.crafttree.service.ChatPresenceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,7 @@ public class ChatController {
 
     private final ChatMessageRepository chatRepo;
     private final SimpMessagingTemplate messaging;
+    private final ChatPresenceService presenceService;
 
     /**
      * REST: Fetch the last N chat messages (for initial load / scrollback).
@@ -46,6 +49,16 @@ public class ChatController {
         // Repo returns DESC; reverse to chronological order for the client
         Collections.reverse(msgs);
         return msgs;
+    }
+
+    /**
+     * REST: Hozir chatda onlayn foydalanuvchilar (panel ochilganda boshlang'ich holat uchun).
+     * Keyingi yangilanishlar {@code /topic/chat.presence} orqali real-vaqtda keladi.
+     */
+    @GetMapping("/api/chat/online")
+    @Operation(summary = "Hozir chatda onlayn foydalanuvchilar")
+    public PresenceDto online() {
+        return presenceService.snapshot();
     }
 
     /**

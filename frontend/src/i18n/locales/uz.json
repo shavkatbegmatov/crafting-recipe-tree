@@ -464,7 +464,9 @@
     "title": "Chat",
     "placeholder": "Xabar yozing...",
     "empty": "Hali xabarlar yo'q",
-    "loginRequired": "Xabar yuborish uchun kiring"
+    "loginRequired": "Xabar yuborish uchun kiring",
+    "connecting": "Ulanmoqda...",
+    "onlineCount": "{{count}} onlayn"
   },
   "recipeEditor": {
     "button": "Retsept",

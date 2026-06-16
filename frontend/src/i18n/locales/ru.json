@@ -456,7 +456,9 @@
     "title": "Чат",
     "placeholder": "Напишите сообщение...",
     "empty": "Сообщений пока нет",
-    "loginRequired": "Войдите, чтобы отправлять сообщения"
+    "loginRequired": "Войдите, чтобы отправлять сообщения",
+    "connecting": "Подключение...",
+    "onlineCount": "{{count}} онлайн"
   },
   "recipeEditor": {
     "button": "Рецепт",

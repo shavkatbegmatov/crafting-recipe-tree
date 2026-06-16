@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Client } from '@stomp/stompjs'
 import type { ChatMessageDto } from '../api/chat'
-import { fetchChatHistory } from '../api/chat'
+import { fetchChatHistory, fetchOnline } from '../api/chat'
 import { getWsUrl } from '../utils/wsUrl'
 
 interface UseChatReturn {
@@ -9,12 +9,14 @@ interface UseChatReturn {
   connected: boolean
   send: (content: string) => void
   loadingHistory: boolean
+  onlineUsers: string[]
 }
 
 export function useChat(active: boolean): UseChatReturn {
   const [messages, setMessages] = useState<ChatMessageDto[]>([])
   const [connected, setConnected] = useState(false)
   const [loadingHistory, setLoadingHistory] = useState(false)
+  const [onlineUsers, setOnlineUsers] = useState<string[]>([])
   const clientRef = useRef<Client | null>(null)
   const activeRef = useRef(active)
   activeRef.current = active
@@ -28,6 +30,7 @@ export function useChat(active: boolean): UseChatReturn {
         clientRef.current = null
       }
       setConnected(false)
+      setOnlineUsers([])
       return
     }
 
@@ -61,6 +64,15 @@ export function useChat(active: boolean): UseChatReturn {
           const msg: ChatMessageDto = JSON.parse(frame.body)
           setMessages((prev) => [...prev, msg])
         })
+
+        // Onlayn foydalanuvchilar — real-vaqt yangilanish + boshlang'ich holat (REST)
+        stompClient.subscribe('/topic/chat.presence', (frame) => {
+          const presence = JSON.parse(frame.body) as { users: string[] }
+          if (!cancelled) setOnlineUsers(presence.users)
+        })
+        fetchOnline()
+          .then((p) => { if (!cancelled) setOnlineUsers(p.users) })
+          .catch(() => {})
       },
       onDisconnect: () => {
         if (!cancelled) setConnected(false)
@@ -96,5 +108,5 @@ export function useChat(active: boolean): UseChatReturn {
     })
   }, [])
 
-  return { messages, connected, send, loadingHistory }
+  return { messages, connected, send, loadingHistory, onlineUsers }
 }
