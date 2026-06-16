@@ -400,6 +400,20 @@
     "quantity": "Miqdor",
     "totalTime": "Jami kraft vaqti"
   },
+  "craftable": {
+    "title": "Nima yasay olaman?",
+    "subtitle": "Mavjud materiallaringizni kiriting — nima yasash mumkinligini ko'ring",
+    "menuLink": "Nima yasayman?",
+    "search": "Materialingizni qidirib qo'shing...",
+    "empty": "Materiallaringizni qo'shing",
+    "inventory": "Mening materiallarim",
+    "canCraft": "Yasashingiz mumkin",
+    "almost": "Deyarli yetadi",
+    "noResults": "Bu materiallardan hech narsa yasab bo'lmaydi",
+    "error": "Qidirishda xatolik",
+    "canMake": "{{count}} dona",
+    "needHave": "{{need}} kerak, {{have}} bor"
+  },
   "audit": {
     "title": "Audit jurnali",
     "subtitle": "Tizimdagi muhim amallar tarixi: kim, qachon, nima qildi",

@@ -392,6 +392,20 @@
     "quantity": "Quantity",
     "totalTime": "Total craft time"
   },
+  "craftable": {
+    "title": "What can I craft?",
+    "subtitle": "Enter the materials you have — see what you can craft",
+    "menuLink": "What can I craft?",
+    "search": "Search and add a material...",
+    "empty": "Add your materials",
+    "inventory": "My materials",
+    "canCraft": "You can craft",
+    "almost": "Almost enough",
+    "noResults": "Nothing can be crafted from these materials",
+    "error": "Search error",
+    "canMake": "{{count}} pcs",
+    "needHave": "need {{need}}, have {{have}}"
+  },
   "audit": {
     "title": "Audit log",
     "subtitle": "History of important system actions: who, when, what",
