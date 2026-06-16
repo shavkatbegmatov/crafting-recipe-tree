@@ -14,6 +14,7 @@ import AdminUsersPage from './pages/AdminUsersPage'
 import AdminAccessRequestsPage from './pages/AdminAccessRequestsPage'
 import AdminAuditPage from './pages/AdminAuditPage'
 import CalculatorPage from './pages/CalculatorPage'
+import CraftableSearchPage from './pages/CraftableSearchPage'
 
 export default function App() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
             <Route path="admin/access-requests" element={<AdminAccessRequestsPage />} />
             <Route path="admin/audit" element={<AdminAuditPage />} />
             <Route path="calculator" element={<CalculatorPage />} />
+            <Route path="craftable" element={<CraftableSearchPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>
