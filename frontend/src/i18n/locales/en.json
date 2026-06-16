@@ -236,6 +236,67 @@
       "INVALID_ROLE": "Invalid role value"
     }
   },
+  "accessRequest": {
+    "title": "Admin access",
+    "request": "Request admin access",
+    "requestAgain": "Request again",
+    "formTitle": "Why do you want to become an admin? (optional)",
+    "messagePlaceholder": "Write a short note...",
+    "send": "Send",
+    "close": "Close",
+    "cancel": "Cancel request",
+    "pending": "Your request is under review",
+    "pendingHint": "Wait for a super admin to respond",
+    "approved": "You've been granted admin access!",
+    "approvedHint": "Click to activate your new permissions",
+    "apply": "Apply",
+    "rejected": "Your request was rejected",
+    "reason": "Reason:",
+    "adminTitle": "Access requests",
+    "adminSubtitle": "Review users' requests for admin access",
+    "menuLink": "Access requests",
+    "pendingBadge": "{{count}} new",
+    "empty": "No requests found",
+    "noMessage": "(no note provided)",
+    "reviewedBy": "Reviewed by {{name}}",
+    "reviewNoteLabel": "Note:",
+    "filter": {
+      "all": "All"
+    },
+    "statusLabel": {
+      "PENDING": "Pending",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected",
+      "CANCELLED": "Cancelled"
+    },
+    "action": {
+      "approve": "Approve",
+      "reject": "Reject"
+    },
+    "approve": {
+      "title": "Approve request",
+      "confirm": "{{name}} will be granted admin access. Continue?"
+    },
+    "reject": {
+      "title": "Reject request",
+      "confirm": "{{name}}'s request will be rejected."
+    },
+    "modal": {
+      "noteLabel": "Note (optional)",
+      "notePlaceholder": "You can add a reason for your decision (visible to the user)...",
+      "approveBtn": "Approve",
+      "rejectBtn": "Reject",
+      "cancel": "Cancel"
+    },
+    "errors": {
+      "ALREADY_PRIVILEGED": "You already have the required permissions",
+      "REQUEST_ALREADY_PENDING": "You have an open request — wait for it or cancel it first",
+      "REQUEST_NOT_PENDING": "This request has already been reviewed",
+      "NOT_OWN_REQUEST": "This is not your request",
+      "INVALID_STATUS": "Invalid status value",
+      "UNKNOWN_ERROR": "An unknown error occurred"
+    }
+  },
   "portage": {
     "pageTitle": "Export / Import",
     "pageHint": "Save items, recipes, categories, tags and images as a .craftpkg, or upload such a package and apply it to your database.",

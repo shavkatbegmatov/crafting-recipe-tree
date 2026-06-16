@@ -236,6 +236,67 @@
       "INVALID_ROLE": "Noto'g'ri rol qiymati"
     }
   },
+  "accessRequest": {
+    "title": "Admin huquqi",
+    "request": "Admin huquqini so'rash",
+    "requestAgain": "Qayta so'rash",
+    "formTitle": "Nega admin bo'lmoqchisiz? (ixtiyoriy)",
+    "messagePlaceholder": "Qisqacha izoh yozing...",
+    "send": "Yuborish",
+    "close": "Yopish",
+    "cancel": "Arizani bekor qilish",
+    "pending": "Arizangiz ko'rib chiqilmoqda",
+    "pendingHint": "Super-admin javobini kuting",
+    "approved": "Sizga admin huquqi berildi!",
+    "approvedHint": "Yangi imkoniyatlarni yoqish uchun bosing",
+    "apply": "Qo'llash",
+    "rejected": "Arizangiz rad etildi",
+    "reason": "Sabab:",
+    "adminTitle": "Kirish so'rovlari",
+    "adminSubtitle": "Foydalanuvchilarning admin huquqi arizalarini ko'rib chiqing",
+    "menuLink": "Kirish so'rovlari",
+    "pendingBadge": "{{count}} ta yangi",
+    "empty": "Ariza topilmadi",
+    "noMessage": "(izoh qoldirilmagan)",
+    "reviewedBy": "{{name}} ko'rib chiqdi",
+    "reviewNoteLabel": "Izoh:",
+    "filter": {
+      "all": "Hammasi"
+    },
+    "statusLabel": {
+      "PENDING": "Kutilmoqda",
+      "APPROVED": "Tasdiqlangan",
+      "REJECTED": "Rad etilgan",
+      "CANCELLED": "Bekor qilingan"
+    },
+    "action": {
+      "approve": "Tasdiqlash",
+      "reject": "Rad etish"
+    },
+    "approve": {
+      "title": "Arizani tasdiqlash",
+      "confirm": "{{name}}ga admin huquqi beriladi. Davom etilsinmi?"
+    },
+    "reject": {
+      "title": "Arizani rad etish",
+      "confirm": "{{name}}ning arizasi rad etiladi."
+    },
+    "modal": {
+      "noteLabel": "Izoh (ixtiyoriy)",
+      "notePlaceholder": "Qaror sababini yozishingiz mumkin (foydalanuvchiga ko'rinadi)...",
+      "approveBtn": "Tasdiqlash",
+      "rejectBtn": "Rad etish",
+      "cancel": "Bekor qilish"
+    },
+    "errors": {
+      "ALREADY_PRIVILEGED": "Sizda allaqachon kerakli huquq bor",
+      "REQUEST_ALREADY_PENDING": "Sizning ochiq arizangiz bor — avval uni kuting yoki bekor qiling",
+      "REQUEST_NOT_PENDING": "Bu ariza allaqachon ko'rib chiqilgan",
+      "NOT_OWN_REQUEST": "Bu sizning arizangiz emas",
+      "INVALID_STATUS": "Noto'g'ri holat qiymati",
+      "UNKNOWN_ERROR": "Noma'lum xatolik yuz berdi"
+    }
+  },
   "portage": {
     "pageTitle": "Eksport / Import",
     "pageHint": "Elementlar, retseptlar, kategoriyalar, teglar va rasmlarni .craftpkg paket sifatida saqlang yoki shunday paketni yuklab, mavjud bazaga qo'shing.",

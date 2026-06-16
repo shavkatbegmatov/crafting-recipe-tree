@@ -19,6 +19,7 @@ import {
   Settings,
   Loader2,
   Package,
+  ShieldQuestion,
   Tag as TagIcon,
   LayoutGrid,
   AlignCenter,
@@ -26,6 +27,8 @@ import {
 } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 import type { LayoutWidth } from '../../api/auth'
+import RequestAdminAccess from './RequestAdminAccess'
+import { usePendingRequestsCount } from '../../hooks/useAccessRequests'
 
 /* ─── Avatar ─── */
 
@@ -57,7 +60,9 @@ function Divider() {
 
 export default function UserDropdown() {
   const { t } = useTranslation()
-  const { user, isAdmin, layoutWidth, logout, updateProfile } = useAuth()
+  const { user, isAdmin, isSuperAdmin, layoutWidth, logout, updateProfile } = useAuth()
+  // Kutilayotgan arizalar soni — faqat super-admin uchun yuklanadi (badge ko'rsatish).
+  const { data: pendingRequestsCount } = usePendingRequestsCount(isSuperAdmin)
 
   const [open, setOpen] = useState(false)
   const [editMode, setEditMode] = useState(false)
@@ -424,6 +429,9 @@ export default function UserDropdown() {
 
             <Divider />
 
+            {/* ── Admin huquqi so'rash (faqat oddiy foydalanuvchiga ko'rinadi) ── */}
+            <RequestAdminAccess />
+
             {/* ── Actions ── */}
             <div className="px-2 py-1.5">
               {isAdmin && (
@@ -437,6 +445,24 @@ export default function UserDropdown() {
                     <Users className="w-3.5 h-3.5 text-dark-gold" />
                     {t('admin.users')}
                   </Link>
+                  {isSuperAdmin && (
+                    <Link
+                      to="/admin/access-requests"
+                      onClick={() => setOpen(false)}
+                      className="flex items-center justify-between gap-2.5 px-3 py-2 rounded-lg text-xs text-[#d4c4a0]
+                        hover:bg-dark-hover transition-colors"
+                    >
+                      <span className="flex items-center gap-2.5">
+                        <ShieldQuestion className="w-3.5 h-3.5 text-dark-gold" />
+                        {t('accessRequest.menuLink')}
+                      </span>
+                      {pendingRequestsCount != null && pendingRequestsCount > 0 && (
+                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                          {pendingRequestsCount}
+                        </span>
+                      )}
+                    </Link>
+                  )}
                   <Link
                     to="/admin/categories"
                     onClick={() => setOpen(false)}
