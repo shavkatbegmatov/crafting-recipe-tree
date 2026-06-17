@@ -545,6 +545,17 @@
     }
   },
   "chat": {
+    "reply": "Ответить",
+    "edit": "Изменить",
+    "delete": "Удалить",
+    "edited": "изменено",
+    "send": "Отправить",
+    "confirmDelete": "Удалить это сообщение?",
+    "editing": "Редактирование",
+    "replyingTo": "Ответ {{name}}",
+    "typingOne": "{{name}} печатает…",
+    "typingMany": "{{count}} печатают…",
+    "cancel": "Отмена",
     "title": "Чат",
     "placeholder": "Напишите сообщение...",
     "empty": "Сообщений пока нет",

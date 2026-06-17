@@ -1,6 +1,8 @@
 package com.crafttree.controller;
 
 import com.crafttree.dto.ChatAnnouncementDto;
+import com.crafttree.dto.ChatEditRequest;
+import com.crafttree.dto.ChatIdRequest;
 import com.crafttree.dto.ChatMessageDto;
 import com.crafttree.dto.ChatSendRequest;
 import com.crafttree.dto.PresenceDto;
@@ -21,6 +23,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -29,6 +32,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -92,6 +96,7 @@ public class ChatController {
      * it to all subscribers on /topic/chat.
      */
     @MessageMapping("/chat.send")
+    @Transactional
     public void sendMessage(@Payload ChatSendRequest request, Principal principal) {
         if (principal == null) {
             log.warn("Unauthenticated user tried to send a chat message");
@@ -125,15 +130,66 @@ public class ChatController {
             return;
         }
 
-        ChatMessage entity = ChatMessage.builder()
+        ChatMessage.ChatMessageBuilder builder = ChatMessage.builder()
                 .user(fresh)
-                .content(content.trim())
-                .build();
+                .content(content.trim());
+        // Reply — javob berilayotgan xabar (mavjud bo'lsa) bog'lanadi.
+        if (request.getReplyToId() != null) {
+            chatRepo.findById(request.getReplyToId()).ifPresent(builder::replyTo);
+        }
+        ChatMessage entity = builder.build();
         chatRepo.save(entity);
 
         ChatMessageDto dto = ChatMessageDto.from(entity);
         messaging.convertAndSend("/topic/chat", dto);
         log.debug("Chat from {}: {}", fresh.getUsername(), content.trim());
+    }
+
+    /** O'z xabarini tahrirlash. Faqat egasi; tahrirlangan vaqt belgilanib, real-vaqtda tarqatiladi. */
+    @MessageMapping("/chat.edit")
+    @Transactional
+    public void editMessage(@Payload ChatEditRequest req, Principal principal) {
+        User user = extractUser(principal);
+        if (user == null || req == null || req.id() == null) {
+            return;
+        }
+        String content = req.content();
+        if (content == null || content.isBlank() || content.length() > 2000) {
+            return;
+        }
+        ChatMessage msg = chatRepo.findById(req.id()).orElse(null);
+        if (msg == null || !msg.getUser().getId().equals(user.getId())) {
+            return; // faqat o'z xabarini tahrirlash mumkin
+        }
+        msg.setContent(content.trim());
+        msg.setEditedAt(LocalDateTime.now());
+        chatRepo.save(msg);
+        messaging.convertAndSend("/topic/chat.edited", ChatMessageDto.from(msg));
+    }
+
+    /** O'z xabarini o'chirish (super-admin moderatsiyasidan farqli — bu faqat egasi uchun). */
+    @MessageMapping("/chat.delete")
+    @Transactional
+    public void deleteOwnMessage(@Payload ChatIdRequest req, Principal principal) {
+        User user = extractUser(principal);
+        if (user == null || req == null || req.id() == null) {
+            return;
+        }
+        ChatMessage msg = chatRepo.findById(req.id()).orElse(null);
+        if (msg == null || !msg.getUser().getId().equals(user.getId())) {
+            return;
+        }
+        chatRepo.delete(msg);
+        messaging.convertAndSend("/topic/chat.deleted", Map.of("id", req.id()));
+    }
+
+    /** "Yozmoqda" signali — DB'ga yozilmaydi, faqat real-vaqtda boshqalarga ko'rsatiladi. */
+    @MessageMapping("/chat.typing")
+    public void typing(Principal principal) {
+        User user = extractUser(principal);
+        if (user != null) {
+            messaging.convertAndSend("/topic/chat.typing", Map.of("username", user.getUsername()));
+        }
     }
 
     private User extractUser(Principal principal) {

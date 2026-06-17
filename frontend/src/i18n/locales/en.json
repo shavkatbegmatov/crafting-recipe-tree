@@ -545,6 +545,17 @@
     }
   },
   "chat": {
+    "reply": "Reply",
+    "edit": "Edit",
+    "delete": "Delete",
+    "edited": "edited",
+    "send": "Send",
+    "confirmDelete": "Delete this message?",
+    "editing": "Editing",
+    "replyingTo": "Reply to {{name}}",
+    "typingOne": "{{name}} is typing…",
+    "typingMany": "{{count}} people typing…",
+    "cancel": "Cancel",
     "title": "Chat",
     "placeholder": "Type a message...",
     "empty": "No messages yet",

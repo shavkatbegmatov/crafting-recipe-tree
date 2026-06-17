@@ -9,4 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ChatSendRequest {
     private String content;
+    /** Ixtiyoriy — javob berilayotgan xabar id'si (reply). */
+    private Long replyToId;
 }
