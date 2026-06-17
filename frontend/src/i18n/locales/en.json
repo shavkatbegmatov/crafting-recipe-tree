@@ -4,6 +4,7 @@
     "subtitle": "Recipe Manager"
   },
   "common": {
+    "loadFailed": "Failed to load data",
     "back": "Back",
     "qty": "Qty"
   },
@@ -595,6 +596,11 @@
     "noHistory": "No other versions",
     "view": "View",
     "viewThisVersion": "Switch to this version"
+  },
+  "errorBoundary": {
+    "title": "Something went wrong",
+    "message": "An unexpected error occurred. Try reloading the page.",
+    "reload": "Reload page"
   },
   "time": {
     "seconds": "{{count}}s",

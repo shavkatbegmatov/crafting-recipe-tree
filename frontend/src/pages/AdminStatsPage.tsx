@@ -36,9 +36,16 @@ export default function AdminStatsPage() {
   const { t } = useTranslation()
   const { getField } = useLocalizedField()
   const contentWidth = useContentWidth('max-w-5xl')
-  const { data: stats, isLoading } = useAdminStats()
+  const { data: stats, isLoading, isError } = useAdminStats()
   const { data: categories } = useCategories()
 
+  if (isError) {
+    return (
+      <div className={`${contentWidth} py-16 text-center text-sm text-red-400`}>
+        {t('common.loadFailed')}
+      </div>
+    )
+  }
   if (isLoading || !stats) {
     return (
       <div className={`${contentWidth} py-16 text-center`}>

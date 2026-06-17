@@ -10,7 +10,7 @@ export default function FavoritesPage() {
   const { t } = useTranslation()
   const { user } = useAuth()
   const contentWidth = useContentWidth('max-w-6xl')
-  const { data: favorites, isLoading } = useFavorites(!!user)
+  const { data: favorites, isLoading, isError } = useFavorites(!!user)
 
   if (!user) {
     return (
@@ -42,6 +42,8 @@ export default function FavoritesPage() {
         <div className="py-16 text-center">
           <Loader2 size={20} className="animate-spin text-dark-gold mx-auto" />
         </div>
+      ) : isError ? (
+        <div className="py-16 text-center text-sm text-red-400">{t('common.loadFailed')}</div>
       ) : !favorites || favorites.length === 0 ? (
         <div className="py-16 text-center">
           <Star size={32} className="mx-auto text-[#5a4e3a] mb-3" />
