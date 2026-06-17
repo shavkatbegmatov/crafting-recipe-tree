@@ -3,10 +3,14 @@ package com.crafttree.exception;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -45,6 +49,24 @@ public class GlobalExceptionHandler {
                 ? ex.getBindingResult().getFieldError().getDefaultMessage()
                 : "Validation failed";
         return body(HttpStatus.BAD_REQUEST, "Bad Request", message);
+    }
+
+    /** Mavjud bo'lmagan yo'l (static resource topilmadi) — 404 (avval generic 500 edi). */
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleNoResource(NoResourceFoundException ex) {
+        return body(HttpStatus.NOT_FOUND, "Not Found", "Resource not found");
+    }
+
+    /** Buzuq JSON tanasi yoki yo'l/parametr tipi mos kelmasligi — 400 (avval generic 500 edi). */
+    @ExceptionHandler({HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class})
+    public ResponseEntity<Map<String, Object>> handleBadRequest(Exception ex) {
+        return body(HttpStatus.BAD_REQUEST, "Bad Request", "Malformed or invalid request");
+    }
+
+    /** Yuklanayotgan fayl hajmi limitdan oshdi — 413 (avval generic 500 edi). */
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<Map<String, Object>> handleMaxUpload(MaxUploadSizeExceededException ex) {
+        return body(HttpStatus.PAYLOAD_TOO_LARGE, "Payload Too Large", "File too large");
     }
 
     @ExceptionHandler(Exception.class)
