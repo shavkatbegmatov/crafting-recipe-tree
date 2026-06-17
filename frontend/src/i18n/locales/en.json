@@ -427,6 +427,18 @@
     "resultsTitle": "What you can craft from your inventory",
     "loginRequired": "Sign in to use the inventory"
   },
+  "compare": {
+    "title": "Compare items",
+    "subtitle": "Compare 2-3 items side by side: category, time, raw materials",
+    "menuLink": "Compare",
+    "search": "Add an item to compare...",
+    "empty": "Add items to compare (2-3)",
+    "category": "Category",
+    "craftTime": "Craft time",
+    "totalTime": "Total raw time",
+    "rawMaterials": "Raw materials",
+    "noRecipe": "No recipe"
+  },
   "adminStats": {
     "title": "Statistics",
     "subtitle": "System metrics: content, users, activity",

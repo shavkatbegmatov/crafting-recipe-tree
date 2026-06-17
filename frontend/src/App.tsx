@@ -19,6 +19,7 @@ import CalculatorPage from './pages/CalculatorPage'
 import CraftableSearchPage from './pages/CraftableSearchPage'
 import FavoritesPage from './pages/FavoritesPage'
 import InventoryPage from './pages/InventoryPage'
+import ComparePage from './pages/ComparePage'
 
 export default function App() {
   return (
@@ -42,6 +43,7 @@ export default function App() {
             <Route path="craftable" element={<CraftableSearchPage />} />
             <Route path="favorites" element={<FavoritesPage />} />
             <Route path="inventory" element={<InventoryPage />} />
+            <Route path="compare" element={<ComparePage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>

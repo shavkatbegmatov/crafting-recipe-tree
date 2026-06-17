@@ -435,6 +435,18 @@
     "resultsTitle": "Inventaringizdan nima yasash mumkin",
     "loginRequired": "Inventar uchun tizimga kiring"
   },
+  "compare": {
+    "title": "Itemlarni taqqoslash",
+    "subtitle": "2-3 itemni yonma-yon solishtiring: kategoriya, vaqt, xomashyo",
+    "menuLink": "Taqqoslash",
+    "search": "Taqqoslash uchun item qo'shing...",
+    "empty": "Solishtirish uchun item qo'shing (2-3 ta)",
+    "category": "Kategoriya",
+    "craftTime": "Kraft vaqti",
+    "totalTime": "Jami xomashyo vaqti",
+    "rawMaterials": "Xomashyo",
+    "noRecipe": "Retsepti yo'q"
+  },
   "adminStats": {
     "title": "Statistika",
     "subtitle": "Tizim ko'rsatkichlari: kontent, foydalanuvchilar, faollik",
