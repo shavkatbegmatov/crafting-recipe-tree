@@ -1,17 +1,21 @@
 package com.crafttree.controller;
 
+import com.crafttree.dto.ChatAnnouncementDto;
 import com.crafttree.dto.ChatMessageDto;
 import com.crafttree.dto.ChatSendRequest;
 import com.crafttree.dto.PresenceDto;
 import com.crafttree.entity.ChatMessage;
 import com.crafttree.entity.User;
 import com.crafttree.repository.ChatMessageRepository;
+import com.crafttree.repository.UserRepository;
+import com.crafttree.service.ChatModerationService;
 import com.crafttree.service.ChatPresenceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -19,6 +23,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,6 +37,8 @@ public class ChatController {
     private final ChatMessageRepository chatRepo;
     private final SimpMessagingTemplate messaging;
     private final ChatPresenceService presenceService;
+    private final UserRepository userRepository;
+    private final ChatModerationService moderationService;
 
     /**
      * REST: Fetch the last N chat messages (for initial load / scrollback).
@@ -65,6 +72,14 @@ public class ChatController {
         return presenceService.snapshot();
     }
 
+    /** REST: Joriy pin qilingan e'lon (yo'q bo'lsa — 204). */
+    @GetMapping("/api/chat/announcement")
+    @Operation(summary = "Joriy chat e'loni")
+    public ResponseEntity<ChatAnnouncementDto> announcement() {
+        ChatAnnouncementDto a = moderationService.getAnnouncement();
+        return (a != null) ? ResponseEntity.ok(a) : ResponseEntity.noContent().build();
+    }
+
     /**
      * STOMP: Receive a message from an authenticated user and broadcast
      * it to all subscribers on /topic/chat.
@@ -86,15 +101,26 @@ public class ChatController {
             return;
         }
 
+        // Mute tekshiruvi — foydalanuvchi sessiya davomida mute qilingan bo'lishi mumkin,
+        // shuning uchun holatni DB'dan yangilab olamiz.
+        User fresh = userRepository.findById(user.getId()).orElse(null);
+        if (fresh == null) {
+            return;
+        }
+        if (fresh.getChatMutedUntil() != null && fresh.getChatMutedUntil().isAfter(LocalDateTime.now())) {
+            log.debug("Muted user {} tried to send a chat message", fresh.getUsername());
+            return;
+        }
+
         ChatMessage entity = ChatMessage.builder()
-                .user(user)
+                .user(fresh)
                 .content(content.trim())
                 .build();
         chatRepo.save(entity);
 
         ChatMessageDto dto = ChatMessageDto.from(entity);
         messaging.convertAndSend("/topic/chat", dto);
-        log.debug("Chat from {}: {}", user.getUsername(), content.trim());
+        log.debug("Chat from {}: {}", fresh.getUsername(), content.trim());
     }
 
     private User extractUser(Principal principal) {

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { Client } from '@stomp/stompjs'
 import type { ChatMessageDto } from '../api/chat'
 import { fetchChatHistory, fetchOnline } from '../api/chat'
@@ -17,6 +18,7 @@ export function useChat(active: boolean): UseChatReturn {
   const [connected, setConnected] = useState(false)
   const [loadingHistory, setLoadingHistory] = useState(false)
   const [onlineUsers, setOnlineUsers] = useState<string[]>([])
+  const qc = useQueryClient()
   const clientRef = useRef<Client | null>(null)
   const activeRef = useRef(active)
   activeRef.current = active
@@ -70,6 +72,18 @@ export function useChat(active: boolean): UseChatReturn {
           const presence = JSON.parse(frame.body) as { users: string[] }
           if (!cancelled) setOnlineUsers(presence.users)
         })
+
+        // Moderatsiya: o'chirilgan xabarni real-vaqtda barchadan olib tashlash
+        stompClient.subscribe('/topic/chat.deleted', (frame) => {
+          const { id } = JSON.parse(frame.body) as { id: number }
+          setMessages((prev) => prev.filter((m) => m.id !== id))
+        })
+
+        // E'lon o'zgardi — pin qilingan e'lon query'sini yangilash
+        stompClient.subscribe('/topic/chat.announcement', () => {
+          qc.invalidateQueries({ queryKey: ['announcement'] })
+        })
+
         fetchOnline()
           .then((p) => { if (!cancelled) setOnlineUsers(p.users) })
           .catch(() => {})
