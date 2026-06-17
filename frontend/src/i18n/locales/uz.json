@@ -424,6 +424,17 @@
     "remove": "Sevimlilardan olib tashlash",
     "loginRequired": "Sevimlilar uchun tizimga kiring"
   },
+  "inventory": {
+    "title": "Mening inventarim",
+    "subtitle": "Materiallaringizni saqlang — yasash mumkin bo'lgan narsalar avtomatik chiqadi",
+    "menuLink": "Inventar",
+    "search": "Material qidirib qo'shing...",
+    "empty": "Inventaringiz bo'sh — material qo'shing",
+    "saving": "Saqlanmoqda...",
+    "saved": "Saqlandi",
+    "resultsTitle": "Inventaringizdan nima yasash mumkin",
+    "loginRequired": "Inventar uchun tizimga kiring"
+  },
   "audit": {
     "title": "Audit jurnali",
     "subtitle": "Tizimdagi muhim amallar tarixi: kim, qachon, nima qildi",

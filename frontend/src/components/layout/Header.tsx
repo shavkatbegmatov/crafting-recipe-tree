@@ -1,4 +1,4 @@
-import { Boxes, Menu, LogIn, UserPlus, Calculator, Wand2, Star } from 'lucide-react'
+import { Boxes, Menu, LogIn, UserPlus, Calculator, Wand2, Star, Package } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../../contexts/AuthContext'
@@ -61,6 +61,17 @@ export default function Header({ onToggleSidebar }: Props) {
         >
           <Star size={14} />
           <span className="hidden sm:inline">{t('favorites.menuLink')}</span>
+        </Link>
+      )}
+
+      {user && (
+        <Link
+          to="/inventory"
+          className="flex items-center gap-1 text-xs px-2 py-1 rounded text-[#8a7a60]
+            hover:text-dark-gold hover:bg-dark-hover/60 transition-colors"
+        >
+          <Package size={14} />
+          <span className="hidden sm:inline">{t('inventory.menuLink')}</span>
         </Link>
       )}
 

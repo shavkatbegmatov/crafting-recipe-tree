@@ -52,6 +52,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/notifications/**").authenticated()
                 // Foydalanuvchining sevimlilari — autentifikatsiya shart (GET ham).
                 .requestMatchers("/api/favorites/**").authenticated()
+                // Foydalanuvchining inventari — autentifikatsiya shart (GET ham).
+                .requestMatchers("/api/inventory/**").authenticated()
                 // Public endpoints
                 .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
