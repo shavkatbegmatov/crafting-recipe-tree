@@ -96,6 +96,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (res.token) {
         localStorage.setItem('token', res.token)
         setUser(res)
+        // Register javobi (RegisterResponse) createdAt/referralCount'ni o'z ichiga olmaydi —
+        // to'liq profilni darhol yuklab, profil menyusini (a'zo sanasi, referal kodi/statistikasi)
+        // ro'yxatdan o'tgandan keyin sahifani yangilamasdan to'ldiramiz.
+        try {
+          const full = await getMe()
+          setUser({ ...full, token: res.token })
+        } catch {
+          /* register muvaffaqiyatli; to'liq profil keyingi yuklashda keladi */
+        }
       }
     } catch (err: any) {
       const code = err?.response?.data?.error || 'Registration failed'
