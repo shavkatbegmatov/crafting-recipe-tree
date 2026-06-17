@@ -123,7 +123,8 @@ public class CraftItemService {
                 .collect(Collectors.toList());
     }
 
-    private CraftItemDto toDto(CraftItem item) {
+    /** Itemni to'liq DTO'ga aylantiradi (kategoriya + teglar bilan). Boshqa servislar ham ishlatadi. */
+    public CraftItemDto toDto(CraftItem item) {
         return CraftItemDto.builder()
                 .id(item.getId())
                 .name(item.getName())

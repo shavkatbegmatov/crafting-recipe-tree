@@ -406,6 +406,16 @@
     "canMake": "{{count}} pcs",
     "needHave": "need {{need}}, have {{have}}"
   },
+  "favorites": {
+    "title": "Favorites",
+    "subtitle": "Items you've starred",
+    "menuLink": "Favorites",
+    "empty": "No favorite items yet",
+    "emptyHint": "Tap the star on an item to add it",
+    "add": "Add to favorites",
+    "remove": "Remove from favorites",
+    "loginRequired": "Sign in to use favorites"
+  },
   "audit": {
     "title": "Audit log",
     "subtitle": "History of important system actions: who, when, what",

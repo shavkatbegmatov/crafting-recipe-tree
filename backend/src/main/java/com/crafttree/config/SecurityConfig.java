@@ -50,6 +50,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/access-requests/**").authenticated()
                 // Foydalanuvchining shaxsiy bildirishnomalari — autentifikatsiya shart (GET ham).
                 .requestMatchers("/api/notifications/**").authenticated()
+                // Foydalanuvchining sevimlilari — autentifikatsiya shart (GET ham).
+                .requestMatchers("/api/favorites/**").authenticated()
                 // Public endpoints
                 .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
