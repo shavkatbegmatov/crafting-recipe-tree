@@ -1,3 +1,4 @@
+import axios from 'axios'
 import client from './client'
 
 export interface LoginRequest {
@@ -35,8 +36,17 @@ export interface LoginResponse {
 }
 
 export async function login(data: LoginRequest): Promise<LoginResponse> {
-  const { data: res } = await client.post('/auth/login', data)
-  return res
+  try {
+    const { data: res } = await client.post('/auth/login', data)
+    return res
+  } catch (e) {
+    // Backend endi noto'g'ri parol / bloklangan akkaunt uchun 401 qaytaradi (REST to'g'riligi).
+    // Javob tanasida {authenticated:false, errorCode} bor — uni normal natija sifatida qaytaramiz.
+    if (axios.isAxiosError(e) && e.response?.status === 401 && e.response.data) {
+      return e.response.data as LoginResponse
+    }
+    throw e
+  }
 }
 
 export async function register(data: RegisterRequest): Promise<AuthUser> {

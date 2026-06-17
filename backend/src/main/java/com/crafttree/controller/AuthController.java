@@ -15,6 +15,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -32,7 +33,7 @@ public class AuthController {
 
     @PostMapping("/login")
     @Operation(summary = "Login with username and password, returns JWT token")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
@@ -52,12 +53,12 @@ public class AuthController {
                     .build());
         } catch (DisabledException e) {
             // Bloklangan akkaunt — parol to'g'ri bo'lsa ham kirishga ruxsat berilmaydi.
-            return ResponseEntity.ok(LoginResponse.builder()
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(LoginResponse.builder()
                     .authenticated(false)
                     .errorCode("ACCOUNT_DISABLED")
                     .build());
         } catch (BadCredentialsException e) {
-            return ResponseEntity.ok(LoginResponse.builder()
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(LoginResponse.builder()
                     .authenticated(false)
                     .errorCode("INVALID_CREDENTIALS")
                     .build());
@@ -85,41 +86,26 @@ public class AuthController {
 
     @GetMapping("/me")
     @Operation(summary = "Get current authenticated user profile with referral stats")
-    public ResponseEntity<?> me(@RequestHeader(value = "Authorization", required = false) String authHeader) {
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+    public ResponseEntity<?> me(@AuthenticationPrincipal User user) {
+        // JwtAuthFilter SecurityContext'ga faqat FAOL (enabled) foydalanuvchini qo'yadi —
+        // shuning uchun bloklangan akkaunt valid token bilan ham bu yerga yetmaydi.
+        if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "Not authenticated"));
         }
-
-        try {
-            String token = authHeader.substring(7);
-            String username = jwtService.extractUsername(token);
-            User user = userRepository.findByUsername(username).orElseThrow();
-
-            if (jwtService.isTokenValid(token, user)) {
-                return ResponseEntity.ok(authService.getProfile(user));
-            }
-        } catch (Exception ignored) {}
-
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(Map.of("error", "Invalid token"));
+        return ResponseEntity.ok(authService.getProfile(user));
     }
 
     @PutMapping("/profile")
     @Operation(summary = "Update current user's profile (display name, password)")
     public ResponseEntity<?> updateProfile(
-            @RequestHeader("Authorization") String authHeader,
+            @AuthenticationPrincipal User user,
             @Valid @RequestBody UpdateProfileRequest request) {
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Not authenticated"));
+        }
         try {
-            String token = authHeader.substring(7);
-            String username = jwtService.extractUsername(token);
-            User user = userRepository.findByUsername(username).orElseThrow();
-
-            if (!jwtService.isTokenValid(token, user)) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(Map.of("error", "Invalid token"));
-            }
-
             UserProfileDto profile = authService.updateProfile(user, request);
             return ResponseEntity.ok(profile);
         } catch (IllegalArgumentException e) {

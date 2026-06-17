@@ -30,7 +30,9 @@ app:
   scripts:
     python: python
   jwt:
-    secret: ${JWT_SECRET:Y3JhZnRpbmctcmVjaXBlLXRyZWUtand0LXNlY3JldC1rZXktMjAyNg==}
+    # FAQAT lokal/dev fallback. Production JWT_SECRET ni MAJBURIY beradi
+    # (application-prod.yml'da default yo'q — env bo'lmasa ilova ishga tushmaydi).
+    secret: ${JWT_SECRET:YtxufUTHMuLajxc2F09KFB6L9gs/xh7KjoL8t1b4T0MBlxs0xZrC1oGUmP5Oi1Ei}
     expiration: 86400000
   cors:
     allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000}
