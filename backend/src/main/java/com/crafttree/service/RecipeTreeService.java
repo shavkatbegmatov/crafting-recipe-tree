@@ -51,7 +51,8 @@ public class RecipeTreeService {
 
         Map<Long, BigDecimal> rawMap = new LinkedHashMap<>();
         Map<Long, CraftItem> itemLookup = new HashMap<>();
-        calculateRawTotals(item, gv, BigDecimal.ONE, rawMap, itemLookup, new HashSet<>(), 0);
+        int[] timeAcc = {0};
+        calculateRawTotals(item, gv, BigDecimal.ONE, rawMap, itemLookup, new HashSet<>(), 0, timeAcc);
 
         List<RawTotalDto.RawMaterialEntry> materials = rawMap.entrySet().stream()
                 .sorted(Map.Entry.<Long, BigDecimal>comparingByValue().reversed())
@@ -70,7 +71,8 @@ public class RecipeTreeService {
                 })
                 .collect(Collectors.toList());
 
-        int totalTime = calculateTotalCraftTime(item, gv, BigDecimal.ONE, new HashSet<>(), 0);
+        // Vaqt yuqoridagi yagona o'tishda yig'ildi — avval daraxt ikkinchi marta aylanardi (2x DB so'rov).
+        int totalTime = timeAcc[0];
 
         return RawTotalDto.builder()
                 .itemId(item.getId())
@@ -136,9 +138,13 @@ public class RecipeTreeService {
         return node;
     }
 
+    /**
+     * Xomashyo jami VA kraft vaqtini bir o'tishda hisoblaydi. Vaqt {@code timeAcc[0]} ga yig'iladi
+     * (avval xomashyo va vaqt uchun daraxt ikki marta alohida aylanardi — 2x DB so'rov).
+     */
     private void calculateRawTotals(CraftItem item, GameVersion gv, BigDecimal multiplier,
                                     Map<Long, BigDecimal> rawMap, Map<Long, CraftItem> itemLookup,
-                                    Set<Long> visited, int depth) {
+                                    Set<Long> visited, int depth, int[] timeAcc) {
         if (depth > MAX_DEPTH || visited.contains(item.getId())) {
             return;
         }
@@ -146,12 +152,19 @@ public class RecipeTreeService {
         if (RAW_CATEGORY.equals(item.getCategory().getCode())) {
             rawMap.merge(item.getId(), multiplier, BigDecimal::add);
             itemLookup.putIfAbsent(item.getId(), item);
-            return;
+            return; // xomashyo — kraft vaqti yo'q
         }
 
         visited.add(item.getId());
 
         Optional<Recipe> recipeOpt = recipeRepository.findByResultItemIdAndGameVersionId(item.getId(), gv.getId());
+
+        // Bu tugunning o'z kraft vaqti (retsept vaqti, bo'lmasa item vaqti) * multiplier.
+        Integer ownTimeSeconds = recipeOpt.map(Recipe::getCraftTimeSeconds).orElse(item.getCraftTimeSeconds());
+        if (ownTimeSeconds != null) {
+            timeAcc[0] += BigDecimal.valueOf(ownTimeSeconds).multiply(multiplier).intValue();
+        }
+
         if (recipeOpt.isEmpty() || recipeOpt.get().getIngredients().isEmpty()) {
             // No recipe in this version → treat as a leaf raw-ish material so it shows up in totals.
             rawMap.merge(item.getId(), multiplier, BigDecimal::add);
@@ -162,7 +175,7 @@ public class RecipeTreeService {
         for (RecipeIngredient ri : recipeOpt.get().getIngredients()) {
             BigDecimal childQuantity = ri.getQuantity().multiply(multiplier);
             calculateRawTotals(ri.getIngredientItem(), gv, childQuantity, rawMap, itemLookup,
-                    new HashSet<>(visited), depth + 1);
+                    new HashSet<>(visited), depth + 1, timeAcc);
         }
     }
 
