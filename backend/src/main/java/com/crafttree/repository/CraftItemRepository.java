@@ -21,4 +21,9 @@ public interface CraftItemRepository extends JpaRepository<CraftItem, Long> {
     List<CraftItem> searchByName(@Param("query") String query);
 
     List<CraftItem> findAllByOrderByCategoryIdAscNameAsc();
+
+    /** Kategoriya kodi bo'yicha itemlar soni (admin statistikasi / grafik uchun). */
+    @Query("SELECT ci.category.code, COUNT(ci) FROM CraftItem ci "
+            + "GROUP BY ci.category.code ORDER BY COUNT(ci) DESC")
+    List<Object[]> countByCategory();
 }

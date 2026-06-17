@@ -427,6 +427,27 @@
     "resultsTitle": "What you can craft from your inventory",
     "loginRequired": "Sign in to use the inventory"
   },
+  "adminStats": {
+    "title": "Statistics",
+    "subtitle": "System metrics: content, users, activity",
+    "menuLink": "Statistics",
+    "items": "Items",
+    "categories": "Categories",
+    "recipes": "Recipes",
+    "tags": "Tags",
+    "users": "Users",
+    "admins": "Admins",
+    "superAdmins": "Super-admins",
+    "blocked": "Blocked",
+    "messages": "Chat messages",
+    "today": "Today",
+    "favorites": "Favorites",
+    "inventory": "Inventory entries",
+    "byCategory": "Items by category",
+    "groupContent": "Content",
+    "groupUsers": "Users",
+    "groupActivity": "Activity"
+  },
   "audit": {
     "title": "Audit log",
     "subtitle": "History of important system actions: who, when, what",
