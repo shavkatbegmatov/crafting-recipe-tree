@@ -299,6 +299,14 @@
     }
   },
   "portage": {
+    "summary": {
+      "count": "{{n}} ta",
+      "created": "Yangi",
+      "updated": "Yangilanish",
+      "unchanged": "O'zgarmas",
+      "skipped": "O'tkazib",
+      "failed": "Xato"
+    },
     "pageTitle": "Eksport / Import",
     "pageHint": "Elementlar, retseptlar, kategoriyalar, teglar va rasmlarni .craftpkg paket sifatida saqlang yoki shunday paketni yuklab, mavjud bazaga qo'shing.",
     "tab": {

@@ -53,3 +53,8 @@ logging:
   level:
     root: INFO
     com.crafttree: INFO
+  # Structured JSON loglar (Spring Boot 3.4 native, qo'shimcha kutubxonasiz) —
+  # Coolify/Loki/ELK kabi log yig'uvchilar maydonlarni to'g'ri ajratadi.
+  structured:
+    format:
+      console: ecs

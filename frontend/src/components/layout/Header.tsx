@@ -20,6 +20,7 @@ export default function Header({ onToggleSidebar }: Props) {
       {user && (
         <button
           onClick={onToggleSidebar}
+          aria-label={t('sidebar.elements')}
           className="lg:hidden text-[#8a7a60] hover:text-[#d4c4a0] transition-colors"
         >
           <Menu size={20} />

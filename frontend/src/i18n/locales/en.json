@@ -299,6 +299,14 @@
     }
   },
   "portage": {
+    "summary": {
+      "count": "{{n}}",
+      "created": "New",
+      "updated": "Updated",
+      "unchanged": "Unchanged",
+      "skipped": "Skipped",
+      "failed": "Failed"
+    },
     "pageTitle": "Export / Import",
     "pageHint": "Save items, recipes, categories, tags and images as a .craftpkg, or upload such a package and apply it to your database.",
     "tab": { "export": "Export", "import": "Import" },
