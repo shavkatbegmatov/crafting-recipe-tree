@@ -22,6 +22,7 @@ import {
   ShieldQuestion,
   ScrollText,
   MessageCircle,
+  BarChart3,
   Tag as TagIcon,
   LayoutGrid,
   AlignCenter,
@@ -438,6 +439,15 @@ export default function UserDropdown() {
             <div className="px-2 py-1.5">
               {isAdmin && (
                 <>
+                  <Link
+                    to="/admin/stats"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-[#d4c4a0]
+                      hover:bg-dark-hover transition-colors"
+                  >
+                    <BarChart3 className="w-3.5 h-3.5 text-dark-gold" />
+                    {t('adminStats.menuLink')}
+                  </Link>
                   <Link
                     to="/admin/users"
                     onClick={() => setOpen(false)}

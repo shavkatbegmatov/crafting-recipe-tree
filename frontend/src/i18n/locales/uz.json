@@ -435,6 +435,27 @@
     "resultsTitle": "Inventaringizdan nima yasash mumkin",
     "loginRequired": "Inventar uchun tizimga kiring"
   },
+  "adminStats": {
+    "title": "Statistika",
+    "subtitle": "Tizim ko'rsatkichlari: kontent, foydalanuvchilar, faollik",
+    "menuLink": "Statistika",
+    "items": "Itemlar",
+    "categories": "Kategoriyalar",
+    "recipes": "Retseptlar",
+    "tags": "Teglar",
+    "users": "Foydalanuvchilar",
+    "admins": "Adminlar",
+    "superAdmins": "Super-adminlar",
+    "blocked": "Bloklangan",
+    "messages": "Chat xabarlar",
+    "today": "Bugun",
+    "favorites": "Sevimlilar",
+    "inventory": "Inventar yozuvlari",
+    "byCategory": "Kategoriya bo'yicha itemlar",
+    "groupContent": "Kontent",
+    "groupUsers": "Foydalanuvchilar",
+    "groupActivity": "Faollik"
+  },
   "audit": {
     "title": "Audit jurnali",
     "subtitle": "Tizimdagi muhim amallar tarixi: kim, qachon, nima qildi",

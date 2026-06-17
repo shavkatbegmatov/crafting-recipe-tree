@@ -14,6 +14,7 @@ import AdminUsersPage from './pages/AdminUsersPage'
 import AdminAccessRequestsPage from './pages/AdminAccessRequestsPage'
 import AdminAuditPage from './pages/AdminAuditPage'
 import AdminChatPage from './pages/AdminChatPage'
+import AdminStatsPage from './pages/AdminStatsPage'
 import CalculatorPage from './pages/CalculatorPage'
 import CraftableSearchPage from './pages/CraftableSearchPage'
 import FavoritesPage from './pages/FavoritesPage'
@@ -36,6 +37,7 @@ export default function App() {
             <Route path="admin/access-requests" element={<AdminAccessRequestsPage />} />
             <Route path="admin/audit" element={<AdminAuditPage />} />
             <Route path="admin/chat" element={<AdminChatPage />} />
+            <Route path="admin/stats" element={<AdminStatsPage />} />
             <Route path="calculator" element={<CalculatorPage />} />
             <Route path="craftable" element={<CraftableSearchPage />} />
             <Route path="favorites" element={<FavoritesPage />} />
