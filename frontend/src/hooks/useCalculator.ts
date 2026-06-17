@@ -1,16 +1,14 @@
 import { useQueries } from '@tanstack/react-query'
 import { fetchRawTotals } from '../api/items'
 import { useGameVersion } from '../contexts/GameVersionContext'
-import type { RawMaterialEntry } from '../api/types'
+import { mergeRawTotals, type MergedRaw } from '../utils/mergeRawTotals'
 
 export interface CalcItem {
   id: number
   quantity: number
 }
 
-export interface MergedRaw extends RawMaterialEntry {
-  totalQuantity: number
-}
+export type { MergedRaw }
 
 export interface CalcResult {
   rawMaterials: MergedRaw[]
@@ -39,24 +37,9 @@ export function useCalculator(items: CalcItem[]): CalcResult {
   const isLoading = results.some((r) => r.isLoading)
   const isError = results.some((r) => r.isError)
 
-  const rawMap = new Map<number, MergedRaw>()
-  let totalCraftTimeSeconds = 0
+  const { rawMaterials, totalCraftTimeSeconds } = mergeRawTotals(
+    results.map((r, idx) => ({ data: r.data, quantity: items[idx]?.quantity ?? 1 })),
+  )
 
-  results.forEach((r, idx) => {
-    if (!r.data) return
-    const qty = items[idx]?.quantity ?? 1
-    totalCraftTimeSeconds += r.data.totalCraftTimeSeconds * qty
-    for (const mat of r.data.rawMaterials) {
-      const add = Number(mat.totalQuantity) * qty
-      const existing = rawMap.get(mat.id)
-      if (existing) {
-        existing.totalQuantity += add
-      } else {
-        rawMap.set(mat.id, { ...mat, totalQuantity: add })
-      }
-    }
-  })
-
-  const rawMaterials = Array.from(rawMap.values()).sort((a, b) => b.totalQuantity - a.totalQuantity)
   return { rawMaterials, totalCraftTimeSeconds, isLoading, isError }
 }

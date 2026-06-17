@@ -30,6 +30,7 @@ jobs:
           cache: npm
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
+      - run: npm run test
       - run: npm run build
 
   # ── CI: Backend compile check ──
@@ -46,7 +47,7 @@ jobs:
           distribution: temurin
           java-version: 17
           cache: maven
-      - run: mvn clean compile -DskipTests -q
+      - run: mvn clean test -q
 
   # ── CD: Build Docker images + push to GHCR ──
   build-and-push:
