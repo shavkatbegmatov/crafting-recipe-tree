@@ -416,6 +416,17 @@
     "remove": "Remove from favorites",
     "loginRequired": "Sign in to use favorites"
   },
+  "inventory": {
+    "title": "My inventory",
+    "subtitle": "Save your materials — what you can craft is calculated automatically",
+    "menuLink": "Inventory",
+    "search": "Search and add a material...",
+    "empty": "Your inventory is empty — add materials",
+    "saving": "Saving...",
+    "saved": "Saved",
+    "resultsTitle": "What you can craft from your inventory",
+    "loginRequired": "Sign in to use the inventory"
+  },
   "audit": {
     "title": "Audit log",
     "subtitle": "History of important system actions: who, when, what",
