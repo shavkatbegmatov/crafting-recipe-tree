@@ -16,6 +16,7 @@ import AdminAuditPage from './pages/AdminAuditPage'
 import AdminChatPage from './pages/AdminChatPage'
 import CalculatorPage from './pages/CalculatorPage'
 import CraftableSearchPage from './pages/CraftableSearchPage'
+import FavoritesPage from './pages/FavoritesPage'
 
 export default function App() {
   return (
@@ -36,6 +37,7 @@ export default function App() {
             <Route path="admin/chat" element={<AdminChatPage />} />
             <Route path="calculator" element={<CalculatorPage />} />
             <Route path="craftable" element={<CraftableSearchPage />} />
+            <Route path="favorites" element={<FavoritesPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>

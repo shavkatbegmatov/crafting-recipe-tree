@@ -414,6 +414,16 @@
     "canMake": "{{count}} dona",
     "needHave": "{{need}} kerak, {{have}} bor"
   },
+  "favorites": {
+    "title": "Sevimlilar",
+    "subtitle": "Yulduzcha bilan belgilangan itemlaringiz",
+    "menuLink": "Sevimlilar",
+    "empty": "Hali sevimli item yo'q",
+    "emptyHint": "Itemlarda yulduzcha bosib sevimlilarga qo'shing",
+    "add": "Sevimlilarga qo'shish",
+    "remove": "Sevimlilardan olib tashlash",
+    "loginRequired": "Sevimlilar uchun tizimga kiring"
+  },
   "audit": {
     "title": "Audit jurnali",
     "subtitle": "Tizimdagi muhim amallar tarixi: kim, qachon, nima qildi",

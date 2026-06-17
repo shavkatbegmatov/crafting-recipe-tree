@@ -3,6 +3,7 @@ import { Clock } from 'lucide-react'
 import type { CraftItem } from '../../api/types'
 import CategoryBadge from '../ui/CategoryBadge'
 import SafeImage from '../ui/SafeImage'
+import FavoriteButton from './FavoriteButton'
 import { formatTime } from '../../utils/formatTime'
 import { useLocalizedField } from '../../hooks/useLanguage'
 
@@ -17,8 +18,11 @@ export default function ItemCard({ item }: Props) {
   return (
     <Link
       to={`/items/${item.id}`}
-      className="block bg-dark-card border border-dark-border rounded-lg overflow-hidden hover:border-dark-gold/40 hover:bg-dark-hover transition-all group"
+      className="relative block bg-dark-card border border-dark-border rounded-lg overflow-hidden hover:border-dark-gold/40 hover:bg-dark-hover transition-all group"
     >
+      <div className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
+        <FavoriteButton itemId={item.id} />
+      </div>
       {item.imageUrl && (
         <div className={`bg-dark-panel overflow-hidden flex items-center justify-center ${
           isPng ? 'py-4' : 'aspect-[4/3]'
