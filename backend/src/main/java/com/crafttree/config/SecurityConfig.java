@@ -22,6 +22,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.crafttree.repository.UserRepository;
+import com.crafttree.service.RateLimiterService;
 
 @Configuration
 @EnableWebSecurity
@@ -31,6 +32,7 @@ public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
     private final UserRepository userRepository;
+    private final RateLimiterService rateLimiterService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -40,6 +42,9 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // Admin-only API surface (must come BEFORE the public GET rule below)
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                // Actuator: health ommaviy (uptime/probe), qolgan endpoint'lar faqat admin
+                .requestMatchers("/actuator/health", "/actuator/health/**", "/actuator/info").permitAll()
+                .requestMatchers("/actuator/**").hasRole("ADMIN")
                 // Foydalanuvchi o'z "admin huquqi" arizasini boshqaradi — autentifikatsiya shart.
                 // GET'lar ham himoyalanishi uchun quyidagi umumiy GET permitAll'dan OLDIN turadi.
                 .requestMatchers("/api/access-requests/**").authenticated()
@@ -74,6 +79,10 @@ public class SecurityConfig {
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider())
+            // Ikkala custom filter ham standart UsernamePasswordAuthenticationFilter'dan oldin.
+            // (addFilterBefore'ning 2-argumenti Spring Security'ning ro'yxatdan o'tgan filtri
+            //  bo'lishi shart — custom JwtAuthFilter.class bo'la olmaydi.)
+            .addFilterBefore(new RateLimitFilter(rateLimiterService), UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

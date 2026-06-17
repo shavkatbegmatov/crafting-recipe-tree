@@ -10,6 +10,7 @@ import com.crafttree.repository.ChatMessageRepository;
 import com.crafttree.repository.UserRepository;
 import com.crafttree.service.ChatModerationService;
 import com.crafttree.service.ChatPresenceService;
+import com.crafttree.service.RateLimiterService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,6 +41,11 @@ public class ChatController {
     private final ChatPresenceService presenceService;
     private final UserRepository userRepository;
     private final ChatModerationService moderationService;
+    private final RateLimiterService rateLimiter;
+
+    /** Chat spam himoyasi: bitta foydalanuvchidan daqiqasiga maksimal xabar. */
+    private static final int CHAT_BURST = 15;
+    private static final Duration CHAT_WINDOW = Duration.ofMinutes(1);
 
     /**
      * REST: Fetch the last N chat messages (for initial load / scrollback).
@@ -109,6 +116,12 @@ public class ChatController {
         }
         if (fresh.getChatMutedUntil() != null && fresh.getChatMutedUntil().isAfter(LocalDateTime.now())) {
             log.debug("Muted user {} tried to send a chat message", fresh.getUsername());
+            return;
+        }
+
+        // Spam himoyasi — daqiqasiga cheklangan xabar (jim tashlanadi, mute kabi).
+        if (!rateLimiter.tryAcquire("chat:" + fresh.getId(), CHAT_BURST, CHAT_WINDOW)) {
+            log.debug("Rate-limited chat from {}", fresh.getUsername());
             return;
         }
 
