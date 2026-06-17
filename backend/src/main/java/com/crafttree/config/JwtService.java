@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -16,11 +17,26 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    @Value("${app.jwt.secret:dGhpc2lzYXZlcnlsb25nc2VjcmV0a2V5Zm9yand0dG9rZW5z}")
+    @Value("${app.jwt.secret}")
     private String secret;
 
     @Value("${app.jwt.expiration:86400000}")
     private long expiration; // 24 hours
+
+    /**
+     * Kalit kuchini ishga tushishda tekshiradi — zaif yoki yo'q kalit bilan ishlamaймiz.
+     * Prod'da JWT_SECRET majburiy (application-prod.yml'da default yo'q), shuning uchun
+     * noto'g'ri sozlangan deploy bu yerda darhol to'xtaydi (soxta token xavfini oldini oladi).
+     */
+    @PostConstruct
+    void validateSecret() {
+        int bits = Decoders.BASE64.decode(secret).length * 8;
+        if (bits < 256) {
+            throw new IllegalStateException(
+                    "app.jwt.secret zaif: HMAC-SHA256 uchun kamida 256 bit (32 bayt, base64) kerak. "
+                            + "JWT_SECRET muhit o'zgaruvchisini to'g'ri o'rnating.");
+        }
+    }
 
     public String generateToken(UserDetails userDetails) {
         return Jwts.builder()

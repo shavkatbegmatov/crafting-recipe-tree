@@ -1,20 +1,25 @@
 package com.crafttree.service;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Yengil, xotirada ishlovchi tezlik cheklovchi (token-bucket). Bitta instans uchun mo'ljallangan
  * (loyiha bitta backend konteynerda ishlaydi) — taqsimlangan holatda Redis kabi tashqi do'kon kerak bo'ladi.
  * <p>
- * Har bir {@code key} (masalan, IP yoki foydalanuvchi id) uchun alohida bucket saqlanadi.
+ * Bucket'lar Caffeine cache'da saqlanadi: {@code expireAfterAccess} + {@code maximumSize} bilan —
+ * shu sabab faol bo'lmagan kalitlar avtomatik tozalanadi (cheksiz xotira o'sishi oldini olinadi).
  */
 @Service
 public class RateLimiterService {
 
-    private final ConcurrentHashMap<String, TokenBucket> buckets = new ConcurrentHashMap<>();
+    private final Cache<String, TokenBucket> buckets = Caffeine.newBuilder()
+            .maximumSize(100_000)
+            .expireAfterAccess(Duration.ofMinutes(15))
+            .build();
 
     /**
      * {@code key} uchun bitta token olishga harakat qiladi.
@@ -24,7 +29,7 @@ public class RateLimiterService {
      * @return {@code true} — ruxsat berildi; {@code false} — limit oshib ketdi
      */
     public boolean tryAcquire(String key, int capacity, Duration window) {
-        TokenBucket bucket = buckets.computeIfAbsent(key, k -> new TokenBucket(capacity, window.toMillis()));
+        TokenBucket bucket = buckets.get(key, k -> new TokenBucket(capacity, window.toMillis()));
         return bucket.tryConsume(System.currentTimeMillis());
     }
 

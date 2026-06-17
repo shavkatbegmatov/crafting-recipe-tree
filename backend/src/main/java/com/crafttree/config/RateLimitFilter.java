@@ -53,12 +53,13 @@ public class RateLimitFilter extends OncePerRequestFilter {
         return uri.endsWith("/api/auth/login") || uri.endsWith("/api/auth/register");
     }
 
-    /** Reverse-proxy (Coolify) orqasida haqiqiy IP — X-Forwarded-For birinchi qiymati. */
+    /**
+     * Mijoz IP'si. Prod'da {@code server.forward-headers-strategy: framework} yoqilgani uchun
+     * Spring reverse-proxy (Coolify) sarlavhalarini ishonchli tarzda qayta ishlaydi va
+     * {@code getRemoteAddr()} haqiqiy IP'ni beradi. X-Forwarded-For'ni QO'LDA o'qimaymiz —
+     * aks holda mijoz uni soxtalashtirib har so'rovda yangi "bucket" olib, cheklovni chetlab o'tardi.
+     */
     private String clientIp(HttpServletRequest request) {
-        String forwarded = request.getHeader("X-Forwarded-For");
-        if (forwarded != null && !forwarded.isBlank()) {
-            return forwarded.split(",")[0].trim();
-        }
         return request.getRemoteAddr();
     }
 }
