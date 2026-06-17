@@ -52,6 +52,10 @@ public class User implements UserDetails {
     @JoinColumn(name = "referred_by")
     private User referredBy;
 
+    /** Chatda yozish taqiqlangan muddat. null yoki o'tmishdagi sana — yozishi mumkin. */
+    @Column(name = "chat_muted_until")
+    private LocalDateTime chatMutedUntil;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 

@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect, useLayoutEffect, type KeyboardEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AnimatePresence, motion } from 'framer-motion'
-import { MessageCircle, X, Send, Shield, Crown, Loader2, LogIn } from 'lucide-react'
+import { MessageCircle, X, Send, Shield, Crown, Loader2, LogIn, Megaphone } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 import { useChat } from '../../hooks/useChat'
+import { useAnnouncement } from '../../hooks/useAnnouncement'
 import type { ChatMessageDto } from '../../api/chat'
 import { avatarColor, initials } from '../../utils/avatarColor'
 
@@ -116,6 +117,7 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
   const { t, i18n } = useTranslation()
   const { user } = useAuth()
   const { messages, connected, send, loadingHistory, onlineUsers } = useChat(open)
+  const { data: announcement } = useAnnouncement(open)
 
   const [draft, setDraft] = useState('')
   const bottomRef = useRef<HTMLDivElement>(null)
@@ -188,6 +190,14 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
               </button>
             </div>
           </div>
+
+          {/* ── Pinned e'lon (super-admin qo'ygan) ── */}
+          {announcement?.message && (
+            <div className="flex items-start gap-2 px-3 py-2 bg-dark-gold/10 border-b border-dark-gold/20 shrink-0">
+              <Megaphone className="w-3.5 h-3.5 text-dark-gold shrink-0 mt-0.5" />
+              <p className="text-[11px] text-[#d4c4a0] leading-snug break-words">{announcement.message}</p>
+            </div>
+          )}
 
           {/* ── Messages ── */}
           <div className="flex-1 overflow-y-auto px-3 py-3 scrollbar-thin">

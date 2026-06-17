@@ -452,6 +452,35 @@
       "ACCESS_REQUEST_REJECTED": "Your admin access request was rejected"
     }
   },
+  "chatAdmin": {
+    "title": "Chat management",
+    "subtitle": "Moderate messages, mute users, post announcements",
+    "menuLink": "Chat management",
+    "search": "Search messages...",
+    "empty": "No messages found",
+    "delete": "Delete",
+    "confirmDelete": "Delete this message?",
+    "stats": {
+      "total": "Total messages",
+      "today": "Today",
+      "online": "Online",
+      "topSender": "Top sender"
+    },
+    "announcement": {
+      "title": "Announcement",
+      "placeholder": "Announcement shown atop the chat...",
+      "clear": "Clear"
+    },
+    "mute": {
+      "action": "Mute",
+      "title": "Mute user",
+      "forUser": "For {{name}}",
+      "hour": "1 hour",
+      "day": "1 day",
+      "permanent": "Permanent",
+      "unmute": "Unmute"
+    }
+  },
   "chat": {
     "title": "Chat",
     "placeholder": "Type a message...",

@@ -460,6 +460,35 @@
       "ACCESS_REQUEST_REJECTED": "Admin huquqi arizangiz rad etildi"
     }
   },
+  "chatAdmin": {
+    "title": "Chatni boshqarish",
+    "subtitle": "Xabarlarni moderatsiya qilish, foydalanuvchilarni mute qilish, e'lon qo'yish",
+    "menuLink": "Chat boshqaruvi",
+    "search": "Xabarlar bo'yicha qidirish...",
+    "empty": "Xabar topilmadi",
+    "delete": "O'chirish",
+    "confirmDelete": "Bu xabarni o'chirmoqchimisiz?",
+    "stats": {
+      "total": "Jami xabar",
+      "today": "Bugun",
+      "online": "Onlayn",
+      "topSender": "Eng faol"
+    },
+    "announcement": {
+      "title": "E'lon",
+      "placeholder": "Chat tepasida ko'rsatiladigan e'lon...",
+      "clear": "Olib tashlash"
+    },
+    "mute": {
+      "action": "Mute qilish",
+      "title": "Foydalanuvchini mute qilish",
+      "forUser": "{{name}} uchun",
+      "hour": "1 soat",
+      "day": "1 kun",
+      "permanent": "Doimiy",
+      "unmute": "Mute'ni olib tashlash"
+    }
+  },
   "chat": {
     "title": "Chat",
     "placeholder": "Xabar yozing...",

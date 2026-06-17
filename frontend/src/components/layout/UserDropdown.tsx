@@ -21,6 +21,7 @@ import {
   Package,
   ShieldQuestion,
   ScrollText,
+  MessageCircle,
   Tag as TagIcon,
   LayoutGrid,
   AlignCenter,
@@ -462,6 +463,17 @@ export default function UserDropdown() {
                           {pendingRequestsCount}
                         </span>
                       )}
+                    </Link>
+                  )}
+                  {isSuperAdmin && (
+                    <Link
+                      to="/admin/chat"
+                      onClick={() => setOpen(false)}
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-[#d4c4a0]
+                        hover:bg-dark-hover transition-colors"
+                    >
+                      <MessageCircle className="w-3.5 h-3.5 text-dark-gold" />
+                      {t('chatAdmin.menuLink')}
                     </Link>
                   )}
                   <Link
