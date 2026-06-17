@@ -25,6 +25,15 @@ public class ChatMessage {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    /** Javob berilgan xabar (reply). Null — oddiy xabar. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reply_to_id")
+    private ChatMessage replyTo;
+
+    /** Tahrirlangan vaqt. Null — tahrirlanmagan. */
+    @Column(name = "edited_at")
+    private LocalDateTime editedAt;
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 

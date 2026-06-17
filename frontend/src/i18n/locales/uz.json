@@ -553,6 +553,17 @@
     }
   },
   "chat": {
+    "reply": "Javob berish",
+    "edit": "Tahrirlash",
+    "delete": "O'chirish",
+    "edited": "tahrirlangan",
+    "send": "Yuborish",
+    "confirmDelete": "Bu xabarni o'chirmoqchimisiz?",
+    "editing": "Tahrirlanmoqda",
+    "replyingTo": "{{name}}ga javob",
+    "typingOne": "{{name}} yozmoqda…",
+    "typingMany": "{{count}} kishi yozmoqda…",
+    "cancel": "Bekor qilish",
     "title": "Chat",
     "placeholder": "Xabar yozing...",
     "empty": "Hali xabarlar yo'q",

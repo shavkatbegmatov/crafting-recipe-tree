@@ -1,7 +1,10 @@
 import { useState, useRef, useEffect, useLayoutEffect, type KeyboardEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AnimatePresence, motion } from 'framer-motion'
-import { MessageCircle, X, Send, Shield, Crown, Loader2, LogIn, Megaphone } from 'lucide-react'
+import {
+  MessageCircle, X, Send, Shield, Crown, Loader2, LogIn, Megaphone,
+  Reply, Pencil, Trash2, CornerUpLeft,
+} from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 import { useChat } from '../../hooks/useChat'
 import { useAnnouncement } from '../../hooks/useAnnouncement'
@@ -10,7 +13,7 @@ import { avatarColor, initials } from '../../utils/avatarColor'
 
 /* ────── helpers ────── */
 
-const GROUP_WINDOW_MS = 5 * 60 * 1000 // ketma-ket xabarlar shu oraliqda bo'lsa — bir guruh
+const GROUP_WINDOW_MS = 5 * 60 * 1000
 
 function formatTime(iso: string): string {
   return new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -61,26 +64,63 @@ function ChatRow({
   isOwn,
   startGroup,
   endGroup,
+  onReply,
+  onEdit,
+  onDelete,
 }: {
   msg: ChatMessageDto
   isOwn: boolean
   startGroup: boolean
   endGroup: boolean
+  onReply: (m: ChatMessageDto) => void
+  onEdit: (m: ChatMessageDto) => void
+  onDelete: (m: ChatMessageDto) => void
 }) {
+  const { t } = useTranslation()
+
+  const actions = (
+    <div className={`flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity self-center
+      ${isOwn ? 'order-first' : ''}`}>
+      <button
+        onClick={() => onReply(msg)}
+        title={t('chat.reply')}
+        className="p-1 rounded text-[#8a7a60] hover:text-dark-gold hover:bg-dark-hover transition-colors"
+      >
+        <Reply size={13} />
+      </button>
+      {isOwn && (
+        <>
+          <button
+            onClick={() => onEdit(msg)}
+            title={t('chat.edit')}
+            className="p-1 rounded text-[#8a7a60] hover:text-dark-gold hover:bg-dark-hover transition-colors"
+          >
+            <Pencil size={13} />
+          </button>
+          <button
+            onClick={() => onDelete(msg)}
+            title={t('chat.delete')}
+            className="p-1 rounded text-[#8a7a60] hover:text-red-400 hover:bg-red-400/10 transition-colors"
+          >
+            <Trash2 size={13} />
+          </button>
+        </>
+      )}
+    </div>
+  )
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.18 }}
-      className={`flex gap-2 ${isOwn ? 'flex-row-reverse' : 'flex-row'} ${startGroup ? 'mt-3' : 'mt-0.5'}`}
+      className={`group flex gap-2 ${isOwn ? 'flex-row-reverse' : 'flex-row'} ${startGroup ? 'mt-3' : 'mt-0.5'}`}
     >
-      {/* Avatar ustuni — faqat boshqa foydalanuvchilar, guruhning oxirgi xabari yonida */}
       {!isOwn && (
         <div className="w-7 shrink-0 flex items-end">{endGroup && <Avatar name={msg.username} />}</div>
       )}
 
       <div className={`flex flex-col ${isOwn ? 'items-end' : 'items-start'} min-w-0 max-w-[80%]`}>
-        {/* Ism + rol — guruh boshida, boshqa foydalanuvchi uchun */}
         {!isOwn && startGroup && (
           <div className="flex items-center gap-1 mb-1 ml-1">
             <span className="text-xs font-medium" style={{ color: avatarColor(msg.username) }}>
@@ -91,18 +131,29 @@ function ChatRow({
           </div>
         )}
 
-        {/* Bubble */}
-        <div
-          className={`px-3 py-1.5 text-sm leading-relaxed break-words whitespace-pre-wrap ${
-            isOwn
-              ? `bg-dark-gold/20 text-dark-gold rounded-2xl ${endGroup ? 'rounded-br-md' : ''}`
-              : `bg-dark-hover text-[#d4c4a0] rounded-2xl ${endGroup ? 'rounded-bl-md' : ''}`
-          }`}
-        >
-          {msg.content}
+        <div className={`flex items-center gap-1 ${isOwn ? 'flex-row-reverse' : 'flex-row'}`}>
+          <div
+            className={`px-3 py-1.5 text-sm leading-relaxed break-words whitespace-pre-wrap ${
+              isOwn
+                ? `bg-dark-gold/20 text-dark-gold rounded-2xl ${endGroup ? 'rounded-br-md' : ''}`
+                : `bg-dark-hover text-[#d4c4a0] rounded-2xl ${endGroup ? 'rounded-bl-md' : ''}`
+            }`}
+          >
+            {/* Reply quote — javob berilgan xabar */}
+            {msg.replyToId && (
+              <div className="border-l-2 border-dark-gold/50 pl-1.5 mb-1 opacity-80">
+                <span className="text-[10px] font-medium text-dark-gold">{msg.replyToUsername}</span>
+                <p className="text-[10px] text-[#8a7a60] truncate max-w-[200px]">{msg.replyToContent}</p>
+              </div>
+            )}
+            {msg.content}
+            {msg.editedAt && (
+              <span className="text-[9px] italic opacity-50 ml-1.5 select-none">({t('chat.edited')})</span>
+            )}
+          </div>
+          {actions}
         </div>
 
-        {/* Vaqt — guruh oxirida */}
         {endGroup && (
           <span className="text-[10px] text-[#8a7a60]/70 mt-0.5 mx-1 select-none">{formatTime(msg.createdAt)}</span>
         )}
@@ -116,19 +167,19 @@ function ChatRow({
 export default function ChatPanel({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { t, i18n } = useTranslation()
   const { user } = useAuth()
-  const { messages, connected, send, loadingHistory, onlineUsers } = useChat(open)
+  const { messages, connected, send, edit, remove, sendTyping, loadingHistory, onlineUsers, typingUsers } = useChat(open)
   const { data: announcement } = useAnnouncement(open)
 
   const [draft, setDraft] = useState('')
+  const [replyingTo, setReplyingTo] = useState<ChatMessageDto | null>(null)
+  const [editing, setEditing] = useState<ChatMessageDto | null>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
   const taRef = useRef<HTMLTextAreaElement>(null)
 
-  // Yangi xabarlarda pastga aylantirish
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
+  }, [messages, typingUsers])
 
-  // Textarea balandligini matnga moslab o'zgartirish (maks 120px)
   useLayoutEffect(() => {
     const ta = taRef.current
     if (ta) {
@@ -137,14 +188,42 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
     }
   }, [draft])
 
-  // Panel ochilganda inputga fokus
   useEffect(() => {
     if (open) setTimeout(() => taRef.current?.focus(), 300)
   }, [open])
 
+  const startReply = (m: ChatMessageDto) => {
+    setEditing(null)
+    setReplyingTo(m)
+    taRef.current?.focus()
+  }
+
+  const startEdit = (m: ChatMessageDto) => {
+    setReplyingTo(null)
+    setEditing(m)
+    setDraft(m.content)
+    taRef.current?.focus()
+  }
+
+  const cancelContext = () => {
+    setReplyingTo(null)
+    setEditing(null)
+    if (editing) setDraft('')
+  }
+
+  const handleDelete = (m: ChatMessageDto) => {
+    if (window.confirm(t('chat.confirmDelete'))) remove(m.id)
+  }
+
   const handleSend = () => {
     if (!draft.trim() || !connected) return
-    send(draft)
+    if (editing) {
+      edit(editing.id, draft)
+      setEditing(null)
+    } else {
+      send(draft, replyingTo?.id)
+      setReplyingTo(null)
+    }
     setDraft('')
   }
 
@@ -152,8 +231,12 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       handleSend()
+    } else if (e.key === 'Escape' && (replyingTo || editing)) {
+      cancelContext()
     }
   }
+
+  const othersTyping = typingUsers.filter((u) => u !== user?.username)
 
   return (
     <AnimatePresence>
@@ -174,7 +257,6 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
               <span className="text-sm font-semibold text-dark-gold">{t('chat.title')}</span>
             </div>
             <div className="flex items-center gap-2.5">
-              {/* Ulanish holati */}
               <span className="flex items-center gap-1.5 text-[10px] text-[#8a7a60]">
                 <span
                   className={`w-1.5 h-1.5 rounded-full ${connected ? 'bg-green-500' : 'bg-amber-400 animate-pulse'}`}
@@ -184,14 +266,14 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
               <button
                 onClick={onClose}
                 className="p-1 rounded-lg hover:bg-dark-hover transition-colors text-[#8a7a60] hover:text-dark-gold"
-                aria-label={t('chat.title')}
+                aria-label={t('common.back')}
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
           </div>
 
-          {/* ── Pinned e'lon (super-admin qo'ygan) ── */}
+          {/* ── Pinned e'lon ── */}
           {announcement?.message && (
             <div className="flex items-start gap-2 px-3 py-2 bg-dark-gold/10 border-b border-dark-gold/20 shrink-0">
               <Megaphone className="w-3.5 h-3.5 text-dark-gold shrink-0 mt-0.5" />
@@ -230,22 +312,67 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
                       </span>
                     </div>
                   )}
-                  <ChatRow msg={msg} isOwn={isOwn} startGroup={startGroup} endGroup={endGroup} />
+                  <ChatRow
+                    msg={msg}
+                    isOwn={isOwn}
+                    startGroup={startGroup}
+                    endGroup={endGroup}
+                    onReply={startReply}
+                    onEdit={startEdit}
+                    onDelete={handleDelete}
+                  />
                 </div>
               )
             })}
+
+            {/* "Yozmoqda" indikatori */}
+            {othersTyping.length > 0 && (
+              <div className="flex items-center gap-1.5 mt-2 ml-9 text-[11px] text-[#8a7a60] italic">
+                <span className="flex gap-0.5">
+                  <span className="w-1 h-1 rounded-full bg-[#8a7a60] animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <span className="w-1 h-1 rounded-full bg-[#8a7a60] animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <span className="w-1 h-1 rounded-full bg-[#8a7a60] animate-bounce" style={{ animationDelay: '300ms' }} />
+                </span>
+                {othersTyping.length === 1
+                  ? t('chat.typingOne', { name: othersTyping[0] })
+                  : t('chat.typingMany', { count: othersTyping.length })}
+              </div>
+            )}
+
             <div ref={bottomRef} />
           </div>
 
           {/* ── Input ── */}
           <div className="border-t border-dark-border px-3 py-3 bg-dark-panel/30">
+            {/* Reply / edit konteksti */}
+            {(replyingTo || editing) && (
+              <div className="flex items-center gap-2 mb-2 px-2.5 py-1.5 rounded-lg bg-dark-bg border-l-2 border-dark-gold/50">
+                <CornerUpLeft className="w-3.5 h-3.5 text-dark-gold shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <span className="text-[10px] font-medium text-dark-gold">
+                    {editing ? t('chat.editing') : t('chat.replyingTo', { name: replyingTo?.username })}
+                  </span>
+                  <p className="text-[10px] text-[#8a7a60] truncate">
+                    {editing ? editing.content : replyingTo?.content}
+                  </p>
+                </div>
+                <button
+                  onClick={cancelContext}
+                  className="p-1 rounded text-[#8a7a60] hover:text-[#d4c4a0] transition-colors shrink-0"
+                  aria-label={t('chat.cancel')}
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
+
             {user ? (
               <div className="flex items-end gap-2">
                 <textarea
                   ref={taRef}
                   rows={1}
                   value={draft}
-                  onChange={(e) => setDraft(e.target.value)}
+                  onChange={(e) => { setDraft(e.target.value); sendTyping() }}
                   onKeyDown={handleKeyDown}
                   maxLength={2000}
                   placeholder={t('chat.placeholder')}
@@ -261,7 +388,7 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
                   className="p-2 rounded-xl bg-dark-gold/20 text-dark-gold shrink-0
                              hover:bg-dark-gold/30 transition-colors
                              disabled:opacity-30 disabled:cursor-not-allowed"
-                  aria-label={t('chat.placeholder')}
+                  aria-label={t('chat.send')}
                 >
                   <Send className="w-4 h-4" />
                 </button>

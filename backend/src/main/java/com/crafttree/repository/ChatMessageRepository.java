@@ -20,7 +20,9 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
      * bir sahifani to'ldirganda count so'rovida xatoga olib kelardi (HTTP 500). EntityGraph'da
      * Spring count so'rovini fetch'siz, to'g'ri generatsiya qiladi.
      */
-    @EntityGraph(attributePaths = "user")
+    // Reply va uning egasi ham oldindan yuklanadi — ChatMessageDto.from reply preview'ni o'qiydi,
+    // open-in-view:false bilan bu LazyInitializationException (500) bermasligi uchun.
+    @EntityGraph(attributePaths = {"user", "replyTo", "replyTo.user"})
     Page<ChatMessage> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
     /** Admin moderatsiyasi: matn bo'yicha qidiruv + foydalanuvchi filtri. */

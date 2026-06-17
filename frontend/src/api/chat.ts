@@ -6,6 +6,10 @@ export interface ChatMessageDto {
   role: string
   content: string
   createdAt: string
+  editedAt?: string | null
+  replyToId?: number | null
+  replyToUsername?: string | null
+  replyToContent?: string | null
 }
 
 export async function fetchChatHistory(limit = 50): Promise<ChatMessageDto[]> {

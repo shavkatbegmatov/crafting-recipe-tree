@@ -8,9 +8,13 @@ import { getWsUrl } from '../utils/wsUrl'
 interface UseChatReturn {
   messages: ChatMessageDto[]
   connected: boolean
-  send: (content: string) => void
+  send: (content: string, replyToId?: number | null) => void
+  edit: (id: number, content: string) => void
+  remove: (id: number) => void
+  sendTyping: () => void
   loadingHistory: boolean
   onlineUsers: string[]
+  typingUsers: string[]
 }
 
 export function useChat(active: boolean): UseChatReturn {
@@ -18,38 +22,31 @@ export function useChat(active: boolean): UseChatReturn {
   const [connected, setConnected] = useState(false)
   const [loadingHistory, setLoadingHistory] = useState(false)
   const [onlineUsers, setOnlineUsers] = useState<string[]>([])
+  const [typingUsers, setTypingUsers] = useState<string[]>([])
   const qc = useQueryClient()
   const clientRef = useRef<Client | null>(null)
-  const activeRef = useRef(active)
-  activeRef.current = active
+  const typingTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({})
 
-  // Load history and connect when chat becomes active
   useEffect(() => {
     if (!active) {
-      // Disconnect when chat is closed
       if (clientRef.current?.active) {
         clientRef.current.deactivate()
         clientRef.current = null
       }
       setConnected(false)
       setOnlineUsers([])
+      setTypingUsers([])
       return
     }
 
     let cancelled = false
 
-    // 1. Load message history
     setLoadingHistory(true)
     fetchChatHistory(50)
-      .then((history) => {
-        if (!cancelled) setMessages(history)
-      })
-      .catch(() => {}) // silent fail — will show empty
-      .finally(() => {
-        if (!cancelled) setLoadingHistory(false)
-      })
+      .then((history) => { if (!cancelled) setMessages(history) })
+      .catch(() => {})
+      .finally(() => { if (!cancelled) setLoadingHistory(false) })
 
-    // 2. Connect WebSocket
     const token = localStorage.getItem('token')
     const stompClient = new Client({
       brokerURL: getWsUrl(),
@@ -61,43 +58,51 @@ export function useChat(active: boolean): UseChatReturn {
         if (cancelled) return
         setConnected(true)
 
-        // Subscribe to global chat topic
         stompClient.subscribe('/topic/chat', (frame) => {
           const msg: ChatMessageDto = JSON.parse(frame.body)
           setMessages((prev) => [...prev, msg])
         })
 
-        // Onlayn foydalanuvchilar — real-vaqt yangilanish + boshlang'ich holat (REST)
+        // Xabar tahrirlandi — mavjudini almashtiramiz (edited belgi + yangi matn).
+        stompClient.subscribe('/topic/chat.edited', (frame) => {
+          const msg: ChatMessageDto = JSON.parse(frame.body)
+          setMessages((prev) => prev.map((m) => (m.id === msg.id ? msg : m)))
+        })
+
         stompClient.subscribe('/topic/chat.presence', (frame) => {
           const presence = JSON.parse(frame.body) as { users: string[] }
           if (!cancelled) setOnlineUsers(presence.users)
         })
 
-        // Moderatsiya: o'chirilgan xabarni real-vaqtda barchadan olib tashlash
+        // O'chirildi (o'z yoki moderatsiya) — real-vaqtda barchadan olib tashlash.
         stompClient.subscribe('/topic/chat.deleted', (frame) => {
           const { id } = JSON.parse(frame.body) as { id: number }
           setMessages((prev) => prev.filter((m) => m.id !== id))
         })
 
-        // E'lon o'zgardi — pin qilingan e'lon query'sini yangilash
+        // "Yozmoqda" — 3 soniya ko'rsatib, signal kelmasa o'chiramiz.
+        stompClient.subscribe('/topic/chat.typing', (frame) => {
+          const { username } = JSON.parse(frame.body) as { username: string }
+          if (cancelled) return
+          setTypingUsers((prev) => (prev.includes(username) ? prev : [...prev, username]))
+          clearTimeout(typingTimers.current[username])
+          typingTimers.current[username] = setTimeout(() => {
+            setTypingUsers((prev) => prev.filter((u) => u !== username))
+          }, 3000)
+        })
+
         stompClient.subscribe('/topic/chat.announcement', () => {
           qc.invalidateQueries({ queryKey: ['announcement'] })
         })
 
-        fetchOnline()
-          .then((p) => { if (!cancelled) setOnlineUsers(p.users) })
-          .catch(() => {})
+        fetchOnline().then((p) => { if (!cancelled) setOnlineUsers(p.users) }).catch(() => {})
       },
-      onDisconnect: () => {
-        if (!cancelled) setConnected(false)
-      },
+      onDisconnect: () => { if (!cancelled) setConnected(false) },
       onStompError: (frame) => {
         console.error('STOMP error:', frame.headers['message'])
         if (!cancelled) setConnected(false)
       },
-      onWebSocketError: () => {
-        if (!cancelled) setConnected(false)
-      },
+      onWebSocketError: () => { if (!cancelled) setConnected(false) },
     })
 
     stompClient.activate()
@@ -109,18 +114,40 @@ export function useChat(active: boolean): UseChatReturn {
       clientRef.current = null
       setConnected(false)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active])
 
-  // Send a chat message via STOMP
-  const send = useCallback((content: string) => {
+  const send = useCallback((content: string, replyToId?: number | null) => {
     const c = clientRef.current
     if (!c?.active || !content.trim()) return
-
     c.publish({
       destination: '/app/chat.send',
-      body: JSON.stringify({ content: content.trim() }),
+      body: JSON.stringify({ content: content.trim(), replyToId: replyToId ?? null }),
     })
   }, [])
 
-  return { messages, connected, send, loadingHistory, onlineUsers }
+  const edit = useCallback((id: number, content: string) => {
+    const c = clientRef.current
+    if (!c?.active || !content.trim()) return
+    c.publish({ destination: '/app/chat.edit', body: JSON.stringify({ id, content: content.trim() }) })
+  }, [])
+
+  const remove = useCallback((id: number) => {
+    const c = clientRef.current
+    if (!c?.active) return
+    c.publish({ destination: '/app/chat.delete', body: JSON.stringify({ id }) })
+  }, [])
+
+  // "Yozmoqda" signalini eng ko'pi 2 soniyada bir marta yuboramiz (spam emas).
+  const lastTypingRef = useRef(0)
+  const sendTyping = useCallback(() => {
+    const c = clientRef.current
+    if (!c?.active) return
+    const now = Date.now()
+    if (now - lastTypingRef.current < 2000) return
+    lastTypingRef.current = now
+    c.publish({ destination: '/app/chat.typing', body: '{}' })
+  }, [])
+
+  return { messages, connected, send, edit, remove, sendTyping, loadingHistory, onlineUsers, typingUsers }
 }
