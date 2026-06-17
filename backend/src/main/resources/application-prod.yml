@@ -1,6 +1,8 @@
 server:
   port: 8080
   forward-headers-strategy: framework
+  # Deploy/restart paytida ishlab turgan so'rovlarni uzmasdan to'xtatish (502 oldini oladi).
+  shutdown: graceful
   error:
     include-message: never
     include-stacktrace: never
@@ -14,6 +16,9 @@ spring:
     password: ${DB_PASSWORD}
     hikari:
       maximum-pool-size: 10
+      max-lifetime: 1740000          # 29 daqiqa — PostgreSQL idle timeout'idan past
+      connection-timeout: 30000
+      leak-detection-threshold: 60000
   jpa:
     hibernate:
       ddl-auto: validate
@@ -21,6 +26,9 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
+
+  lifecycle:
+    timeout-per-shutdown-phase: 25s
 
   servlet:
     multipart:

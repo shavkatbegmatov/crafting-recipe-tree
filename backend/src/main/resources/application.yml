@@ -11,10 +11,20 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+    # Lazy yuklashni xizmat (transaksiya) qatlamiga cheklaydi — yashirin N+1 so'rovlar
+    # view render paytida sodir bo'lmaydi. Yangi assotsiatsiya qo'shilsa, fetch'ni
+    # service'da aniq qilish kerak (aks holda LazyInitializationException — bu yaxshi signal).
+    open-in-view: false
     show-sql: false
     properties:
       hibernate:
         format_sql: true
+        # Lazy assotsiatsiyalarni alohida SELECT o'rniga IN(...) bilan to'plab oladi (N+1 yumshatish).
+        default_batch_fetch_size: 50
+        jdbc:
+          batch_size: 30
+        order_inserts: true
+        order_updates: true
   flyway:
     enabled: true
     locations: classpath:db/migration
