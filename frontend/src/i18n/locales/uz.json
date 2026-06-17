@@ -5,7 +5,8 @@
   },
   "common": {
     "back": "Orqaga",
-    "qty": "Soni"
+    "qty": "Soni",
+    "loadFailed": "Ma'lumotni yuklab bo'lmadi"
   },
   "sidebar": {
     "elements": "Elementlar",
@@ -603,6 +604,11 @@
     "noHistory": "Boshqa versiyalar yo'q",
     "view": "O'tish",
     "viewThisVersion": "Shu versiyaga o'tish"
+  },
+  "errorBoundary": {
+    "title": "Nimadir xato ketdi",
+    "message": "Kutilmagan xatolik yuz berdi. Sahifani yangilab ko'ring.",
+    "reload": "Sahifani yangilash"
   },
   "time": {
     "seconds": "{{count}}s",
