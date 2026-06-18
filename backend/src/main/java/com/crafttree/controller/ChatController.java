@@ -4,10 +4,15 @@ import com.crafttree.dto.ChatAnnouncementDto;
 import com.crafttree.dto.ChatEditRequest;
 import com.crafttree.dto.ChatIdRequest;
 import com.crafttree.dto.ChatMessageDto;
+import com.crafttree.dto.ChatReactionRequest;
+import com.crafttree.dto.ChatReactionUpdate;
 import com.crafttree.dto.ChatSendRequest;
 import com.crafttree.dto.PresenceDto;
+import com.crafttree.dto.ReactionGroupDto;
 import com.crafttree.entity.ChatMessage;
+import com.crafttree.entity.ChatMessageReaction;
 import com.crafttree.entity.User;
+import com.crafttree.repository.ChatMessageReactionRepository;
 import com.crafttree.repository.ChatMessageRepository;
 import com.crafttree.repository.UserRepository;
 import com.crafttree.service.ChatModerationService;
@@ -46,6 +51,7 @@ public class ChatController {
     private final UserRepository userRepository;
     private final ChatModerationService moderationService;
     private final RateLimiterService rateLimiter;
+    private final ChatMessageReactionRepository reactionRepo;
 
     /** Chat spam himoyasi: bitta foydalanuvchidan daqiqasiga maksimal xabar. */
     private static final int CHAT_BURST = 15;
@@ -190,6 +196,35 @@ public class ChatController {
         if (user != null) {
             messaging.convertAndSend("/topic/chat.typing", Map.of("username", user.getUsername()));
         }
+    }
+
+    /**
+     * Emoji reaksiya qo'shadi yoki olib tashlaydi (toggle). Yangilangan guruhlar
+     * {@code /topic/chat.reaction}ga real-vaqtda tarqatiladi.
+     */
+    @MessageMapping("/chat.react")
+    @Transactional
+    public void toggleReaction(@Payload ChatReactionRequest req, Principal principal) {
+        User user = extractUser(principal);
+        if (user == null || req == null || req.messageId() == null
+                || req.emoji() == null || req.emoji().isBlank()) {
+            return;
+        }
+        String emoji = req.emoji().trim();
+        if (emoji.length() > 16 || !chatRepo.existsById(req.messageId())) {
+            return;
+        }
+        reactionRepo.findByMessageIdAndUserIdAndEmoji(req.messageId(), user.getId(), emoji)
+                .ifPresentOrElse(reactionRepo::delete, () -> {
+                    ChatMessage msg = chatRepo.getReferenceById(req.messageId());
+                    reactionRepo.save(ChatMessageReaction.builder()
+                            .message(msg).user(user).emoji(emoji).build());
+                });
+        reactionRepo.flush();
+
+        List<ReactionGroupDto> groups =
+                ChatMessageDto.groupReactions(reactionRepo.findByMessageId(req.messageId()));
+        messaging.convertAndSend("/topic/chat.reaction", new ChatReactionUpdate(req.messageId(), groups));
     }
 
     private User extractUser(Principal principal) {
