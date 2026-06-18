@@ -546,6 +546,7 @@
   },
   "chat": {
     "reply": "Reply",
+    "react": "React",
     "edit": "Edit",
     "delete": "Delete",
     "edited": "edited",

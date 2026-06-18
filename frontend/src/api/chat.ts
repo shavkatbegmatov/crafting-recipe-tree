@@ -1,5 +1,12 @@
 import client from './client'
 
+/** Bitta emoji bo'yicha reaksiya guruhi (emoji, soni, kim bosgani). */
+export interface ReactionGroup {
+  emoji: string
+  count: number
+  users: string[]
+}
+
 export interface ChatMessageDto {
   id: number
   username: string
@@ -10,6 +17,7 @@ export interface ChatMessageDto {
   replyToId?: number | null
   replyToUsername?: string | null
   replyToContent?: string | null
+  reactions?: ReactionGroup[]
 }
 
 export async function fetchChatHistory(limit = 50): Promise<ChatMessageDto[]> {

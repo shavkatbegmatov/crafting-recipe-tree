@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
   MessageCircle, X, Send, Shield, Crown, Loader2, LogIn, Megaphone,
-  Reply, Pencil, Trash2, CornerUpLeft,
+  Reply, Pencil, Trash2, CornerUpLeft, SmilePlus,
 } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 import { useChat } from '../../hooks/useChat'
@@ -14,6 +14,9 @@ import { avatarColor, initials } from '../../utils/avatarColor'
 /* ────── helpers ────── */
 
 const GROUP_WINDOW_MS = 5 * 60 * 1000
+
+/** Tezkor reaksiya emojilari (picker'da ko'rsatiladi). */
+const REACTION_EMOJIS = ['👍', '❤️', '😂', '😮', '😢', '🎉']
 
 function formatTime(iso: string): string {
   return new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -64,19 +67,35 @@ function ChatRow({
   isOwn,
   startGroup,
   endGroup,
+  currentUser,
   onReply,
   onEdit,
   onDelete,
+  onReact,
 }: {
   msg: ChatMessageDto
   isOwn: boolean
   startGroup: boolean
   endGroup: boolean
+  currentUser: string
   onReply: (m: ChatMessageDto) => void
   onEdit: (m: ChatMessageDto) => void
   onDelete: (m: ChatMessageDto) => void
+  onReact: (messageId: number, emoji: string) => void
 }) {
   const { t } = useTranslation()
+  const [pickerOpen, setPickerOpen] = useState(false)
+  const pickerRef = useRef<HTMLDivElement>(null)
+
+  // Picker tashqarisiga bosilganda yopiladi.
+  useEffect(() => {
+    if (!pickerOpen) return
+    const handler = (e: MouseEvent) => {
+      if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) setPickerOpen(false)
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [pickerOpen])
 
   const actions = (
     <div className={`flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity self-center
@@ -88,6 +107,32 @@ function ChatRow({
       >
         <Reply size={13} />
       </button>
+      <div className="relative" ref={pickerRef}>
+        <button
+          onClick={() => setPickerOpen((v) => !v)}
+          title={t('chat.react')}
+          className="p-1 rounded text-[#8a7a60] hover:text-dark-gold hover:bg-dark-hover transition-colors"
+        >
+          <SmilePlus size={13} />
+        </button>
+        {pickerOpen && (
+          <div
+            className={`absolute z-20 bottom-full mb-1 flex gap-0.5 px-1.5 py-1 rounded-full
+                        bg-dark-card border border-dark-border shadow-lg shadow-black/40
+                        ${isOwn ? 'right-0' : 'left-0'}`}
+          >
+            {REACTION_EMOJIS.map((emoji) => (
+              <button
+                key={emoji}
+                onClick={() => { onReact(msg.id, emoji); setPickerOpen(false) }}
+                className="text-base leading-none p-1 rounded hover:bg-dark-hover hover:scale-125 transition-transform"
+              >
+                {emoji}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
       {isOwn && (
         <>
           <button
@@ -154,6 +199,30 @@ function ChatRow({
           {actions}
         </div>
 
+        {/* Reaksiya chiplari — "men bosgan" oltin rangda */}
+        {msg.reactions && msg.reactions.length > 0 && (
+          <div className={`flex flex-wrap gap-1 mt-1 ${isOwn ? 'justify-end' : 'justify-start'}`}>
+            {msg.reactions.map((r) => {
+              const mine = r.users.includes(currentUser)
+              return (
+                <button
+                  key={r.emoji}
+                  onClick={() => onReact(msg.id, r.emoji)}
+                  title={r.users.join(', ')}
+                  className={`flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[11px] border transition-colors ${
+                    mine
+                      ? 'bg-dark-gold/20 border-dark-gold/40 text-dark-gold'
+                      : 'bg-dark-hover border-dark-border text-[#8a7a60] hover:border-dark-gold/30'
+                  }`}
+                >
+                  <span>{r.emoji}</span>
+                  <span className="font-medium">{r.count}</span>
+                </button>
+              )
+            })}
+          </div>
+        )}
+
         {endGroup && (
           <span className="text-[10px] text-[#8a7a60]/70 mt-0.5 mx-1 select-none">{formatTime(msg.createdAt)}</span>
         )}
@@ -167,7 +236,7 @@ function ChatRow({
 export default function ChatPanel({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { t, i18n } = useTranslation()
   const { user } = useAuth()
-  const { messages, connected, send, edit, remove, sendTyping, loadingHistory, onlineUsers, typingUsers } = useChat(open)
+  const { messages, connected, send, edit, remove, react, sendTyping, loadingHistory, onlineUsers, typingUsers } = useChat(open)
   const { data: announcement } = useAnnouncement(open)
 
   const [draft, setDraft] = useState('')
@@ -317,9 +386,11 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
                     isOwn={isOwn}
                     startGroup={startGroup}
                     endGroup={endGroup}
+                    currentUser={user?.username ?? ''}
                     onReply={startReply}
                     onEdit={startEdit}
                     onDelete={handleDelete}
+                    onReact={react}
                   />
                 </div>
               )

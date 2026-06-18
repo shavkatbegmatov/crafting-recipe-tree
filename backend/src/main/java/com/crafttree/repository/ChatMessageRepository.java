@@ -22,7 +22,7 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
      */
     // Reply va uning egasi ham oldindan yuklanadi — ChatMessageDto.from reply preview'ni o'qiydi,
     // open-in-view:false bilan bu LazyInitializationException (500) bermasligi uchun.
-    @EntityGraph(attributePaths = {"user", "replyTo", "replyTo.user"})
+    @EntityGraph(attributePaths = {"user", "replyTo", "replyTo.user", "reactions", "reactions.user"})
     Page<ChatMessage> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
     /** Admin moderatsiyasi: matn bo'yicha qidiruv + foydalanuvchi filtri. */

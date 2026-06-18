@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "chat_messages")
@@ -33,6 +35,11 @@ public class ChatMessage {
     /** Tahrirlangan vaqt. Null — tahrirlanmagan. */
     @Column(name = "edited_at")
     private LocalDateTime editedAt;
+
+    /** Emoji reaksiyalar. Xabar o'chsa — cascade orqali reaksiyalar ham o'chadi. */
+    @OneToMany(mappedBy = "message", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private Set<ChatMessageReaction> reactions = new HashSet<>();
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

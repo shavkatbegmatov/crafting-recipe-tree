@@ -554,6 +554,7 @@
   },
   "chat": {
     "reply": "Javob berish",
+    "react": "Reaksiya",
     "edit": "Tahrirlash",
     "delete": "O'chirish",
     "edited": "tahrirlangan",

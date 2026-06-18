@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { Client } from '@stomp/stompjs'
-import type { ChatMessageDto } from '../api/chat'
+import type { ChatMessageDto, ReactionGroup } from '../api/chat'
 import { fetchChatHistory, fetchOnline } from '../api/chat'
 import { getWsUrl } from '../utils/wsUrl'
 
@@ -11,6 +11,7 @@ interface UseChatReturn {
   send: (content: string, replyToId?: number | null) => void
   edit: (id: number, content: string) => void
   remove: (id: number) => void
+  react: (messageId: number, emoji: string) => void
   sendTyping: () => void
   loadingHistory: boolean
   onlineUsers: string[]
@@ -80,6 +81,15 @@ export function useChat(active: boolean): UseChatReturn {
           setMessages((prev) => prev.filter((m) => m.id !== id))
         })
 
+        // Reaksiya o'zgardi — faqat o'sha xabarning reactions'ini almashtiramiz.
+        stompClient.subscribe('/topic/chat.reaction', (frame) => {
+          const { messageId, reactions } = JSON.parse(frame.body) as {
+            messageId: number
+            reactions: ReactionGroup[]
+          }
+          setMessages((prev) => prev.map((m) => (m.id === messageId ? { ...m, reactions } : m)))
+        })
+
         // "Yozmoqda" — 3 soniya ko'rsatib, signal kelmasa o'chiramiz.
         stompClient.subscribe('/topic/chat.typing', (frame) => {
           const { username } = JSON.parse(frame.body) as { username: string }
@@ -138,6 +148,12 @@ export function useChat(active: boolean): UseChatReturn {
     c.publish({ destination: '/app/chat.delete', body: JSON.stringify({ id }) })
   }, [])
 
+  const react = useCallback((messageId: number, emoji: string) => {
+    const c = clientRef.current
+    if (!c?.active || !emoji) return
+    c.publish({ destination: '/app/chat.react', body: JSON.stringify({ messageId, emoji }) })
+  }, [])
+
   // "Yozmoqda" signalini eng ko'pi 2 soniyada bir marta yuboramiz (spam emas).
   const lastTypingRef = useRef(0)
   const sendTyping = useCallback(() => {
@@ -149,5 +165,5 @@ export function useChat(active: boolean): UseChatReturn {
     c.publish({ destination: '/app/chat.typing', body: '{}' })
   }, [])
 
-  return { messages, connected, send, edit, remove, sendTyping, loadingHistory, onlineUsers, typingUsers }
+  return { messages, connected, send, edit, remove, react, sendTyping, loadingHistory, onlineUsers, typingUsers }
 }
