@@ -19,7 +19,7 @@ interface Stat {
 
 function StatCard({ icon: Icon, label, value, accent }: Stat) {
   return (
-    <div className="bg-dark-card border border-dark-border rounded-lg p-3.5 flex items-center gap-3">
+    <div className="panel p-3.5 flex items-center gap-3">
       <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
         accent ? 'bg-dark-gold/15 text-dark-gold' : 'bg-dark-hover text-skin-muted'
       }`}>
@@ -97,7 +97,7 @@ export default function AdminStatsPage() {
       </button>
 
       <div>
-        <h1 className="text-xl font-semibold text-skin-base flex items-center gap-2">
+        <h1 className="text-xl font-display tracking-wide text-skin-base flex items-center gap-2">
           <BarChart3 size={18} className="text-dark-gold" />
           {t('adminStats.title')}
         </h1>
@@ -114,7 +114,7 @@ export default function AdminStatsPage() {
           <h2 className="text-[11px] font-medium text-skin-muted uppercase tracking-wider">
             {t('adminStats.byCategory')}
           </h2>
-          <div className="bg-dark-card border border-dark-border rounded-lg p-4 space-y-2.5">
+          <div className="panel p-4 space-y-2.5">
             {stats.itemsByCategory.map((c) => {
               const cat = categories?.find((x) => x.code === c.code)
               const color = cat?.color || DEFAULT_CATEGORY_COLOR

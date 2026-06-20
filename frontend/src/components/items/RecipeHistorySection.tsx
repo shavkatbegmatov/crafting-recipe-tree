@@ -29,7 +29,7 @@ export default function RecipeHistorySection({ itemId }: Props) {
     categories?.find((c) => c.code === code)?.color || DEFAULT_CATEGORY_COLOR
 
   return (
-    <div className="bg-dark-card border border-dark-border rounded-lg p-5">
+    <div className="panel p-5">
       <h2 className="text-sm font-semibold text-skin-base mb-4 flex items-center gap-2">
         <History size={16} className="text-skin-muted" />
         {t('gameVersion.history')}

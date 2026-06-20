@@ -16,7 +16,7 @@ export default function Header({ onToggleSidebar }: Props) {
   const { user } = useAuth()
 
   return (
-    <header className="h-14 bg-dark-card border-b border-dark-border flex items-center px-4 gap-3 shrink-0">
+    <header className="h-14 bg-dark-card border-b border-dark-border shadow-[0_2px_12px_rgba(0,0,0,0.45)] flex items-center px-4 gap-3 shrink-0">
       {user && (
         <button
           onClick={onToggleSidebar}
@@ -26,9 +26,12 @@ export default function Header({ onToggleSidebar }: Props) {
           <Menu size={20} />
         </button>
       )}
-      <Link to="/" className="flex items-center gap-2 text-skin-base hover:text-[#e8d8b0] transition-colors">
-        <Boxes size={22} className="text-dark-gold" />
-        <span className="font-semibold text-lg">{t('app.title')}</span>
+      <Link to="/" className="flex items-center gap-2 group">
+        <Boxes
+          size={22}
+          className="text-dark-gold drop-shadow-[0_0_8px_rgba(200,160,80,0.5)] group-hover:drop-shadow-[0_0_12px_rgba(200,160,80,0.8)] transition-[filter] duration-300"
+        />
+        <span className="font-display text-lg tracking-wide text-gold-gradient">{t('app.title')}</span>
       </Link>
       <span className="text-xs text-skin-muted ml-2 hidden sm:inline">{t('app.subtitle')}</span>
 

@@ -18,8 +18,10 @@ export default function ItemCard({ item }: Props) {
   return (
     <Link
       to={`/items/${item.id}`}
-      className="relative block bg-dark-card border border-dark-border rounded-lg overflow-hidden hover:border-dark-gold/40 hover:bg-dark-hover transition-all group"
+      className="group relative block panel panel-glow overflow-hidden transition-all duration-300 hover:-translate-y-0.5"
     >
+      {/* Hover'da gold yuqori chiziq — "skan" effekti */}
+      <span className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-dark-gold/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
       <div className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
         <FavoriteButton itemId={item.id} />
       </div>
@@ -31,10 +33,10 @@ export default function ItemCard({ item }: Props) {
             src={item.imageUrl}
             alt={getField(item, 'name')}
             containerClassName={isPng ? 'w-12 h-12' : 'w-full h-full'}
-            className={`opacity-85 group-hover:opacity-100 transition-opacity ${
+            className={`opacity-85 group-hover:opacity-100 transition-[opacity,transform] duration-500 ${
               isPng
-                ? 'w-12 h-12 object-contain'
-                : 'w-full h-full object-contain'
+                ? 'w-12 h-12 object-contain group-hover:scale-110'
+                : 'w-full h-full object-contain group-hover:scale-105'
             }`}
             iconSize={isPng ? 24 : 40}
           />
@@ -49,7 +51,7 @@ export default function ItemCard({ item }: Props) {
       )}
       <div className="p-3">
         <div className="flex items-start justify-between gap-2 mb-1.5">
-          <h3 className="text-sm font-medium text-skin-base group-hover:text-[#e8d8b0] transition-colors truncate">
+          <h3 className="text-sm font-medium text-skin-base group-hover:text-skin-accent transition-colors truncate">
             {getField(item, 'name')}
           </h3>
           <CategoryBadge code={item.categoryCode} />

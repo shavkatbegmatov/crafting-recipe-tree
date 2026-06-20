@@ -136,7 +136,7 @@ export default function AdminAccessRequestsPage() {
       </button>
 
       <div>
-        <h1 className="text-xl font-semibold text-skin-base flex items-center gap-2">
+        <h1 className="text-xl font-display tracking-wide text-skin-base flex items-center gap-2">
           <ShieldQuestion size={18} className="text-dark-gold" />
           {t('accessRequest.adminTitle')}
           {pendingCount != null && pendingCount > 0 && (
@@ -164,13 +164,13 @@ export default function AdminAccessRequestsPage() {
       {isLoading ? (
         <div className="flex justify-center py-12"><Spinner /></div>
       ) : data && data.content.length === 0 ? (
-        <div className="bg-dark-card border border-dark-border rounded-lg py-12 text-center text-sm text-skin-dark">
+        <div className="panel py-12 text-center text-sm text-skin-dark">
           {t('accessRequest.empty')}
         </div>
       ) : (
         <div className={`space-y-2.5 transition-opacity ${isFetching ? 'opacity-60' : ''}`}>
           {data?.content.map((r) => (
-            <div key={r.id} className="bg-dark-card border border-dark-border rounded-lg p-3.5">
+            <div key={r.id} className="panel p-3.5">
               <div className="flex items-start gap-3">
                 <Avatar name={r.displayName || r.username} role={r.currentRole} />
 

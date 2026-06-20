@@ -38,7 +38,7 @@ export default function CalculatorPage() {
       </button>
 
       <div>
-        <h1 className="text-xl font-semibold text-skin-base flex items-center gap-2">
+        <h1 className="text-xl font-display tracking-wide text-skin-base flex items-center gap-2">
           <Calculator size={18} className="text-dark-gold" />
           {t('calculator.title')}
         </h1>
@@ -55,7 +55,7 @@ export default function CalculatorPage() {
 
       {/* Natija — birlashtirilgan xomashyo */}
       {selected.length > 0 && (
-        <div className="bg-dark-card border border-dark-border rounded-lg overflow-hidden">
+        <div className="panel overflow-hidden">
           <div className="px-4 py-2.5 border-b border-dark-border flex items-center justify-between">
             <span className="text-sm font-semibold text-skin-base">{t('calculator.result')}</span>
             {calc.isLoading && <Loader2 size={14} className="animate-spin text-dark-gold" />}

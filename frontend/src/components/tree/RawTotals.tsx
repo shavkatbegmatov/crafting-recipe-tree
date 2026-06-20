@@ -42,7 +42,7 @@ export default function RawTotals({ itemId, itemName: _itemName, quantity = 1, o
   const totalTimeSeconds = data.totalCraftTimeSeconds * quantity
 
   return (
-    <div className="bg-dark-card border border-dark-border rounded-lg p-5">
+    <div className="panel p-5">
       <div className="flex items-start justify-between gap-3 mb-4 flex-wrap">
         <h2 className="text-sm font-semibold text-skin-base flex items-center gap-2">
           <Database size={16} className="text-skin-muted" />

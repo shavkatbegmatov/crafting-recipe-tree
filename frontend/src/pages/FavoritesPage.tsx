@@ -41,7 +41,7 @@ export default function FavoritesPage() {
       </button>
 
       <div>
-        <h1 className="text-xl font-semibold text-skin-base flex items-center gap-2">
+        <h1 className="text-xl font-display tracking-wide text-skin-base flex items-center gap-2">
           <Star size={18} className="text-dark-gold" />
           {t('favorites.title')}
         </h1>

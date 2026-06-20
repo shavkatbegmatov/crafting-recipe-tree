@@ -75,7 +75,7 @@ export default function InventoryPage() {
   }
 
   const card = (c: CraftableItem) => (
-    <div key={c.resultItemId} className="bg-dark-card border border-dark-border rounded-lg p-3">
+    <div key={c.resultItemId} className="panel p-3">
       <div className="flex items-center gap-2.5">
         <ItemImageIcon imageUrl={c.imageUrl} alt={getField(c, 'resultItemName')} size={28} fallbackColor={colorOf(c.categoryCode)} />
         <span className="flex-1 text-sm text-skin-base truncate">{getField(c, 'resultItemName')}</span>
@@ -110,7 +110,7 @@ export default function InventoryPage() {
       </button>
 
       <div>
-        <h1 className="text-xl font-semibold text-skin-base flex items-center gap-2">
+        <h1 className="text-xl font-display tracking-wide text-skin-base flex items-center gap-2">
           <Boxes size={18} className="text-dark-gold" />
           {t('inventory.title')}
           {/* Saqlash indikatori */}
@@ -143,7 +143,7 @@ export default function InventoryPage() {
           ) : isError ? (
             <div className="py-8 text-center text-sm text-red-400">{t('craftable.error')}</div>
           ) : fully.length === 0 && partial.length === 0 ? (
-            <div className="bg-dark-card border border-dark-border rounded-lg py-10 text-center text-sm text-skin-dark">
+            <div className="panel py-10 text-center text-sm text-skin-dark">
               {t('craftable.noResults')}
             </div>
           ) : (

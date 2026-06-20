@@ -37,12 +37,17 @@ export default function FavoriteButton({ itemId, size = 16, className = '' }: Pr
       title={label}
       aria-label={label}
       aria-pressed={favorited}
-      className={`p-1.5 rounded-lg bg-dark-bg/70 backdrop-blur-sm border border-dark-border
-        hover:border-dark-gold/40 transition-colors disabled:opacity-50 ${className}`}
+      className={`p-1.5 rounded-lg bg-dark-bg/70 backdrop-blur-sm border transition-all disabled:opacity-50 ${
+        favorited
+          ? 'border-dark-gold/50 shadow-glow-gold-sm'
+          : 'border-dark-border hover:border-dark-gold/40'
+      } ${className}`}
     >
       <Star
         size={size}
-        className={favorited ? 'fill-dark-gold text-dark-gold' : 'text-skin-muted'}
+        className={favorited
+          ? 'fill-dark-gold text-dark-gold drop-shadow-[0_0_5px_rgba(200,160,80,0.7)]'
+          : 'text-skin-muted'}
       />
     </button>
   )

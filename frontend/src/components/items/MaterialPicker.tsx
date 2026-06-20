@@ -63,7 +63,7 @@ export default function MaterialPicker({ selected, onChange, searchPlaceholder, 
             placeholder:text-skin-muted/50 focus:outline-none focus:border-dark-gold/50"
         />
         {searchResults.length > 0 && (
-          <div className="absolute z-20 mt-1 w-full bg-dark-card border border-dark-border rounded-lg shadow-2xl overflow-hidden">
+          <div className="absolute z-20 mt-1 w-full panel shadow-2xl overflow-hidden">
             {searchResults.map((i) => (
               <button
                 key={i.id}
@@ -81,7 +81,7 @@ export default function MaterialPicker({ selected, onChange, searchPlaceholder, 
 
       {/* Tanlangan itemlar */}
       {selected.length === 0 ? (
-        <div className="bg-dark-card border border-dark-border rounded-lg py-8 text-center text-sm text-skin-dark">
+        <div className="panel py-8 text-center text-sm text-skin-dark">
           {emptyHint}
         </div>
       ) : (
@@ -90,7 +90,7 @@ export default function MaterialPicker({ selected, onChange, searchPlaceholder, 
           {selected.map((s) => {
             const it = itemOf(s.id)
             return (
-              <div key={s.id} className="flex items-center gap-3 bg-dark-card border border-dark-border rounded-lg px-3 py-2">
+              <div key={s.id} className="flex items-center gap-3 panel px-3 py-2">
                 <ItemImageIcon imageUrl={it?.imageUrl} alt={it ? getField(it, 'name') : ''} size={26} fallbackColor={colorOf(it?.categoryCode)} />
                 <span className="flex-1 text-sm text-skin-base truncate">{it ? getField(it, 'name') : `#${s.id}`}</span>
                 <input

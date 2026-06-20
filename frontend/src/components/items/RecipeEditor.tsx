@@ -147,7 +147,7 @@ export default function RecipeEditor({ itemId, itemName, onClose }: Props) {
   }, [history, effectiveVersion])
 
   return (
-    <div className="bg-dark-card border border-dark-border rounded-lg p-5 space-y-4">
+    <div className="panel p-5 space-y-4">
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
           <h2 className="text-sm font-semibold text-skin-base">
@@ -255,7 +255,7 @@ export default function RecipeEditor({ itemId, itemName, onClose }: Props) {
             <Plus size={14} className="text-skin-dark" />
           </div>
           {filteredCandidates.length > 0 && (
-            <div className="absolute z-10 left-0 right-0 top-full mt-1 bg-dark-card border border-dark-border rounded-lg shadow-xl max-h-72 overflow-y-auto">
+            <div className="absolute z-10 left-0 right-0 top-full mt-1 panel shadow-xl max-h-72 overflow-y-auto">
               {filteredCandidates.map((it) => {
                 const color = colorForCategory(it.categoryCode)
                 return (

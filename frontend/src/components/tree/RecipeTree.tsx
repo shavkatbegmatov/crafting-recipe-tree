@@ -63,7 +63,7 @@ export default function RecipeTree({ itemId, quantity = 1, onQuantityChange }: P
   const isRaw = tree.category === 'RAW'
 
   return (
-    <div className="bg-dark-card border border-dark-border rounded-lg p-5">
+    <div className="panel p-5">
       <div className="mb-4">
         <h2 className="text-sm font-semibold text-skin-base flex items-center gap-2 mb-3">
           <GitBranch size={16} className="text-skin-muted" />

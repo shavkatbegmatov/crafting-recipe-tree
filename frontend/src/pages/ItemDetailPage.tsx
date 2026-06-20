@@ -135,7 +135,7 @@ export default function ItemDetailPage() {
       </button>
 
       {/* Item info */}
-      <div className="bg-dark-card border border-dark-border rounded-lg overflow-hidden xl:flex">
+      <div className="panel overflow-hidden xl:flex">
         {item.imageUrl && (
           <div className="bg-dark-panel flex items-center justify-center p-4 overflow-hidden xl:w-80 xl:shrink-0 xl:border-r xl:border-dark-border xl:self-stretch">
             <SafeImage
@@ -156,7 +156,7 @@ export default function ItemDetailPage() {
         <div className="p-5 flex-1 min-w-0">
           {/* Header with edit button */}
           <div className="flex items-start justify-between gap-4 mb-3">
-            <h1 className="text-xl font-semibold text-skin-base">{itemName}</h1>
+            <h1 className="text-xl font-display tracking-wide text-skin-base">{itemName}</h1>
             <div className="flex items-center gap-2">
               <CategoryBadge code={item.categoryCode} size="md" />
               {isAdmin && !editing && (
@@ -406,7 +406,7 @@ export default function ItemDetailPage() {
             />
           )}
           {showUsedIn && (
-            <div className="bg-dark-card border border-dark-border rounded-lg p-5">
+            <div className="panel p-5">
               <h2 className="text-sm font-semibold text-skin-base mb-3 flex items-center gap-2">
                 <ArrowRight size={16} className="text-skin-muted" />
                 {t('detail.usedIn')}
