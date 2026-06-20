@@ -50,7 +50,8 @@ export default function GameVersionSelector() {
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-1.5 z-50 min-w-[14rem] panel shadow-xl overflow-hidden">
+        <div className="absolute right-0 mt-2 z-50 min-w-[14rem] bg-dark-card border border-dark-gold/25 rounded-xl shadow-[0_18px_50px_rgba(0,0,0,0.6),0_0_28px_rgba(200,160,80,0.10)] overflow-hidden">
+          <span className="block h-0.5 bg-gradient-to-r from-transparent via-dark-gold/60 to-transparent" />
           <div className="px-3 py-2 border-b border-dark-border">
             <p className="text-[10px] uppercase tracking-wider text-skin-dark">{t('gameVersion.title')}</p>
           </div>
