@@ -77,7 +77,7 @@ export default function NotificationBell() {
             exit={{ opacity: 0, y: -4, scale: 0.97 }}
             transition={{ duration: 0.15 }}
             className="absolute right-0 top-full mt-1.5 w-80 bg-dark-card border border-dark-border
-              rounded-xl shadow-2xl shadow-black/50 z-50 overflow-hidden"
+              rounded-xl shadow-2xl shadow-black/50 z-[60] overflow-hidden"
           >
             <div className="flex items-center justify-between px-4 py-2.5 border-b border-dark-border">
               <span className="text-sm font-semibold text-[#d4c4a0]">{t('notification.title')}</span>
@@ -136,7 +136,7 @@ export default function NotificationBell() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
             onClick={() => setOpen(false)}
-            className="fixed inset-x-0 bottom-0 top-14 z-40 bg-black/40"
+            className="fixed inset-x-0 bottom-0 top-14 z-50 bg-black/40"
           />
         )}
       </AnimatePresence>

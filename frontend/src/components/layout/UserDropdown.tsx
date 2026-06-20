@@ -223,7 +223,7 @@ export default function UserDropdown() {
             transition={{ duration: 0.15 }}
             className="absolute right-0 top-full mt-1.5 w-72 sm:w-80
               bg-dark-card border border-dark-border rounded-xl
-              shadow-2xl shadow-black/50 z-50 overflow-hidden"
+              shadow-2xl shadow-black/50 z-[60] overflow-hidden"
           >
             {/* ── Profile header ── */}
             <div className="px-4 pt-4 pb-3">
@@ -558,7 +558,7 @@ export default function UserDropdown() {
               setOpen(false)
               resetEdit()
             }}
-            className="fixed inset-x-0 bottom-0 top-14 z-40 bg-black/40"
+            className="fixed inset-x-0 bottom-0 top-14 z-50 bg-black/40"
           />
         )}
       </AnimatePresence>
