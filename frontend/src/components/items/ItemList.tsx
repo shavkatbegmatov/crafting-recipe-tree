@@ -29,8 +29,14 @@ export default function ItemList({ items, isLoading }: Props) {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-      {items.map((item) => (
-        <ItemCard key={item.id} item={item} />
+      {items.map((item, i) => (
+        <div
+          key={item.id}
+          className="animate-fade-in-up"
+          style={{ animationDelay: `${Math.min(i * 0.03, 0.45)}s` }}
+        >
+          <ItemCard item={item} />
+        </div>
       ))}
     </div>
   )

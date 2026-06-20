@@ -50,7 +50,7 @@ export default function TreeNode({
           </>
         )}
 
-        <div className="flex items-center gap-1.5 py-1 group">
+        <div className="flex items-center gap-1.5 py-1 px-1.5 -mx-1.5 rounded-md group hover:bg-dark-hover/40 transition-colors">
           {hasChildren ? (
             <button
               onClick={() => setIsOpen(!isOpen)}
@@ -72,7 +72,7 @@ export default function TreeNode({
 
           <Link
             to={`/items/${node.id}`}
-            className="text-sm hover:underline transition-colors"
+            className="text-sm transition-all group-hover:[text-shadow:0_0_8px_currentColor]"
             style={{ color }}
           >
             {name}
