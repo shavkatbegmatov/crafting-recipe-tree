@@ -88,10 +88,10 @@ export default function Sidebar({ isOpen, onClose }: Props) {
                   <button
                     key={item.id}
                     onClick={() => { navigate(`/items/${item.id}`); onClose() }}
-                    className={`w-full text-left px-2.5 py-1.5 rounded-md text-sm flex items-center gap-2.5 transition-colors ${
+                    className={`w-full text-left px-2.5 py-1.5 rounded-md text-sm flex items-center gap-2.5 transition-all border-l-2 ${
                       isActive
-                        ? 'bg-dark-hover text-skin-base border-l-2 border-dark-gold'
-                        : 'text-skin-muted hover:text-skin-base hover:bg-dark-bg'
+                        ? 'bg-gradient-to-r from-dark-gold/15 to-transparent text-skin-base border-dark-gold shadow-[inset_0_0_14px_rgba(200,160,80,0.10)]'
+                        : 'text-skin-muted hover:text-skin-base hover:bg-dark-bg border-transparent'
                     }`}
                   >
                     <ItemImageIcon

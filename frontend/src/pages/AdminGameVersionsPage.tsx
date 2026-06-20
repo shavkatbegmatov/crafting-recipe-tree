@@ -122,7 +122,7 @@ export default function AdminGameVersionsPage() {
       </button>
 
       <div className="flex items-center justify-between gap-3 flex-wrap">
-        <h1 className="text-xl font-semibold text-skin-base flex items-center gap-2">
+        <h1 className="text-xl font-display tracking-wide text-skin-base flex items-center gap-2">
           <TagIcon size={18} className="text-dark-gold" />
           {t('gameVersion.manage')}
         </h1>
@@ -138,7 +138,7 @@ export default function AdminGameVersionsPage() {
       </div>
 
       {(creating || editingId != null) && (
-        <div className="bg-dark-card border border-dark-border rounded-lg p-5 space-y-3">
+        <div className="panel p-5 space-y-3">
           <h2 className="text-sm font-semibold text-skin-base">
             {creating ? t('gameVersion.addNew') : t('gameVersion.update')}
           </h2>
@@ -208,7 +208,7 @@ export default function AdminGameVersionsPage() {
           <Spinner />
         </div>
       ) : (
-        <div className="bg-dark-card border border-dark-border rounded-lg overflow-hidden">
+        <div className="panel overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-dark-border bg-dark-bg/30">

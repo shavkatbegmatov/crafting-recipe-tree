@@ -85,7 +85,7 @@ export default function AdminChatPage() {
       </button>
 
       <div>
-        <h1 className="text-xl font-semibold text-skin-base flex items-center gap-2">
+        <h1 className="text-xl font-display tracking-wide text-skin-base flex items-center gap-2">
           <MessageCircle size={18} className="text-dark-gold" />
           {t('chatAdmin.title')}
         </h1>
@@ -97,7 +97,7 @@ export default function AdminChatPage() {
         <StatCard label={t('chatAdmin.stats.total')} value={stats?.totalMessages} Icon={BarChart3} />
         <StatCard label={t('chatAdmin.stats.today')} value={stats?.todayMessages} Icon={Clock} accent />
         <StatCard label={t('chatAdmin.stats.online')} value={stats?.onlineCount} Icon={Users} />
-        <div className="bg-dark-card border border-dark-border rounded-lg p-3">
+        <div className="panel p-3">
           <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-skin-muted mb-1">
             <Crown className="w-3 h-3" /> {t('chatAdmin.stats.topSender')}
           </div>
@@ -108,7 +108,7 @@ export default function AdminChatPage() {
       </div>
 
       {/* E'lon */}
-      <div className="bg-dark-card border border-dark-border rounded-lg p-4 space-y-2.5">
+      <div className="panel p-4 space-y-2.5">
         <div className="flex items-center gap-2 text-sm font-medium text-skin-base">
           <Megaphone size={15} className="text-dark-gold" /> {t('chatAdmin.announcement.title')}
         </div>
@@ -159,13 +159,13 @@ export default function AdminChatPage() {
       {isLoading ? (
         <div className="flex justify-center py-12"><Spinner /></div>
       ) : data && data.content.length === 0 ? (
-        <div className="bg-dark-card border border-dark-border rounded-lg py-10 text-center text-sm text-skin-dark">
+        <div className="panel py-10 text-center text-sm text-skin-dark">
           {t('chatAdmin.empty')}
         </div>
       ) : (
         <div className={`space-y-1.5 transition-opacity ${isFetching ? 'opacity-60' : ''}`}>
           {data?.content.map((m) => (
-            <div key={m.id} className="flex items-start gap-2.5 bg-dark-card border border-dark-border rounded-lg px-3 py-2 group">
+            <div key={m.id} className="flex items-start gap-2.5 panel px-3 py-2 group">
               <div
                 className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold text-white shrink-0 mt-0.5"
                 style={{ backgroundColor: avatarColor(m.username) }}

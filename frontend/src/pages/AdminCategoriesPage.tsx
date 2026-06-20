@@ -102,7 +102,7 @@ export default function AdminCategoriesPage() {
           >
             <ArrowLeft size={18} />
           </button>
-          <h1 className="text-xl font-semibold text-skin-base">{t('admin.categories')}</h1>
+          <h1 className="text-xl font-display tracking-wide text-skin-base">{t('admin.categories')}</h1>
         </div>
         {!isEditing && (
           <button
@@ -117,7 +117,7 @@ export default function AdminCategoriesPage() {
 
       {/* Edit/Create form */}
       {isEditing && (
-        <div className="bg-dark-card border border-dark-border rounded-lg p-5 space-y-4">
+        <div className="panel p-5 space-y-4">
           <h3 className="text-sm font-medium text-skin-base">
             {creating ? t('admin.addCategory') : t('edit.button')}
           </h3>
@@ -220,7 +220,7 @@ export default function AdminCategoriesPage() {
       )}
 
       {/* Categories list */}
-      <div className="bg-dark-card border border-dark-border rounded-lg overflow-hidden">
+      <div className="panel overflow-hidden">
         {isLoading ? (
           <div className="p-8 text-center text-skin-muted">{t('sidebar.loading')}</div>
         ) : (

@@ -174,7 +174,7 @@ export default function AdminUsersPage() {
       </button>
 
       <div>
-        <h1 className="text-xl font-semibold text-skin-base flex items-center gap-2">
+        <h1 className="text-xl font-display tracking-wide text-skin-base flex items-center gap-2">
           <Users size={18} className="text-dark-gold" />
           {t('adminUsers.title')}
         </h1>
@@ -229,7 +229,7 @@ export default function AdminUsersPage() {
       {isLoading ? (
         <div className="flex justify-center py-12"><Spinner /></div>
       ) : (
-        <div className={`bg-dark-card border border-dark-border rounded-lg overflow-x-auto transition-opacity ${isFetching ? 'opacity-60' : ''}`}>
+        <div className={`panel overflow-x-auto transition-opacity ${isFetching ? 'opacity-60' : ''}`}>
           <table className="w-full text-sm min-w-[640px]">
             <thead>
               <tr className="border-b border-dark-border bg-dark-bg/30 text-skin-muted">

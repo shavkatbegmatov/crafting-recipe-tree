@@ -73,7 +73,7 @@ export default function ComparePage() {
       </button>
 
       <div>
-        <h1 className="text-xl font-semibold text-skin-base flex items-center gap-2">
+        <h1 className="text-xl font-display tracking-wide text-skin-base flex items-center gap-2">
           <GitCompare size={18} className="text-dark-gold" />
           {t('compare.title')}
         </h1>
@@ -92,7 +92,7 @@ export default function ComparePage() {
               placeholder:text-skin-muted/50 focus:outline-none focus:border-dark-gold/50"
           />
           {searchResults.length > 0 && (
-            <div className="absolute z-20 mt-1 w-full bg-dark-card border border-dark-border rounded-lg shadow-2xl overflow-hidden">
+            <div className="absolute z-20 mt-1 w-full panel shadow-2xl overflow-hidden">
               {searchResults.map((i) => (
                 <button
                   key={i.id}
@@ -110,7 +110,7 @@ export default function ComparePage() {
       )}
 
       {selected.length === 0 ? (
-        <div className="bg-dark-card border border-dark-border rounded-lg py-12 text-center text-sm text-skin-dark">
+        <div className="panel py-12 text-center text-sm text-skin-dark">
           {t('compare.empty')}
         </div>
       ) : (
@@ -120,7 +120,7 @@ export default function ComparePage() {
             const res = rawResults[idx]
             const raw = res?.data
             return (
-              <div key={id} className="bg-dark-card border border-dark-border rounded-lg overflow-hidden flex flex-col">
+              <div key={id} className="panel overflow-hidden flex flex-col">
                 {/* Sarlavha */}
                 <div className="p-3 border-b border-dark-border flex items-center gap-2.5">
                   <ItemImageIcon imageUrl={item?.imageUrl} alt={item ? getField(item, 'name') : ''} size={32} fallbackColor={colorOf(item?.categoryCode)} />

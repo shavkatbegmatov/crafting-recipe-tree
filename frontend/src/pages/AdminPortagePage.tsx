@@ -30,7 +30,7 @@ export default function AdminPortagePage() {
           >
             <ArrowLeft size={12} /> {t('common.back')}
           </button>
-          <h1 className="text-xl font-semibold text-skin-base">{t('portage.pageTitle')}</h1>
+          <h1 className="text-xl font-display tracking-wide text-skin-base">{t('portage.pageTitle')}</h1>
           <p className="text-xs text-skin-muted mt-1 max-w-2xl">{t('portage.pageHint')}</p>
         </div>
       </header>
