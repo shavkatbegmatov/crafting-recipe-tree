@@ -119,7 +119,7 @@ function ChatRow({
       <button
         onClick={() => onReply(msg)}
         title={t('chat.reply')}
-        className="p-1 rounded text-[#8a7a60] hover:text-dark-gold hover:bg-dark-hover transition-colors"
+        className="p-1 rounded text-skin-muted hover:text-dark-gold hover:bg-dark-hover transition-colors"
       >
         <Reply size={13} />
       </button>
@@ -127,7 +127,7 @@ function ChatRow({
         <button
           onClick={() => setPickerOpen((v) => !v)}
           title={t('chat.react')}
-          className="p-1 rounded text-[#8a7a60] hover:text-dark-gold hover:bg-dark-hover transition-colors"
+          className="p-1 rounded text-skin-muted hover:text-dark-gold hover:bg-dark-hover transition-colors"
         >
           <SmilePlus size={13} />
         </button>
@@ -154,14 +154,14 @@ function ChatRow({
           <button
             onClick={() => onEdit(msg)}
             title={t('chat.edit')}
-            className="p-1 rounded text-[#8a7a60] hover:text-dark-gold hover:bg-dark-hover transition-colors"
+            className="p-1 rounded text-skin-muted hover:text-dark-gold hover:bg-dark-hover transition-colors"
           >
             <Pencil size={13} />
           </button>
           <button
             onClick={() => onDelete(msg)}
             title={t('chat.delete')}
-            className="p-1 rounded text-[#8a7a60] hover:text-red-400 hover:bg-red-400/10 transition-colors"
+            className="p-1 rounded text-skin-muted hover:text-red-400 hover:bg-red-400/10 transition-colors"
           >
             <Trash2 size={13} />
           </button>
@@ -197,14 +197,14 @@ function ChatRow({
             className={`px-3 py-1.5 text-sm leading-relaxed break-words whitespace-pre-wrap ${
               isOwn
                 ? `bg-dark-gold/20 text-dark-gold rounded-2xl ${endGroup ? 'rounded-br-md' : ''}`
-                : `bg-dark-hover text-[#d4c4a0] rounded-2xl ${endGroup ? 'rounded-bl-md' : ''}`
+                : `bg-dark-hover text-skin-base rounded-2xl ${endGroup ? 'rounded-bl-md' : ''}`
             }`}
           >
             {/* Reply quote — javob berilgan xabar */}
             {msg.replyToId && (
               <div className="border-l-2 border-dark-gold/50 pl-1.5 mb-1 opacity-80">
                 <span className="text-[10px] font-medium text-dark-gold">{msg.replyToUsername}</span>
-                <p className="text-[10px] text-[#8a7a60] truncate max-w-[200px]">{msg.replyToContent}</p>
+                <p className="text-[10px] text-skin-muted truncate max-w-[200px]">{msg.replyToContent}</p>
               </div>
             )}
             {/* Ulangan rasm */}
@@ -239,7 +239,7 @@ function ChatRow({
                   className={`flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[11px] border transition-colors ${
                     mine
                       ? 'bg-dark-gold/20 border-dark-gold/40 text-dark-gold'
-                      : 'bg-dark-hover border-dark-border text-[#8a7a60] hover:border-dark-gold/30'
+                      : 'bg-dark-hover border-dark-border text-skin-muted hover:border-dark-gold/30'
                   }`}
                 >
                   <span>{r.emoji}</span>
@@ -251,7 +251,7 @@ function ChatRow({
         )}
 
         {endGroup && (
-          <span className="text-[10px] text-[#8a7a60]/70 mt-0.5 mx-1 select-none">{formatTime(msg.createdAt)}</span>
+          <span className="text-[10px] text-skin-muted/70 mt-0.5 mx-1 select-none">{formatTime(msg.createdAt)}</span>
         )}
       </div>
     </motion.div>
@@ -472,7 +472,7 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
               <span className="text-sm font-semibold text-dark-gold">{t('chat.title')}</span>
             </div>
             <div className="flex items-center gap-2.5">
-              <span className="flex items-center gap-1.5 text-[10px] text-[#8a7a60]">
+              <span className="flex items-center gap-1.5 text-[10px] text-skin-muted">
                 <span
                   className={`w-1.5 h-1.5 rounded-full ${connected ? 'bg-green-500' : 'bg-amber-400 animate-pulse'}`}
                 />
@@ -481,7 +481,7 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
               <button
                 onClick={() => setSearchOpen((v) => !v)}
                 className={`p-1 rounded-lg hover:bg-dark-hover transition-colors ${
-                  searchOpen ? 'text-dark-gold' : 'text-[#8a7a60] hover:text-dark-gold'
+                  searchOpen ? 'text-dark-gold' : 'text-skin-muted hover:text-dark-gold'
                 }`}
                 aria-label={t('chat.search')}
               >
@@ -489,7 +489,7 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
               </button>
               <button
                 onClick={onClose}
-                className="p-1 rounded-lg hover:bg-dark-hover transition-colors text-[#8a7a60] hover:text-dark-gold"
+                className="p-1 rounded-lg hover:bg-dark-hover transition-colors text-skin-muted hover:text-dark-gold"
                 aria-label={t('common.back')}
               >
                 <X className="w-4 h-4" />
@@ -500,17 +500,17 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
           {/* ── Qidiruv paneli ── */}
           {searchOpen && (
             <div className="flex items-center gap-2 px-3 py-2 border-b border-dark-border bg-dark-panel/30 shrink-0">
-              <Search className="w-3.5 h-3.5 text-[#8a7a60] shrink-0" />
+              <Search className="w-3.5 h-3.5 text-skin-muted shrink-0" />
               <input
                 autoFocus
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={t('chat.searchPlaceholder')}
-                className="flex-1 bg-transparent text-xs text-[#d4c4a0] placeholder:text-[#8a7a60]/50 focus:outline-none"
+                className="flex-1 bg-transparent text-xs text-skin-base placeholder:text-skin-muted/50 focus:outline-none"
               />
               <button
                 onClick={() => { setSearchOpen(false); setSearchQuery('') }}
-                className="p-0.5 rounded text-[#8a7a60] hover:text-dark-gold transition-colors"
+                className="p-0.5 rounded text-skin-muted hover:text-dark-gold transition-colors"
                 aria-label={t('chat.cancel')}
               >
                 <X className="w-3.5 h-3.5" />
@@ -522,7 +522,7 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
           {announcement?.message && (
             <div className="flex items-start gap-2 px-3 py-2 bg-dark-gold/10 border-b border-dark-gold/20 shrink-0">
               <Megaphone className="w-3.5 h-3.5 text-dark-gold shrink-0 mt-0.5" />
-              <p className="text-[11px] text-[#d4c4a0] leading-snug break-words">{announcement.message}</p>
+              <p className="text-[11px] text-skin-base leading-snug break-words">{announcement.message}</p>
             </div>
           )}
 
@@ -530,7 +530,7 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
           <div ref={scrollRef} onScroll={handleScroll} className="flex-1 overflow-y-auto px-3 py-3 scrollbar-thin">
             {searchResults !== null ? (
               searchResults.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full text-[#8a7a60] text-sm">
+                <div className="flex flex-col items-center justify-center h-full text-skin-muted text-sm">
                   <Search className="w-10 h-10 mb-3 opacity-30" />
                   <p>{t('chat.searchEmpty')}</p>
                 </div>
@@ -541,9 +541,9 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
                       <span className="text-xs font-medium" style={{ color: avatarColor(msg.username) }}>
                         {msg.username}
                       </span>
-                      <span className="text-[9px] text-[#8a7a60]">{formatTime(msg.createdAt)}</span>
+                      <span className="text-[9px] text-skin-muted">{formatTime(msg.createdAt)}</span>
                     </div>
-                    <p className="text-xs text-[#d4c4a0] break-words whitespace-pre-wrap">
+                    <p className="text-xs text-skin-base break-words whitespace-pre-wrap">
                       {renderContent(msg.content)}
                     </p>
                   </div>
@@ -563,7 +563,7 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
             )}
 
             {!loadingHistory && messages.length === 0 && (
-              <div className="flex flex-col items-center justify-center h-full text-[#8a7a60] text-sm">
+              <div className="flex flex-col items-center justify-center h-full text-skin-muted text-sm">
                 <MessageCircle className="w-10 h-10 mb-3 opacity-30" />
                 <p>{t('chat.empty')}</p>
               </div>
@@ -580,7 +580,7 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
                 <div key={msg.id}>
                   {showDate && (
                     <div className="flex justify-center my-3">
-                      <span className="text-[10px] text-[#8a7a60] bg-dark-panel/60 px-3 py-1 rounded-full">
+                      <span className="text-[10px] text-skin-muted bg-dark-panel/60 px-3 py-1 rounded-full">
                         {formatDateSeparator(msg.createdAt, i18n.language)}
                       </span>
                     </div>
@@ -602,7 +602,7 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
 
             {/* "Yozmoqda" indikatori */}
             {othersTyping.length > 0 && (
-              <div className="flex items-center gap-1.5 mt-2 ml-9 text-[11px] text-[#8a7a60] italic">
+              <div className="flex items-center gap-1.5 mt-2 ml-9 text-[11px] text-skin-muted italic">
                 <span className="flex gap-0.5">
                   <span className="w-1 h-1 rounded-full bg-[#8a7a60] animate-bounce" style={{ animationDelay: '0ms' }} />
                   <span className="w-1 h-1 rounded-full bg-[#8a7a60] animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -629,13 +629,13 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
                   <span className="text-[10px] font-medium text-dark-gold">
                     {editing ? t('chat.editing') : t('chat.replyingTo', { name: replyingTo?.username })}
                   </span>
-                  <p className="text-[10px] text-[#8a7a60] truncate">
+                  <p className="text-[10px] text-skin-muted truncate">
                     {editing ? editing.content : replyingTo?.content}
                   </p>
                 </div>
                 <button
                   onClick={cancelContext}
-                  className="p-1 rounded text-[#8a7a60] hover:text-[#d4c4a0] transition-colors shrink-0"
+                  className="p-1 rounded text-skin-muted hover:text-skin-base transition-colors shrink-0"
                   aria-label={t('chat.cancel')}
                 >
                   <X className="w-3.5 h-3.5" />
@@ -651,10 +651,10 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
                   alt={pendingAttachment.filename}
                   className="w-10 h-10 rounded object-cover shrink-0"
                 />
-                <span className="text-[10px] text-[#8a7a60] truncate flex-1">{pendingAttachment.filename}</span>
+                <span className="text-[10px] text-skin-muted truncate flex-1">{pendingAttachment.filename}</span>
                 <button
                   onClick={() => setPendingAttachment(null)}
-                  className="p-1 rounded text-[#8a7a60] hover:text-red-400 transition-colors shrink-0"
+                  className="p-1 rounded text-skin-muted hover:text-red-400 transition-colors shrink-0"
                   aria-label={t('chat.cancel')}
                 >
                   <X className="w-3.5 h-3.5" />
@@ -674,7 +674,7 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
                         onClick={() => insertMention(u)}
                         onMouseEnter={() => setMentionIndex(idx)}
                         className={`w-full flex items-center gap-2 px-2.5 py-1.5 text-left text-xs transition-colors ${
-                          idx === mentionIndex ? 'bg-dark-gold/20 text-dark-gold' : 'text-[#d4c4a0] hover:bg-dark-hover'
+                          idx === mentionIndex ? 'bg-dark-gold/20 text-dark-gold' : 'text-skin-base hover:bg-dark-hover'
                         }`}
                       >
                         <span
@@ -698,7 +698,7 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
                 <button
                   onClick={() => fileRef.current?.click()}
                   disabled={!connected || uploading}
-                  className="p-2 rounded-xl text-[#8a7a60] shrink-0 hover:text-dark-gold hover:bg-dark-hover
+                  className="p-2 rounded-xl text-skin-muted shrink-0 hover:text-dark-gold hover:bg-dark-hover
                              transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                   aria-label={t('chat.attachFile')}
                 >
@@ -714,7 +714,7 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
                   placeholder={t('chat.placeholder')}
                   disabled={!connected}
                   className="flex-1 resize-none bg-dark-bg border border-dark-border rounded-xl px-3 py-2 text-sm
-                             text-[#d4c4a0] placeholder:text-[#8a7a60]/50 leading-relaxed
+                             text-skin-base placeholder:text-skin-muted/50 leading-relaxed
                              focus:outline-none focus:border-dark-gold/40 transition-colors
                              disabled:opacity-50 scrollbar-thin"
                 />
@@ -730,7 +730,7 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
                 </button>
               </div>
             ) : (
-              <div className="flex items-center justify-center gap-2 py-1 text-[#8a7a60] text-sm">
+              <div className="flex items-center justify-center gap-2 py-1 text-skin-muted text-sm">
                 <LogIn className="w-4 h-4" />
                 <span>{t('chat.loginRequired')}</span>
               </div>

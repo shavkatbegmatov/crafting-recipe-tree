@@ -116,13 +116,13 @@ export default function AdminGameVersionsPage() {
       <button
         type="button"
         onClick={goBack}
-        className="text-[#8a7a60] hover:text-[#d4c4a0] text-sm flex items-center gap-1 transition-colors"
+        className="text-skin-muted hover:text-skin-base text-sm flex items-center gap-1 transition-colors"
       >
         <ArrowLeft size={14} /> {t('common.back')}
       </button>
 
       <div className="flex items-center justify-between gap-3 flex-wrap">
-        <h1 className="text-xl font-semibold text-[#d4c4a0] flex items-center gap-2">
+        <h1 className="text-xl font-semibold text-skin-base flex items-center gap-2">
           <TagIcon size={18} className="text-dark-gold" />
           {t('gameVersion.manage')}
         </h1>
@@ -139,40 +139,40 @@ export default function AdminGameVersionsPage() {
 
       {(creating || editingId != null) && (
         <div className="bg-dark-card border border-dark-border rounded-lg p-5 space-y-3">
-          <h2 className="text-sm font-semibold text-[#d4c4a0]">
+          <h2 className="text-sm font-semibold text-skin-base">
             {creating ? t('gameVersion.addNew') : t('gameVersion.update')}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs text-[#8a7a60] mb-1">{t('gameVersion.version')}</label>
+              <label className="block text-xs text-skin-muted mb-1">{t('gameVersion.version')}</label>
               <input
                 value={form.version}
                 onChange={(e) => setForm({ ...form, version: e.target.value })}
                 placeholder="5.7.0"
-                className="w-full bg-dark-bg border border-dark-border rounded px-3 py-2 text-sm text-[#d4c4a0] focus:outline-none focus:border-dark-gold/50 font-mono"
+                className="w-full bg-dark-bg border border-dark-border rounded px-3 py-2 text-sm text-skin-base focus:outline-none focus:border-dark-gold/50 font-mono"
               />
             </div>
             <div>
-              <label className="block text-xs text-[#8a7a60] mb-1">{t('gameVersion.releasedAt')}</label>
+              <label className="block text-xs text-skin-muted mb-1">{t('gameVersion.releasedAt')}</label>
               <input
                 type="datetime-local"
                 value={form.releasedAt}
                 onChange={(e) => setForm({ ...form, releasedAt: e.target.value })}
-                className="w-full bg-dark-bg border border-dark-border rounded px-3 py-2 text-sm text-[#d4c4a0] focus:outline-none focus:border-dark-gold/50"
+                className="w-full bg-dark-bg border border-dark-border rounded px-3 py-2 text-sm text-skin-base focus:outline-none focus:border-dark-gold/50"
               />
             </div>
           </div>
           <div>
-            <label className="block text-xs text-[#8a7a60] mb-1">{t('gameVersion.notes')}</label>
+            <label className="block text-xs text-skin-muted mb-1">{t('gameVersion.notes')}</label>
             <textarea
               value={form.notes}
               onChange={(e) => setForm({ ...form, notes: e.target.value })}
               rows={3}
-              className="w-full bg-dark-bg border border-dark-border rounded px-3 py-2 text-sm text-[#d4c4a0] focus:outline-none focus:border-dark-gold/50 resize-none"
+              className="w-full bg-dark-bg border border-dark-border rounded px-3 py-2 text-sm text-skin-base focus:outline-none focus:border-dark-gold/50 resize-none"
             />
           </div>
           {creating && (
-            <label className="flex items-center gap-2 text-sm text-[#8a7a60] cursor-pointer">
+            <label className="flex items-center gap-2 text-sm text-skin-muted cursor-pointer">
               <input
                 type="checkbox"
                 checked={form.makeCurrent}
@@ -193,7 +193,7 @@ export default function AdminGameVersionsPage() {
             </button>
             <button
               onClick={cancel}
-              className="flex items-center gap-1.5 px-4 py-2 rounded text-sm text-[#8a7a60] border border-dark-border hover:text-[#d4c4a0] hover:border-[#4a4238] transition-colors"
+              className="flex items-center gap-1.5 px-4 py-2 rounded text-sm text-skin-muted border border-dark-border hover:text-skin-base hover:border-[#4a4238] transition-colors"
             >
               <X size={14} />
               {t('edit.cancel')}
@@ -212,10 +212,10 @@ export default function AdminGameVersionsPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-dark-border bg-dark-bg/30">
-                <th className="text-left py-2 px-3 text-[#8a7a60] font-medium">{t('gameVersion.version')}</th>
-                <th className="text-left py-2 px-3 text-[#8a7a60] font-medium">{t('gameVersion.releasedAt')}</th>
-                <th className="text-left py-2 px-3 text-[#8a7a60] font-medium">{t('gameVersion.notes')}</th>
-                <th className="text-right py-2 px-3 text-[#8a7a60] font-medium">{t('admin.actions')}</th>
+                <th className="text-left py-2 px-3 text-skin-muted font-medium">{t('gameVersion.version')}</th>
+                <th className="text-left py-2 px-3 text-skin-muted font-medium">{t('gameVersion.releasedAt')}</th>
+                <th className="text-left py-2 px-3 text-skin-muted font-medium">{t('gameVersion.notes')}</th>
+                <th className="text-right py-2 px-3 text-skin-muted font-medium">{t('admin.actions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -223,7 +223,7 @@ export default function AdminGameVersionsPage() {
                 <tr key={gv.id} className="border-b border-dark-border/50 hover:bg-dark-hover/40 transition-colors">
                   <td className="py-2 px-3">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-[#d4c4a0]">{gv.version}</span>
+                      <span className="font-mono text-skin-base">{gv.version}</span>
                       {gv.isCurrent && (
                         <span className="text-[10px] px-1.5 py-0.5 rounded bg-dark-gold/20 text-dark-gold border border-dark-gold/30">
                           {t('gameVersion.current')}
@@ -231,17 +231,17 @@ export default function AdminGameVersionsPage() {
                       )}
                     </div>
                   </td>
-                  <td className="py-2 px-3 text-xs text-[#8a7a60] font-mono">
+                  <td className="py-2 px-3 text-xs text-skin-muted font-mono">
                     {gv.releasedAt?.replace('T', ' ').slice(0, 16) ?? '—'}
                   </td>
-                  <td className="py-2 px-3 text-xs text-[#8a7a60] truncate max-w-[24rem]">{gv.notes ?? ''}</td>
+                  <td className="py-2 px-3 text-xs text-skin-muted truncate max-w-[24rem]">{gv.notes ?? ''}</td>
                   <td className="py-2 px-3 text-right">
                     <div className="inline-flex items-center gap-1.5">
                       {!gv.isCurrent && (
                         <button
                           onClick={() => handleSetCurrent(gv)}
                           disabled={setCurrentMutation.isPending}
-                          className="text-xs px-2 py-1 rounded border border-dark-border text-[#8a7a60] hover:text-dark-gold hover:border-dark-gold/40 transition-colors flex items-center gap-1"
+                          className="text-xs px-2 py-1 rounded border border-dark-border text-skin-muted hover:text-dark-gold hover:border-dark-gold/40 transition-colors flex items-center gap-1"
                           title={t('gameVersion.setCurrent')}
                         >
                           <Star size={11} />
@@ -250,7 +250,7 @@ export default function AdminGameVersionsPage() {
                       )}
                       <button
                         onClick={() => startEdit(gv)}
-                        className="text-xs px-2 py-1 rounded border border-dark-border text-[#8a7a60] hover:text-dark-gold hover:border-dark-gold/40 transition-colors"
+                        className="text-xs px-2 py-1 rounded border border-dark-border text-skin-muted hover:text-dark-gold hover:border-dark-gold/40 transition-colors"
                         title={t('edit.button')}
                       >
                         <Pencil size={11} />
@@ -270,7 +270,7 @@ export default function AdminGameVersionsPage() {
               ))}
               {versions && versions.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="py-8 text-center text-sm text-[#5a4e3a]">
+                  <td colSpan={4} className="py-8 text-center text-sm text-skin-dark">
                     {t('gameVersion.noHistory')}
                   </td>
                 </tr>

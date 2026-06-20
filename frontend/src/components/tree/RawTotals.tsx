@@ -44,8 +44,8 @@ export default function RawTotals({ itemId, itemName: _itemName, quantity = 1, o
   return (
     <div className="bg-dark-card border border-dark-border rounded-lg p-5">
       <div className="flex items-start justify-between gap-3 mb-4 flex-wrap">
-        <h2 className="text-sm font-semibold text-[#d4c4a0] flex items-center gap-2">
-          <Database size={16} className="text-[#8a7a60]" />
+        <h2 className="text-sm font-semibold text-skin-base flex items-center gap-2">
+          <Database size={16} className="text-skin-muted" />
           {t('rawTotals.title', { count: quantity, itemName: localizedItemName })}
         </h2>
         {onQuantityChange && (
@@ -57,8 +57,8 @@ export default function RawTotals({ itemId, itemName: _itemName, quantity = 1, o
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-dark-border">
-              <th className="text-left py-2 px-3 text-[#8a7a60] font-medium">{t('rawTotals.rawMaterial')}</th>
-              <th className="text-right py-2 px-3 text-[#8a7a60] font-medium">{t('rawTotals.quantity')}</th>
+              <th className="text-left py-2 px-3 text-skin-muted font-medium">{t('rawTotals.rawMaterial')}</th>
+              <th className="text-right py-2 px-3 text-skin-muted font-medium">{t('rawTotals.quantity')}</th>
             </tr>
           </thead>
           <tbody>
@@ -86,7 +86,7 @@ export default function RawTotals({ itemId, itemName: _itemName, quantity = 1, o
                       </Link>
                     </div>
                   </td>
-                  <td className="py-2 px-3 text-right font-mono text-[#8a7a60]">
+                  <td className="py-2 px-3 text-right font-mono text-skin-muted">
                     {formatQty(totalQty)}
                   </td>
                 </tr>
@@ -98,7 +98,7 @@ export default function RawTotals({ itemId, itemName: _itemName, quantity = 1, o
 
       <div className="mt-4 pt-3 border-t border-dark-border flex items-center gap-2 text-sm">
         <Clock size={14} className="text-dark-gold" />
-        <span className="text-[#8a7a60]">{t('rawTotals.totalTime')}</span>
+        <span className="text-skin-muted">{t('rawTotals.totalTime')}</span>
         <span className="font-mono text-dark-gold font-medium">
           {formatTime(totalTimeSeconds)}
         </span>

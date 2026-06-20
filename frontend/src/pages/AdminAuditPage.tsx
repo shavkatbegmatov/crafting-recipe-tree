@@ -67,35 +67,35 @@ export default function AdminAuditPage() {
       <button
         type="button"
         onClick={goBack}
-        className="text-[#8a7a60] hover:text-[#d4c4a0] text-sm flex items-center gap-1 transition-colors"
+        className="text-skin-muted hover:text-skin-base text-sm flex items-center gap-1 transition-colors"
       >
         <ArrowLeft size={14} /> {t('common.back')}
       </button>
 
       <div>
-        <h1 className="text-xl font-semibold text-[#d4c4a0] flex items-center gap-2">
+        <h1 className="text-xl font-semibold text-skin-base flex items-center gap-2">
           <ScrollText size={18} className="text-dark-gold" />
           {t('audit.title')}
         </h1>
-        <p className="text-xs text-[#8a7a60] mt-1">{t('audit.subtitle')}</p>
+        <p className="text-xs text-skin-muted mt-1">{t('audit.subtitle')}</p>
       </div>
 
       {/* Filtrlar */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-3 flex-wrap">
         <div className="relative flex-1 min-w-[180px]">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8a7a60]" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-skin-muted" />
           <input
             value={actorInput}
             onChange={(e) => setActorInput(e.target.value)}
             placeholder={t('audit.actorSearch')}
-            className="w-full bg-dark-bg border border-dark-border rounded pl-9 pr-3 py-2 text-sm text-[#d4c4a0]
-              placeholder:text-[#8a7a60]/50 focus:outline-none focus:border-dark-gold/50"
+            className="w-full bg-dark-bg border border-dark-border rounded pl-9 pr-3 py-2 text-sm text-skin-base
+              placeholder:text-skin-muted/50 focus:outline-none focus:border-dark-gold/50"
           />
         </div>
         <select
           value={action}
           onChange={(e) => { setAction(e.target.value as AuditAction | ''); setPage(0) }}
-          className="bg-dark-bg border border-dark-border rounded px-2.5 py-2 text-sm text-[#d4c4a0]
+          className="bg-dark-bg border border-dark-border rounded px-2.5 py-2 text-sm text-skin-base
             focus:outline-none focus:border-dark-gold/50 cursor-pointer"
         >
           <option value="">{t('audit.allActions')}</option>
@@ -104,7 +104,7 @@ export default function AdminAuditPage() {
         <select
           value={targetType}
           onChange={(e) => { setTargetType(e.target.value as AuditTargetType | ''); setPage(0) }}
-          className="bg-dark-bg border border-dark-border rounded px-2.5 py-2 text-sm text-[#d4c4a0]
+          className="bg-dark-bg border border-dark-border rounded px-2.5 py-2 text-sm text-skin-base
             focus:outline-none focus:border-dark-gold/50 cursor-pointer"
         >
           <option value="">{t('audit.allTargets')}</option>
@@ -119,7 +119,7 @@ export default function AdminAuditPage() {
         <div className={`bg-dark-card border border-dark-border rounded-lg overflow-x-auto transition-opacity ${isFetching ? 'opacity-60' : ''}`}>
           <table className="w-full text-sm min-w-[680px]">
             <thead>
-              <tr className="border-b border-dark-border bg-dark-bg/30 text-[#8a7a60]">
+              <tr className="border-b border-dark-border bg-dark-bg/30 text-skin-muted">
                 <th className="text-left py-2.5 px-3 font-medium whitespace-nowrap">{t('audit.col.time')}</th>
                 <th className="text-left py-2.5 px-3 font-medium">{t('audit.col.actor')}</th>
                 <th className="text-left py-2.5 px-3 font-medium">{t('audit.col.action')}</th>
@@ -130,16 +130,16 @@ export default function AdminAuditPage() {
             <tbody>
               {data?.content.map((log) => (
                 <tr key={log.id} className="border-b border-dark-border/50 hover:bg-dark-hover/40 transition-colors align-top">
-                  <td className="py-2.5 px-3 text-xs text-[#8a7a60] font-mono whitespace-nowrap">
+                  <td className="py-2.5 px-3 text-xs text-skin-muted font-mono whitespace-nowrap">
                     {new Date(log.createdAt).toLocaleString()}
                   </td>
                   <td className="py-2.5 px-3">
                     {log.actorUsername ? (
-                      <span className="inline-flex items-center gap-1.5 text-[#d4c4a0]">
-                        <UserIcon className="w-3 h-3 text-[#8a7a60]" /> {log.actorUsername}
+                      <span className="inline-flex items-center gap-1.5 text-skin-base">
+                        <UserIcon className="w-3 h-3 text-skin-muted" /> {log.actorUsername}
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1.5 text-[#8a7a60]">
+                      <span className="inline-flex items-center gap-1.5 text-skin-muted">
                         <Cpu className="w-3 h-3" /> {t('audit.system')}
                       </span>
                     )}
@@ -149,16 +149,16 @@ export default function AdminAuditPage() {
                       {t(`audit.action.${log.action}`)}
                     </span>
                   </td>
-                  <td className="py-2.5 px-3 text-xs text-[#8a7a60] whitespace-nowrap">
+                  <td className="py-2.5 px-3 text-xs text-skin-muted whitespace-nowrap">
                     {t(`audit.target.${log.targetType}`)}
-                    {log.targetId != null && <span className="text-[#5a4e3a]"> #{log.targetId}</span>}
+                    {log.targetId != null && <span className="text-skin-dark"> #{log.targetId}</span>}
                   </td>
-                  <td className="py-2.5 px-3 text-xs text-[#d4c4a0]">{log.summary || '—'}</td>
+                  <td className="py-2.5 px-3 text-xs text-skin-base">{log.summary || '—'}</td>
                 </tr>
               ))}
               {data && data.content.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="py-10 text-center text-sm text-[#5a4e3a]">{t('audit.empty')}</td>
+                  <td colSpan={5} className="py-10 text-center text-sm text-skin-dark">{t('audit.empty')}</td>
                 </tr>
               )}
             </tbody>
@@ -168,7 +168,7 @@ export default function AdminAuditPage() {
 
       {/* Sahifalash */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between text-xs text-[#8a7a60]">
+        <div className="flex items-center justify-between text-xs text-skin-muted">
           <span>{t('adminUsers.pageInfo', { current: page + 1, total: totalPages })}</span>
           <div className="flex items-center gap-1">
             <button

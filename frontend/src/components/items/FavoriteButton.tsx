@@ -42,7 +42,7 @@ export default function FavoriteButton({ itemId, size = 16, className = '' }: Pr
     >
       <Star
         size={size}
-        className={favorited ? 'fill-dark-gold text-dark-gold' : 'text-[#8a7a60]'}
+        className={favorited ? 'fill-dark-gold text-dark-gold' : 'text-skin-muted'}
       />
     </button>
   )

@@ -22,18 +22,18 @@ export default function SearchBar({ value, onChange }: Props) {
 
   return (
     <div className="relative">
-      <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8a7a60]" />
+      <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-skin-muted" />
       <input
         type="text"
         value={local}
         onChange={(e) => setLocal(e.target.value)}
         placeholder={t('search.placeholder')}
-        className="w-full bg-dark-bg border border-dark-border rounded-lg pl-9 pr-8 py-2 text-sm text-[#d4c4a0] placeholder-[#5a4e3a] focus:outline-none focus:border-dark-gold/50 transition-colors"
+        className="w-full bg-dark-bg border border-dark-border rounded-lg pl-9 pr-8 py-2 text-sm text-skin-base placeholder-[#5a4e3a] focus:outline-none focus:border-dark-gold/50 transition-colors"
       />
       {local && (
         <button
           onClick={() => { setLocal(''); onChange('') }}
-          className="absolute right-2 top-1/2 -translate-y-1/2 text-[#8a7a60] hover:text-[#d4c4a0]"
+          className="absolute right-2 top-1/2 -translate-y-1/2 text-skin-muted hover:text-skin-base"
         >
           <X size={14} />
         </button>

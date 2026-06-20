@@ -114,10 +114,10 @@ export default function RegisterPage() {
         {/* Logo */}
         <div className="flex items-center justify-center gap-2 mb-2">
           <Boxes size={28} className="text-dark-gold" />
-          <span className="font-semibold text-xl text-[#d4c4a0]">Craft Tree</span>
+          <span className="font-semibold text-xl text-skin-base">Craft Tree</span>
         </div>
 
-        <h2 className="text-center text-sm text-[#8a7a60] mb-6">
+        <h2 className="text-center text-sm text-skin-muted mb-6">
           {t('register.title')}
         </h2>
 
@@ -127,7 +127,7 @@ export default function RegisterPage() {
             <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center">
               <Check className="w-6 h-6 text-green-400" />
             </div>
-            <p className="text-sm text-[#d4c4a0]">{t('register.success')}</p>
+            <p className="text-sm text-skin-base">{t('register.success')}</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -143,7 +143,7 @@ export default function RegisterPage() {
 
             {/* Username */}
             <div>
-              <label className="block text-xs text-[#8a7a60] mb-1.5 font-medium">
+              <label className="block text-xs text-skin-muted mb-1.5 font-medium">
                 {t('register.username')} <span className="text-red-400">*</span>
               </label>
               <input
@@ -151,7 +151,7 @@ export default function RegisterPage() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 maxLength={30}
-                className={`w-full bg-dark-bg border rounded-xl px-3 py-2.5 text-sm text-[#d4c4a0]
+                className={`w-full bg-dark-bg border rounded-xl px-3 py-2.5 text-sm text-skin-base
                   focus:outline-none transition-colors
                   ${usernameTooShort || usernameInvalid
                     ? 'border-red-400/50 focus:border-red-400'
@@ -171,9 +171,9 @@ export default function RegisterPage() {
 
             {/* Display name (optional) */}
             <div>
-              <label className="block text-xs text-[#8a7a60] mb-1.5 font-medium">
+              <label className="block text-xs text-skin-muted mb-1.5 font-medium">
                 {t('register.displayName')}
-                <span className="ml-1 text-[#8a7a60]/50 font-normal">{t('register.optional')}</span>
+                <span className="ml-1 text-skin-muted/50 font-normal">{t('register.optional')}</span>
               </label>
               <input
                 type="text"
@@ -181,14 +181,14 @@ export default function RegisterPage() {
                 onChange={(e) => setDisplayName(e.target.value)}
                 maxLength={50}
                 className="w-full bg-dark-bg border border-dark-border rounded-xl px-3 py-2.5 text-sm
-                  text-[#d4c4a0] focus:outline-none focus:border-dark-gold/50 transition-colors"
+                  text-skin-base focus:outline-none focus:border-dark-gold/50 transition-colors"
                 placeholder={t('register.displayNamePlaceholder')}
               />
             </div>
 
             {/* Password */}
             <div>
-              <label className="block text-xs text-[#8a7a60] mb-1.5 font-medium">
+              <label className="block text-xs text-skin-muted mb-1.5 font-medium">
                 {t('register.password')} <span className="text-red-400">*</span>
               </label>
               <div className="relative">
@@ -197,7 +197,7 @@ export default function RegisterPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   maxLength={100}
-                  className={`w-full bg-dark-bg border rounded-xl px-3 py-2.5 pr-10 text-sm text-[#d4c4a0]
+                  className={`w-full bg-dark-bg border rounded-xl px-3 py-2.5 pr-10 text-sm text-skin-base
                     focus:outline-none transition-colors
                     ${passwordTooShort
                       ? 'border-red-400/50 focus:border-red-400'
@@ -209,7 +209,7 @@ export default function RegisterPage() {
                   type="button"
                   tabIndex={-1}
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8a7a60] hover:text-[#d4c4a0] transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-skin-muted hover:text-skin-base transition-colors"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -221,7 +221,7 @@ export default function RegisterPage() {
 
             {/* Confirm Password */}
             <div>
-              <label className="block text-xs text-[#8a7a60] mb-1.5 font-medium">
+              <label className="block text-xs text-skin-muted mb-1.5 font-medium">
                 {t('register.confirmPassword')} <span className="text-red-400">*</span>
               </label>
               <div className="relative">
@@ -230,7 +230,7 @@ export default function RegisterPage() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   maxLength={100}
-                  className={`w-full bg-dark-bg border rounded-xl px-3 py-2.5 text-sm text-[#d4c4a0]
+                  className={`w-full bg-dark-bg border rounded-xl px-3 py-2.5 text-sm text-skin-base
                     focus:outline-none transition-colors
                     ${confirmPassword && !passwordsMatch
                       ? 'border-red-400/50 focus:border-red-400'
@@ -249,9 +249,9 @@ export default function RegisterPage() {
 
             {/* Referral Code */}
             <div>
-              <label className="block text-xs text-[#8a7a60] mb-1.5 font-medium">
+              <label className="block text-xs text-skin-muted mb-1.5 font-medium">
                 {t('register.referralCode')}
-                <span className="ml-1 text-[#8a7a60]/50 font-normal">{t('register.optional')}</span>
+                <span className="ml-1 text-skin-muted/50 font-normal">{t('register.optional')}</span>
               </label>
               <input
                 type="text"
@@ -259,7 +259,7 @@ export default function RegisterPage() {
                 onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
                 maxLength={12}
                 className="w-full bg-dark-bg border border-dark-border rounded-xl px-3 py-2.5 text-sm
-                  text-[#d4c4a0] tracking-wider font-mono uppercase
+                  text-skin-base tracking-wider font-mono uppercase
                   focus:outline-none focus:border-dark-gold/50 transition-colors"
                 placeholder="ABCD1234"
               />
@@ -294,7 +294,7 @@ export default function RegisterPage() {
             <div className="text-center pt-1">
               <Link
                 to="/login"
-                className="inline-flex items-center gap-1 text-xs text-[#8a7a60] hover:text-dark-gold transition-colors"
+                className="inline-flex items-center gap-1 text-xs text-skin-muted hover:text-dark-gold transition-colors"
               >
                 <ArrowLeft className="w-3 h-3" />
                 {t('register.hasAccount')}

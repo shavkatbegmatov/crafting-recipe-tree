@@ -72,7 +72,7 @@ export default function NotificationBell() {
       <button
         onClick={() => setOpen((o) => !o)}
         aria-label={t('notification.title')}
-        className="relative p-1.5 rounded-lg text-[#8a7a60] hover:text-dark-gold hover:bg-dark-hover/60 transition-colors"
+        className="relative p-1.5 rounded-lg text-skin-muted hover:text-dark-gold hover:bg-dark-hover/60 transition-colors"
       >
         <Bell size={18} />
         {unreadCount > 0 && (
@@ -94,11 +94,11 @@ export default function NotificationBell() {
               rounded-xl shadow-2xl shadow-black/50 z-[60] overflow-hidden"
           >
             <div className="flex items-center justify-between px-4 py-2.5 border-b border-dark-border">
-              <span className="text-sm font-semibold text-[#d4c4a0]">{t('notification.title')}</span>
+              <span className="text-sm font-semibold text-skin-base">{t('notification.title')}</span>
               {unreadCount > 0 && (
                 <button
                   onClick={() => markAll.mutate()}
-                  className="flex items-center gap-1 text-[10px] text-[#8a7a60] hover:text-dark-gold transition-colors"
+                  className="flex items-center gap-1 text-[10px] text-skin-muted hover:text-dark-gold transition-colors"
                 >
                   <Check className="w-3 h-3" />
                   {t('notification.markAllRead')}
@@ -108,10 +108,10 @@ export default function NotificationBell() {
 
             <div className="max-h-80 overflow-y-auto">
               {items.length === 0 ? (
-                <div className="py-8 text-center text-xs text-[#5a4e3a]">{t('notification.empty')}</div>
+                <div className="py-8 text-center text-xs text-skin-dark">{t('notification.empty')}</div>
               ) : (
                 items.map((n) => {
-                  const cfg = ICONS[n.type] ?? { Icon: Bell, cls: 'text-[#8a7a60]' }
+                  const cfg = ICONS[n.type] ?? { Icon: Bell, cls: 'text-skin-muted' }
                   return (
                     <button
                       key={n.id}
@@ -121,10 +121,10 @@ export default function NotificationBell() {
                     >
                       <cfg.Icon className={`w-4 h-4 shrink-0 mt-0.5 ${cfg.cls}`} />
                       <div className="min-w-0 flex-1">
-                        <p className="text-xs text-[#d4c4a0] leading-snug">
+                        <p className="text-xs text-skin-base leading-snug">
                           {t(`notification.type.${n.type}`, { actor: n.actorUsername ?? '' })}
                         </p>
-                        <p className="text-[10px] text-[#8a7a60] mt-0.5">
+                        <p className="text-[10px] text-skin-muted mt-0.5">
                           {new Date(n.createdAt).toLocaleString()}
                         </p>
                       </div>

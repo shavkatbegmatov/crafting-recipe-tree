@@ -41,8 +41,8 @@ export default function Sidebar({ isOpen, onClose }: Props) {
       >
         <div className="p-3 border-b border-dark-border">
           <div className="flex items-center justify-between mb-3 lg:hidden">
-            <span className="text-sm font-medium text-[#d4c4a0]">{t('sidebar.elements')}</span>
-            <button onClick={onClose} className="text-[#8a7a60] hover:text-[#d4c4a0]">
+            <span className="text-sm font-medium text-skin-base">{t('sidebar.elements')}</span>
+            <button onClick={onClose} className="text-skin-muted hover:text-skin-base">
               <X size={18} />
             </button>
           </div>
@@ -53,7 +53,7 @@ export default function Sidebar({ isOpen, onClose }: Props) {
               className={`text-xs px-2.5 py-1 rounded-md transition-colors border ${
                 filter === ''
                   ? 'bg-dark-gold/20 text-dark-gold border-dark-gold/40'
-                  : 'bg-dark-bg text-[#8a7a60] hover:text-[#d4c4a0] border-dark-border hover:border-[#4a4238]'
+                  : 'bg-dark-bg text-skin-muted hover:text-skin-base border-dark-border hover:border-[#4a4238]'
               }`}
             >
               {t('sidebar.all')}
@@ -65,7 +65,7 @@ export default function Sidebar({ isOpen, onClose }: Props) {
                 className={`text-xs px-2.5 py-1 rounded-md transition-colors border ${
                   filter === cat.code
                     ? 'bg-dark-gold/20 text-dark-gold border-dark-gold/40'
-                    : 'bg-dark-bg text-[#8a7a60] hover:text-[#d4c4a0] border-dark-border hover:border-[#4a4238]'
+                    : 'bg-dark-bg text-skin-muted hover:text-skin-base border-dark-border hover:border-[#4a4238]'
                 }`}
               >
                 {getField(cat, 'name')}
@@ -75,7 +75,7 @@ export default function Sidebar({ isOpen, onClose }: Props) {
         </div>
         <div className="flex-1 overflow-y-auto p-2">
           {isLoading ? (
-            <div className="text-center text-[#8a7a60] text-xs py-4">{t('sidebar.loading')}</div>
+            <div className="text-center text-skin-muted text-xs py-4">{t('sidebar.loading')}</div>
           ) : (
             <div className="space-y-0.5">
               {filteredItems?.map((item) => {
@@ -90,8 +90,8 @@ export default function Sidebar({ isOpen, onClose }: Props) {
                     onClick={() => { navigate(`/items/${item.id}`); onClose() }}
                     className={`w-full text-left px-2.5 py-1.5 rounded-md text-sm flex items-center gap-2.5 transition-colors ${
                       isActive
-                        ? 'bg-dark-hover text-[#d4c4a0] border-l-2 border-dark-gold'
-                        : 'text-[#8a7a60] hover:text-[#d4c4a0] hover:bg-dark-bg'
+                        ? 'bg-dark-hover text-skin-base border-l-2 border-dark-gold'
+                        : 'text-skin-muted hover:text-skin-base hover:bg-dark-bg'
                     }`}
                   >
                     <ItemImageIcon

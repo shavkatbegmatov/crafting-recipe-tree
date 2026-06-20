@@ -47,7 +47,7 @@ export default function RecipeTree({ itemId, quantity = 1, onQuantityChange }: P
 
   if (isLoading) {
     return (
-      <div className="flex items-center gap-2 py-8 justify-center text-[#8a7a60]">
+      <div className="flex items-center gap-2 py-8 justify-center text-skin-muted">
         <Spinner />
         <span className="text-sm">{t('tree.loading')}</span>
       </div>
@@ -65,8 +65,8 @@ export default function RecipeTree({ itemId, quantity = 1, onQuantityChange }: P
   return (
     <div className="bg-dark-card border border-dark-border rounded-lg p-5">
       <div className="mb-4">
-        <h2 className="text-sm font-semibold text-[#d4c4a0] flex items-center gap-2 mb-3">
-          <GitBranch size={16} className="text-[#8a7a60]" />
+        <h2 className="text-sm font-semibold text-skin-base flex items-center gap-2 mb-3">
+          <GitBranch size={16} className="text-skin-muted" />
           {t('tree.title')}
         </h2>
 
@@ -76,7 +76,7 @@ export default function RecipeTree({ itemId, quantity = 1, onQuantityChange }: P
               <QuantityInput value={quantity} onChange={onQuantityChange} />
             )}
             <div className="flex items-center gap-1.5 text-xs">
-              <span className="text-[#8a7a60]">{t('tree.openDepth')}:</span>
+              <span className="text-skin-muted">{t('tree.openDepth')}:</span>
               <div className="flex items-center gap-0.5">
                 {DEPTH_OPTIONS.map((opt) => {
                   const active = opt === defaultOpenDepth
@@ -91,8 +91,8 @@ export default function RecipeTree({ itemId, quantity = 1, onQuantityChange }: P
                       title={title}
                       className={`min-w-6 h-7 px-1 rounded border font-mono transition-colors ${
                         active
-                          ? 'bg-[#3a3a3f] border-[#8a7a60] text-[#d4c4a0]'
-                          : 'bg-transparent border-dark-border text-[#8a7a60] hover:bg-dark-hover hover:text-[#d4c4a0]'
+                          ? 'bg-[#3a3a3f] border-[#8a7a60] text-skin-base'
+                          : 'bg-transparent border-dark-border text-skin-muted hover:bg-dark-hover hover:text-skin-base'
                       }`}
                     >
                       {label}
@@ -106,7 +106,7 @@ export default function RecipeTree({ itemId, quantity = 1, onQuantityChange }: P
       </div>
 
       {isRaw ? (
-        <p className="text-sm text-[#8a7a60]">{t('tree.rawNoRecipe')}</p>
+        <p className="text-sm text-skin-muted">{t('tree.rawNoRecipe')}</p>
       ) : (
         <div className="font-mono text-sm">
           <TreeNode

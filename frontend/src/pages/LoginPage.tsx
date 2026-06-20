@@ -211,7 +211,7 @@ export default function LoginPage() {
                 </div>
 
                 <div className="max-w-2xl">
-                  <p className="text-xs uppercase tracking-[0.34em] text-[#8a7a60]">
+                  <p className="text-xs uppercase tracking-[0.34em] text-skin-muted">
                     {t('app.subtitle')}
                   </p>
                   <h2 className="mt-4 text-3xl font-semibold leading-tight text-[#f3e0b5] sm:text-5xl">
@@ -300,7 +300,7 @@ export default function LoginPage() {
                       <h3 className="text-2xl font-semibold tracking-tight text-[#f3e0b5]">
                         {t('login.title')}
                       </h3>
-                      <p className="mt-2 max-w-sm text-sm leading-6 text-[#8a7a60]">
+                      <p className="mt-2 max-w-sm text-sm leading-6 text-skin-muted">
                         {t('login.cardDescription')}
                       </p>
                     </div>
@@ -318,7 +318,7 @@ export default function LoginPage() {
                     initial="hidden"
                     animate="visible"
                   >
-                    <label className="mb-2 block text-xs font-medium uppercase tracking-[0.24em] text-[#8a7a60]">
+                    <label className="mb-2 block text-xs font-medium uppercase tracking-[0.24em] text-skin-muted">
                       {t('login.username')}
                     </label>
                     <div className={getFieldShellClass('username')}>
@@ -328,7 +328,7 @@ export default function LoginPage() {
                           className={
                             focusedField === 'username'
                               ? 'text-dark-gold'
-                              : 'text-[#8a7a60]/55'
+                              : 'text-skin-muted/55'
                           }
                         />
                       </div>
@@ -341,7 +341,7 @@ export default function LoginPage() {
                         }}
                         onFocus={() => setFocusedField('username')}
                         onBlur={() => setFocusedField(null)}
-                        className="w-full bg-transparent px-3 py-3.5 text-sm text-[#f0dfb8] placeholder:text-[#8a7a60]/40 focus:outline-none"
+                        className="w-full bg-transparent px-3 py-3.5 text-sm text-[#f0dfb8] placeholder:text-skin-muted/40 focus:outline-none"
                         placeholder={t('login.username')}
                         autoFocus
                         autoComplete="username"
@@ -357,7 +357,7 @@ export default function LoginPage() {
                     initial="hidden"
                     animate="visible"
                   >
-                    <label className="mb-2 block text-xs font-medium uppercase tracking-[0.24em] text-[#8a7a60]">
+                    <label className="mb-2 block text-xs font-medium uppercase tracking-[0.24em] text-skin-muted">
                       {t('login.password')}
                     </label>
                     <div className={getFieldShellClass('password')}>
@@ -367,7 +367,7 @@ export default function LoginPage() {
                           className={
                             focusedField === 'password'
                               ? 'text-dark-gold'
-                              : 'text-[#8a7a60]/55'
+                              : 'text-skin-muted/55'
                           }
                         />
                       </div>
@@ -380,7 +380,7 @@ export default function LoginPage() {
                         }}
                         onFocus={() => setFocusedField('password')}
                         onBlur={() => setFocusedField(null)}
-                        className="w-full bg-transparent px-3 py-3.5 text-sm text-[#f0dfb8] placeholder:text-[#8a7a60]/40 focus:outline-none"
+                        className="w-full bg-transparent px-3 py-3.5 text-sm text-[#f0dfb8] placeholder:text-skin-muted/40 focus:outline-none"
                         placeholder="••••••••"
                         autoComplete="current-password"
                         required
@@ -388,7 +388,7 @@ export default function LoginPage() {
                       <button
                         type="button"
                         onClick={() => setShowPassword((current) => !current)}
-                        className="mr-2 rounded-xl p-2 text-[#8a7a60]/60 transition-colors hover:text-[#d4c4a0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-gold/30"
+                        className="mr-2 rounded-xl p-2 text-skin-muted/60 transition-colors hover:text-skin-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-gold/30"
                         aria-label={showPassword ? t('login.hidePassword') : t('login.showPassword')}
                       >
                         {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -462,7 +462,7 @@ export default function LoginPage() {
                     <div className="w-full border-t border-dark-border/60" />
                   </div>
                   <div className="relative flex justify-center">
-                    <span className="bg-dark-card/90 px-3 text-[11px] uppercase tracking-[0.26em] text-[#8a7a60]/70">
+                    <span className="bg-dark-card/90 px-3 text-[11px] uppercase tracking-[0.26em] text-skin-muted/70">
                       {t('login.or')}
                     </span>
                   </div>
@@ -475,14 +475,14 @@ export default function LoginPage() {
                   animate="visible"
                   className="space-y-3"
                 >
-                  <p className="text-center text-sm text-[#8a7a60]">{t('login.noAccount')}</p>
+                  <p className="text-center text-sm text-skin-muted">{t('login.noAccount')}</p>
                   <Link
                     to="/register"
-                    className="flex w-full items-center justify-center gap-2 rounded-2xl border border-dark-border/80 bg-black/10 px-4 py-3 text-sm font-medium text-[#d4c4a0] transition-all duration-200 hover:border-dark-gold/35 hover:bg-dark-hover hover:text-[#f0dfb8]"
+                    className="flex w-full items-center justify-center gap-2 rounded-2xl border border-dark-border/80 bg-black/10 px-4 py-3 text-sm font-medium text-skin-base transition-all duration-200 hover:border-dark-gold/35 hover:bg-dark-hover hover:text-[#f0dfb8]"
                   >
                     <UserPlus size={16} className="text-dark-gold" />
                     <span>{t('login.signUp')}</span>
-                    <ArrowRight size={15} className="text-[#8a7a60]" />
+                    <ArrowRight size={15} className="text-skin-muted" />
                   </Link>
                 </motion.div>
               </div>

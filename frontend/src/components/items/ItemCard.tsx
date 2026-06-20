@@ -49,13 +49,13 @@ export default function ItemCard({ item }: Props) {
       )}
       <div className="p-3">
         <div className="flex items-start justify-between gap-2 mb-1.5">
-          <h3 className="text-sm font-medium text-[#d4c4a0] group-hover:text-[#e8d8b0] transition-colors truncate">
+          <h3 className="text-sm font-medium text-skin-base group-hover:text-[#e8d8b0] transition-colors truncate">
             {getField(item, 'name')}
           </h3>
           <CategoryBadge code={item.categoryCode} />
         </div>
         {item.craftTimeSeconds > 0 && (
-          <div className="flex items-center gap-1 text-xs text-[#8a7a60]">
+          <div className="flex items-center gap-1 text-xs text-skin-muted">
             <Clock size={12} />
             <span className="font-mono">{formatTime(item.craftTimeSeconds)}</span>
           </div>

@@ -32,10 +32,10 @@ export default function ToastContainer() {
             className={`flex items-start gap-2.5 bg-dark-card border rounded-lg shadow-2xl shadow-black/50 px-3.5 py-2.5 ${ACCENT[t.type]}`}
           >
             <Icon size={16} className="shrink-0 mt-0.5" />
-            <span className="flex-1 text-xs text-[#d4c4a0] leading-snug">{t.message}</span>
+            <span className="flex-1 text-xs text-skin-base leading-snug">{t.message}</span>
             <button
               onClick={() => dismiss(t.id)}
-              className="shrink-0 text-[#8a7a60] hover:text-[#d4c4a0] transition-colors"
+              className="shrink-0 text-skin-muted hover:text-skin-base transition-colors"
               aria-label="close"
             >
               <X size={13} />

@@ -98,11 +98,11 @@ export default function AdminCategoriesPage() {
             type="button"
             onClick={goBack}
             aria-label={t('common.back')}
-            className="text-[#8a7a60] hover:text-[#d4c4a0] transition-colors"
+            className="text-skin-muted hover:text-skin-base transition-colors"
           >
             <ArrowLeft size={18} />
           </button>
-          <h1 className="text-xl font-semibold text-[#d4c4a0]">{t('admin.categories')}</h1>
+          <h1 className="text-xl font-semibold text-skin-base">{t('admin.categories')}</h1>
         </div>
         {!isEditing && (
           <button
@@ -118,28 +118,28 @@ export default function AdminCategoriesPage() {
       {/* Edit/Create form */}
       {isEditing && (
         <div className="bg-dark-card border border-dark-border rounded-lg p-5 space-y-4">
-          <h3 className="text-sm font-medium text-[#d4c4a0]">
+          <h3 className="text-sm font-medium text-skin-base">
             {creating ? t('admin.addCategory') : t('edit.button')}
           </h3>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs text-[#8a7a60] mb-1">{t('admin.code')}</label>
+              <label className="block text-xs text-skin-muted mb-1">{t('admin.code')}</label>
               <input
                 value={form.code || ''}
                 onChange={(e) => updateField('code', e.target.value.toUpperCase())}
                 disabled={!creating}
-                className="w-full bg-dark-bg border border-dark-border rounded px-3 py-2 text-sm text-[#d4c4a0] focus:outline-none focus:border-dark-gold/50 disabled:opacity-50"
+                className="w-full bg-dark-bg border border-dark-border rounded px-3 py-2 text-sm text-skin-base focus:outline-none focus:border-dark-gold/50 disabled:opacity-50"
                 placeholder="RAW"
               />
             </div>
             <div>
-              <label className="block text-xs text-[#8a7a60] mb-1">{t('admin.sortOrder')}</label>
+              <label className="block text-xs text-skin-muted mb-1">{t('admin.sortOrder')}</label>
               <input
                 type="number"
                 value={form.sortOrder || 0}
                 onChange={(e) => updateField('sortOrder', parseInt(e.target.value) || 0)}
-                className="w-full bg-dark-bg border border-dark-border rounded px-3 py-2 text-sm text-[#d4c4a0] focus:outline-none focus:border-dark-gold/50"
+                className="w-full bg-dark-bg border border-dark-border rounded px-3 py-2 text-sm text-skin-base focus:outline-none focus:border-dark-gold/50"
               />
             </div>
           </div>
@@ -152,11 +152,11 @@ export default function AdminCategoriesPage() {
               { key: 'nameUzCyr', label: t('edit.nameUzCyr') },
             ].map(({ key, label }) => (
               <div key={key}>
-                <label className="block text-xs text-[#8a7a60] mb-1">{label}</label>
+                <label className="block text-xs text-skin-muted mb-1">{label}</label>
                 <input
                   value={(form as any)[key] || ''}
                   onChange={(e) => updateField(key, e.target.value)}
-                  className="w-full bg-dark-bg border border-dark-border rounded px-3 py-2 text-sm text-[#d4c4a0] focus:outline-none focus:border-dark-gold/50"
+                  className="w-full bg-dark-bg border border-dark-border rounded px-3 py-2 text-sm text-skin-base focus:outline-none focus:border-dark-gold/50"
                 />
               </div>
             ))}
@@ -164,7 +164,7 @@ export default function AdminCategoriesPage() {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs text-[#8a7a60] mb-1">{t('admin.color')}</label>
+              <label className="block text-xs text-skin-muted mb-1">{t('admin.color')}</label>
               <div className="flex items-center gap-2">
                 <input
                   type="color"
@@ -175,13 +175,13 @@ export default function AdminCategoriesPage() {
                 <input
                   value={form.color || ''}
                   onChange={(e) => updateField('color', e.target.value)}
-                  className="flex-1 bg-dark-bg border border-dark-border rounded px-3 py-2 text-sm text-[#d4c4a0] font-mono focus:outline-none focus:border-dark-gold/50"
+                  className="flex-1 bg-dark-bg border border-dark-border rounded px-3 py-2 text-sm text-skin-base font-mono focus:outline-none focus:border-dark-gold/50"
                   placeholder="#8a7a60"
                 />
               </div>
             </div>
             <div>
-              <label className="block text-xs text-[#8a7a60] mb-1">{t('admin.icon')}</label>
+              <label className="block text-xs text-skin-muted mb-1">{t('admin.icon')}</label>
               <div className="flex flex-wrap gap-1">
                 {AVAILABLE_ICONS.map((ic) => (
                   <button
@@ -190,7 +190,7 @@ export default function AdminCategoriesPage() {
                     className={`px-2 py-1 text-xs rounded border transition-colors ${
                       form.icon === ic
                         ? 'bg-dark-gold/20 text-dark-gold border-dark-gold/40'
-                        : 'bg-dark-bg text-[#8a7a60] border-dark-border hover:text-[#d4c4a0]'
+                        : 'bg-dark-bg text-skin-muted border-dark-border hover:text-skin-base'
                     }`}
                   >
                     {ic}
@@ -211,7 +211,7 @@ export default function AdminCategoriesPage() {
             </button>
             <button
               onClick={cancel}
-              className="flex items-center gap-1.5 px-4 py-2 rounded text-sm text-[#8a7a60] border border-dark-border hover:text-[#d4c4a0] transition-colors"
+              className="flex items-center gap-1.5 px-4 py-2 rounded text-sm text-skin-muted border border-dark-border hover:text-skin-base transition-colors"
             >
               <X size={14} /> {t('edit.cancel')}
             </button>
@@ -222,11 +222,11 @@ export default function AdminCategoriesPage() {
       {/* Categories list */}
       <div className="bg-dark-card border border-dark-border rounded-lg overflow-hidden">
         {isLoading ? (
-          <div className="p-8 text-center text-[#8a7a60]">{t('sidebar.loading')}</div>
+          <div className="p-8 text-center text-skin-muted">{t('sidebar.loading')}</div>
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-dark-border text-[#8a7a60]">
+              <tr className="border-b border-dark-border text-skin-muted">
                 <th className="text-left py-3 px-4">#</th>
                 <th className="text-left py-3 px-4">{t('admin.code')}</th>
                 <th className="text-left py-3 px-4">{t('admin.name')}</th>
@@ -237,29 +237,29 @@ export default function AdminCategoriesPage() {
             <tbody>
               {categories?.map((cat) => (
                 <tr key={cat.id} className="border-b border-dark-border/50 hover:bg-dark-hover transition-colors">
-                  <td className="py-3 px-4 text-[#8a7a60] font-mono">{cat.sortOrder}</td>
-                  <td className="py-3 px-4 font-mono text-[#d4c4a0]">{cat.code}</td>
-                  <td className="py-3 px-4 text-[#d4c4a0]">{getField(cat, 'name')}</td>
+                  <td className="py-3 px-4 text-skin-muted font-mono">{cat.sortOrder}</td>
+                  <td className="py-3 px-4 font-mono text-skin-base">{cat.code}</td>
+                  <td className="py-3 px-4 text-skin-base">{getField(cat, 'name')}</td>
                   <td className="py-3 px-4">
                     <div className="flex items-center gap-2">
                       <span
                         className="w-4 h-4 rounded"
                         style={{ backgroundColor: cat.color }}
                       />
-                      <span className="font-mono text-[#8a7a60] text-xs">{cat.color}</span>
+                      <span className="font-mono text-skin-muted text-xs">{cat.color}</span>
                     </div>
                   </td>
                   <td className="py-3 px-4 text-right">
                     <div className="flex items-center justify-end gap-1">
                       <button
                         onClick={() => startEdit(cat)}
-                        className="p-1.5 rounded text-[#8a7a60] hover:text-dark-gold hover:bg-dark-bg transition-colors"
+                        className="p-1.5 rounded text-skin-muted hover:text-dark-gold hover:bg-dark-bg transition-colors"
                       >
                         <Pencil size={14} />
                       </button>
                       <button
                         onClick={() => handleDelete(cat.id)}
-                        className="p-1.5 rounded text-[#8a7a60] hover:text-red-400 hover:bg-dark-bg transition-colors"
+                        className="p-1.5 rounded text-skin-muted hover:text-red-400 hover:bg-dark-bg transition-colors"
                       >
                         <Trash2 size={14} />
                       </button>

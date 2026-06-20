@@ -46,7 +46,7 @@ function UserAvatar({ name, isAdmin }: { name: string; isAdmin: boolean }) {
   return (
     <div
       className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0
-        ${isAdmin ? 'bg-dark-gold/25 text-dark-gold ring-1 ring-dark-gold/40' : 'bg-dark-hover text-[#d4c4a0] ring-1 ring-dark-border'}`}
+        ${isAdmin ? 'bg-dark-gold/25 text-dark-gold ring-1 ring-dark-gold/40' : 'bg-dark-hover text-skin-base ring-1 ring-dark-border'}`}
     >
       {initials}
     </div>
@@ -221,11 +221,11 @@ export default function UserDropdown() {
           }`}
       >
         <UserAvatar name={displayName} isAdmin={isAdmin} />
-        <span className="hidden sm:inline text-xs text-[#d4c4a0] max-w-[100px] truncate">
+        <span className="hidden sm:inline text-xs text-skin-base max-w-[100px] truncate">
           {displayName}
         </span>
         <ChevronDown
-          className={`w-3 h-3 text-[#8a7a60] transition-transform ${open ? 'rotate-180' : ''}`}
+          className={`w-3 h-3 text-skin-muted transition-transform ${open ? 'rotate-180' : ''}`}
         />
       </button>
 
@@ -249,7 +249,7 @@ export default function UserDropdown() {
                   <UserAvatar name={displayName} isAdmin={isAdmin} />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-sm font-semibold text-[#d4c4a0] truncate">
+                      <span className="text-sm font-semibold text-skin-base truncate">
                         {displayName}
                       </span>
                       {isAdmin && (
@@ -259,9 +259,9 @@ export default function UserDropdown() {
                         </span>
                       )}
                     </div>
-                    <p className="text-[11px] text-[#8a7a60]">@{user.username}</p>
+                    <p className="text-[11px] text-skin-muted">@{user.username}</p>
                     {memberSince && (
-                      <p className="flex items-center gap-1 text-[10px] text-[#8a7a60]/70 mt-1">
+                      <p className="flex items-center gap-1 text-[10px] text-skin-muted/70 mt-1">
                         <Calendar className="w-2.5 h-2.5" />
                         {t('profile.memberSince', { date: memberSince })}
                       </p>
@@ -269,7 +269,7 @@ export default function UserDropdown() {
                   </div>
                   <button
                     onClick={startEdit}
-                    className="p-1.5 rounded-lg text-[#8a7a60] hover:text-dark-gold hover:bg-dark-hover transition-colors"
+                    className="p-1.5 rounded-lg text-skin-muted hover:text-dark-gold hover:bg-dark-hover transition-colors"
                     title={t('profile.editProfile')}
                   >
                     <Pencil className="w-3.5 h-3.5" />
@@ -285,7 +285,7 @@ export default function UserDropdown() {
                     </span>
                     <button
                       onClick={resetEdit}
-                      className="p-1 rounded text-[#8a7a60] hover:text-[#d4c4a0] transition-colors"
+                      className="p-1 rounded text-skin-muted hover:text-skin-base transition-colors"
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -293,7 +293,7 @@ export default function UserDropdown() {
 
                   {/* Display name */}
                   <div>
-                    <label className="block text-[10px] text-[#8a7a60] mb-1">
+                    <label className="block text-[10px] text-skin-muted mb-1">
                       {t('profile.displayName')}
                     </label>
                     <input
@@ -304,7 +304,7 @@ export default function UserDropdown() {
                       maxLength={50}
                       placeholder={user.username}
                       className="w-full bg-dark-bg border border-dark-border rounded-lg px-2.5 py-1.5
-                        text-xs text-[#d4c4a0] placeholder:text-[#8a7a60]/40
+                        text-xs text-skin-base placeholder:text-skin-muted/40
                         focus:outline-none focus:border-dark-gold/40 transition-colors"
                       autoFocus
                     />
@@ -314,7 +314,7 @@ export default function UserDropdown() {
                   {!changingPassword ? (
                     <button
                       onClick={() => setChangingPassword(true)}
-                      className="flex items-center gap-1 text-[10px] text-[#8a7a60] hover:text-dark-gold transition-colors"
+                      className="flex items-center gap-1 text-[10px] text-skin-muted hover:text-dark-gold transition-colors"
                     >
                       <Lock className="w-2.5 h-2.5" />
                       {t('profile.changePassword')}
@@ -322,7 +322,7 @@ export default function UserDropdown() {
                   ) : (
                     <div className="space-y-2 pt-0.5">
                       <div>
-                        <label className="block text-[10px] text-[#8a7a60] mb-1">
+                        <label className="block text-[10px] text-skin-muted mb-1">
                           {t('profile.currentPassword')}
                         </label>
                         <input
@@ -331,12 +331,12 @@ export default function UserDropdown() {
                           onChange={(e) => setCurrentPassword(e.target.value)}
                           onKeyDown={handleKeyDown}
                           className="w-full bg-dark-bg border border-dark-border rounded-lg px-2.5 py-1.5
-                            text-xs text-[#d4c4a0]
+                            text-xs text-skin-base
                             focus:outline-none focus:border-dark-gold/40 transition-colors"
                         />
                       </div>
                       <div>
-                        <label className="block text-[10px] text-[#8a7a60] mb-1">
+                        <label className="block text-[10px] text-skin-muted mb-1">
                           {t('profile.newPassword')}
                         </label>
                         <input
@@ -345,7 +345,7 @@ export default function UserDropdown() {
                           onChange={(e) => setNewPassword(e.target.value)}
                           onKeyDown={handleKeyDown}
                           className="w-full bg-dark-bg border border-dark-border rounded-lg px-2.5 py-1.5
-                            text-xs text-[#d4c4a0]
+                            text-xs text-skin-base
                             focus:outline-none focus:border-dark-gold/40 transition-colors"
                         />
                       </div>
@@ -380,7 +380,7 @@ export default function UserDropdown() {
             {/* ── Referral section ── */}
             <div className="px-4 py-2.5">
               <div className="flex items-center justify-between mb-2">
-                <span className="flex items-center gap-1 text-[10px] font-medium text-[#8a7a60] uppercase tracking-wider">
+                <span className="flex items-center gap-1 text-[10px] font-medium text-skin-muted uppercase tracking-wider">
                   <Link2 className="w-3 h-3" />
                   {t('profile.referral')}
                 </span>
@@ -398,7 +398,7 @@ export default function UserDropdown() {
                 className="w-full flex items-center gap-2 bg-dark-bg border border-dark-border rounded-lg px-3 py-2
                   hover:border-dark-gold/30 transition-colors group"
               >
-                <code className="flex-1 text-[11px] text-[#d4c4a0] font-mono truncate text-left">
+                <code className="flex-1 text-[11px] text-skin-base font-mono truncate text-left">
                   {user.referralCode}
                 </code>
                 {copied ? (
@@ -407,7 +407,7 @@ export default function UserDropdown() {
                     {t('profile.copied')}
                   </span>
                 ) : (
-                  <span className="flex items-center gap-1 text-[10px] text-[#8a7a60] group-hover:text-dark-gold shrink-0 transition-colors">
+                  <span className="flex items-center gap-1 text-[10px] text-skin-muted group-hover:text-dark-gold shrink-0 transition-colors">
                     <Copy className="w-3 h-3" />
                     {t('profile.copyLink')}
                   </span>
@@ -419,7 +419,7 @@ export default function UserDropdown() {
 
             {/* ── Layout width ── */}
             <div className="px-4 py-2.5">
-              <span className="flex items-center gap-1 text-[10px] font-medium text-[#8a7a60] uppercase tracking-wider mb-2">
+              <span className="flex items-center gap-1 text-[10px] font-medium text-skin-muted uppercase tracking-wider mb-2">
                 <LayoutGrid className="w-3 h-3" />
                 {t('settings.layoutWidth')}
               </span>
@@ -429,7 +429,7 @@ export default function UserDropdown() {
                   className={`flex-1 flex items-center justify-center gap-1.5 text-[11px] py-1.5 rounded-lg border transition-colors ${
                     layoutWidth === 'CENTERED'
                       ? 'bg-dark-gold/20 text-dark-gold border-dark-gold/40'
-                      : 'bg-dark-bg text-[#8a7a60] border-dark-border hover:text-[#d4c4a0]'
+                      : 'bg-dark-bg text-skin-muted border-dark-border hover:text-skin-base'
                   }`}
                 >
                   <AlignCenter className="w-3 h-3" />
@@ -440,7 +440,7 @@ export default function UserDropdown() {
                   className={`flex-1 flex items-center justify-center gap-1.5 text-[11px] py-1.5 rounded-lg border transition-colors ${
                     layoutWidth === 'FULL'
                       ? 'bg-dark-gold/20 text-dark-gold border-dark-gold/40'
-                      : 'bg-dark-bg text-[#8a7a60] border-dark-border hover:text-[#d4c4a0]'
+                      : 'bg-dark-bg text-skin-muted border-dark-border hover:text-skin-base'
                   }`}
                 >
                   <StretchHorizontal className="w-3 h-3" />
@@ -461,7 +461,7 @@ export default function UserDropdown() {
                   <Link
                     to="/admin/stats"
                     onClick={() => setOpen(false)}
-                    className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-[#d4c4a0]
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-skin-base
                       hover:bg-dark-hover transition-colors"
                   >
                     <BarChart3 className="w-3.5 h-3.5 text-dark-gold" />
@@ -470,7 +470,7 @@ export default function UserDropdown() {
                   <Link
                     to="/admin/users"
                     onClick={() => setOpen(false)}
-                    className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-[#d4c4a0]
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-skin-base
                       hover:bg-dark-hover transition-colors"
                   >
                     <Users className="w-3.5 h-3.5 text-dark-gold" />
@@ -480,7 +480,7 @@ export default function UserDropdown() {
                     <Link
                       to="/admin/access-requests"
                       onClick={() => setOpen(false)}
-                      className="flex items-center justify-between gap-2.5 px-3 py-2 rounded-lg text-xs text-[#d4c4a0]
+                      className="flex items-center justify-between gap-2.5 px-3 py-2 rounded-lg text-xs text-skin-base
                         hover:bg-dark-hover transition-colors"
                     >
                       <span className="flex items-center gap-2.5">
@@ -498,7 +498,7 @@ export default function UserDropdown() {
                     <Link
                       to="/admin/chat"
                       onClick={() => setOpen(false)}
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-[#d4c4a0]
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-skin-base
                         hover:bg-dark-hover transition-colors"
                     >
                       <MessageCircle className="w-3.5 h-3.5 text-dark-gold" />
@@ -508,7 +508,7 @@ export default function UserDropdown() {
                   <Link
                     to="/admin/categories"
                     onClick={() => setOpen(false)}
-                    className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-[#d4c4a0]
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-skin-base
                       hover:bg-dark-hover transition-colors"
                   >
                     <Shield className="w-3.5 h-3.5 text-dark-gold" />
@@ -517,7 +517,7 @@ export default function UserDropdown() {
                   <Link
                     to="/admin/portage"
                     onClick={() => setOpen(false)}
-                    className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-[#d4c4a0]
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-skin-base
                       hover:bg-dark-hover transition-colors"
                   >
                     <Package className="w-3.5 h-3.5 text-dark-gold" />
@@ -526,7 +526,7 @@ export default function UserDropdown() {
                   <Link
                     to="/admin/game-versions"
                     onClick={() => setOpen(false)}
-                    className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-[#d4c4a0]
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-skin-base
                       hover:bg-dark-hover transition-colors"
                   >
                     <TagIcon className="w-3.5 h-3.5 text-dark-gold" />
@@ -535,7 +535,7 @@ export default function UserDropdown() {
                   <Link
                     to="/admin/audit"
                     onClick={() => setOpen(false)}
-                    className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-[#d4c4a0]
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-skin-base
                       hover:bg-dark-hover transition-colors"
                   >
                     <ScrollText className="w-3.5 h-3.5 text-dark-gold" />

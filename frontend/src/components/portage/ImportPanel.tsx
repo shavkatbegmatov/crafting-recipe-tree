@@ -93,8 +93,8 @@ export default function ImportPanel() {
     <div className="grid grid-cols-1 xl:grid-cols-[1fr_360px] gap-4">
       <div className="space-y-4">
         <div className="bg-dark-card border border-dark-border rounded-xl p-5">
-          <h3 className="text-base font-semibold text-[#d4c4a0]">{t('portage.import.fileTitle')}</h3>
-          <p className="text-xs text-[#8a7a60] mt-0.5">{t('portage.import.fileHint')}</p>
+          <h3 className="text-base font-semibold text-skin-base">{t('portage.import.fileTitle')}</h3>
+          <p className="text-xs text-skin-muted mt-0.5">{t('portage.import.fileHint')}</p>
 
           {!file ? (
             <label
@@ -103,9 +103,9 @@ export default function ImportPanel() {
               className="mt-4 flex flex-col items-center justify-center gap-2 py-10 rounded-xl border-2 border-dashed border-dark-border
                 bg-dark-bg/40 cursor-pointer hover:border-dark-gold/40 hover:bg-dark-hover/30 transition-colors"
             >
-              <Upload size={28} className="text-[#8a7a60]" />
-              <span className="text-sm text-[#d4c4a0]">{t('portage.import.dropOrClick')}</span>
-              <span className="text-[11px] text-[#8a7a60]">.craftpkg / .zip</span>
+              <Upload size={28} className="text-skin-muted" />
+              <span className="text-sm text-skin-base">{t('portage.import.dropOrClick')}</span>
+              <span className="text-[11px] text-skin-muted">.craftpkg / .zip</span>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -118,12 +118,12 @@ export default function ImportPanel() {
             <div className="mt-4 flex items-center gap-3 p-3 rounded-lg border border-dark-border bg-dark-bg">
               <FileArchive size={22} className="text-dark-gold" />
               <div className="flex-1 min-w-0">
-                <p className="text-sm text-[#d4c4a0] truncate">{file.name}</p>
-                <p className="text-[11px] text-[#8a7a60]">{(file.size / 1024).toFixed(1)} KB</p>
+                <p className="text-sm text-skin-base truncate">{file.name}</p>
+                <p className="text-[11px] text-skin-muted">{(file.size / 1024).toFixed(1)} KB</p>
               </div>
               <button
                 onClick={reset}
-                className="text-[#8a7a60] hover:text-red-400 transition-colors"
+                className="text-skin-muted hover:text-red-400 transition-colors"
                 title={t('portage.import.removeFile')}
               >
                 <X size={16} />
@@ -133,7 +133,7 @@ export default function ImportPanel() {
         </div>
 
         <div className="bg-dark-card border border-dark-border rounded-xl p-5 space-y-4">
-          <h3 className="text-base font-semibold text-[#d4c4a0]">{t('portage.import.optionsTitle')}</h3>
+          <h3 className="text-base font-semibold text-skin-base">{t('portage.import.optionsTitle')}</h3>
 
           <div className="space-y-2">
             {CONFLICT_OPTIONS.map((opt) => (
@@ -152,10 +152,10 @@ export default function ImportPanel() {
                   onChange={() => setConflictMode(opt.value)}
                 />
                 <div className="min-w-0 flex-1">
-                  <p className={`text-sm font-medium ${conflictMode === opt.value ? 'text-dark-gold' : 'text-[#d4c4a0]'}`}>
+                  <p className={`text-sm font-medium ${conflictMode === opt.value ? 'text-dark-gold' : 'text-skin-base'}`}>
                     {t(opt.titleKey)}
                   </p>
-                  <p className="text-[11px] text-[#8a7a60] mt-0.5 leading-relaxed">{t(opt.descKey)}</p>
+                  <p className="text-[11px] text-skin-muted mt-0.5 leading-relaxed">{t(opt.descKey)}</p>
                 </div>
               </label>
             ))}
@@ -241,14 +241,14 @@ export default function ImportPanel() {
       </div>
 
       <aside className="bg-dark-card border border-dark-border rounded-xl p-5 flex flex-col gap-3 h-fit xl:sticky xl:top-2">
-        <h3 className="text-base font-semibold text-[#d4c4a0]">{t('portage.import.actionsTitle')}</h3>
-        <p className="text-xs text-[#8a7a60]">{t('portage.import.actionsHint')}</p>
+        <h3 className="text-base font-semibold text-skin-base">{t('portage.import.actionsTitle')}</h3>
+        <p className="text-xs text-skin-muted">{t('portage.import.actionsHint')}</p>
 
         <button
           onClick={runDryRun}
           disabled={!file || busy}
           className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg
-            bg-dark-bg text-[#d4c4a0] border border-dark-border font-medium text-sm
+            bg-dark-bg text-skin-base border border-dark-border font-medium text-sm
             hover:border-dark-gold/40 hover:text-dark-gold transition-colors
             disabled:opacity-40 disabled:cursor-not-allowed"
         >
@@ -269,7 +269,7 @@ export default function ImportPanel() {
         </button>
 
         {!preview && file && !busy && (
-          <p className="text-[11px] text-[#8a7a60] italic">{t('portage.import.dryRunFirst')}</p>
+          <p className="text-[11px] text-skin-muted italic">{t('portage.import.dryRunFirst')}</p>
         )}
       </aside>
     </div>
@@ -292,11 +292,11 @@ function CheckRow({
         disabled={disabled}
       />
       <div className="min-w-0 flex-1">
-        <p className="text-sm text-[#d4c4a0] flex items-center gap-1.5">
-          <span className="text-[#8a7a60]">{icon}</span>
+        <p className="text-sm text-skin-base flex items-center gap-1.5">
+          <span className="text-skin-muted">{icon}</span>
           {label}
         </p>
-        {hint && <p className="text-[11px] text-[#8a7a60] mt-0.5">{hint}</p>}
+        {hint && <p className="text-[11px] text-skin-muted mt-0.5">{hint}</p>}
       </div>
     </label>
   )
@@ -306,16 +306,16 @@ function DetailGroup({ title, rows }: { title: string; rows: ImportReport['itemR
   if (!rows.length) return null
   return (
     <details className="bg-dark-card border border-dark-border rounded-xl">
-      <summary className="cursor-pointer px-4 py-3 text-xs font-semibold text-[#d4c4a0] uppercase tracking-wider flex items-center justify-between">
+      <summary className="cursor-pointer px-4 py-3 text-xs font-semibold text-skin-base uppercase tracking-wider flex items-center justify-between">
         {title}
-        <span className="text-[11px] text-[#8a7a60]">{rows.length}</span>
+        <span className="text-[11px] text-skin-muted">{rows.length}</span>
       </summary>
       <div className="border-t border-dark-border max-h-[260px] overflow-y-auto divide-y divide-dark-border/40">
         {rows.map((r, i) => (
           <div key={i} className="px-4 py-2 flex items-center gap-2.5 text-xs">
             <ActionBadge action={r.action} />
-            <span className="flex-1 truncate text-[#d4c4a0]">{r.identifier}</span>
-            {r.detail && <span className="text-[11px] text-[#8a7a60] truncate max-w-[40%]">{r.detail}</span>}
+            <span className="flex-1 truncate text-skin-base">{r.identifier}</span>
+            {r.detail && <span className="text-[11px] text-skin-muted truncate max-w-[40%]">{r.detail}</span>}
           </div>
         ))}
       </div>

@@ -21,13 +21,13 @@ function StatCard({ icon: Icon, label, value, accent }: Stat) {
   return (
     <div className="bg-dark-card border border-dark-border rounded-lg p-3.5 flex items-center gap-3">
       <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
-        accent ? 'bg-dark-gold/15 text-dark-gold' : 'bg-dark-hover text-[#8a7a60]'
+        accent ? 'bg-dark-gold/15 text-dark-gold' : 'bg-dark-hover text-skin-muted'
       }`}>
         <Icon size={18} />
       </div>
       <div className="min-w-0">
-        <div className="text-lg font-semibold text-[#d4c4a0] leading-tight">{value}</div>
-        <div className="text-[11px] text-[#8a7a60] truncate">{label}</div>
+        <div className="text-lg font-semibold text-skin-base leading-tight">{value}</div>
+        <div className="text-[11px] text-skin-muted truncate">{label}</div>
       </div>
     </div>
   )
@@ -79,7 +79,7 @@ export default function AdminStatsPage() {
 
   const group = (title: string, items: Stat[]) => (
     <div className="space-y-2">
-      <h2 className="text-[11px] font-medium text-[#8a7a60] uppercase tracking-wider">{title}</h2>
+      <h2 className="text-[11px] font-medium text-skin-muted uppercase tracking-wider">{title}</h2>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
         {items.map((s) => <StatCard key={s.label} {...s} />)}
       </div>
@@ -91,17 +91,17 @@ export default function AdminStatsPage() {
       <button
         type="button"
         onClick={goBack}
-        className="text-[#8a7a60] hover:text-[#d4c4a0] text-sm flex items-center gap-1 transition-colors"
+        className="text-skin-muted hover:text-skin-base text-sm flex items-center gap-1 transition-colors"
       >
         <ArrowLeft size={14} /> {t('common.back')}
       </button>
 
       <div>
-        <h1 className="text-xl font-semibold text-[#d4c4a0] flex items-center gap-2">
+        <h1 className="text-xl font-semibold text-skin-base flex items-center gap-2">
           <BarChart3 size={18} className="text-dark-gold" />
           {t('adminStats.title')}
         </h1>
-        <p className="text-xs text-[#8a7a60] mt-1">{t('adminStats.subtitle')}</p>
+        <p className="text-xs text-skin-muted mt-1">{t('adminStats.subtitle')}</p>
       </div>
 
       {group(t('adminStats.groupContent'), content)}
@@ -111,7 +111,7 @@ export default function AdminStatsPage() {
       {/* Kategoriya bo'yicha itemlar — gorizontal bar chart */}
       {stats.itemsByCategory.length > 0 && (
         <div className="space-y-2">
-          <h2 className="text-[11px] font-medium text-[#8a7a60] uppercase tracking-wider">
+          <h2 className="text-[11px] font-medium text-skin-muted uppercase tracking-wider">
             {t('adminStats.byCategory')}
           </h2>
           <div className="bg-dark-card border border-dark-border rounded-lg p-4 space-y-2.5">
@@ -122,13 +122,13 @@ export default function AdminStatsPage() {
               const pct = Math.round((c.count / maxCount) * 100)
               return (
                 <div key={c.code} className="flex items-center gap-3">
-                  <span className="w-28 text-xs text-[#d4c4a0] truncate shrink-0">{name}</span>
+                  <span className="w-28 text-xs text-skin-base truncate shrink-0">{name}</span>
                   <div className="flex-1 h-5 bg-dark-bg rounded overflow-hidden">
                     <div
                       className="h-full rounded transition-all flex items-center justify-end px-2"
                       style={{ width: `${Math.max(pct, 6)}%`, backgroundColor: `${color}40`, borderRight: `2px solid ${color}` }}
                     >
-                      <span className="text-[10px] font-mono text-[#d4c4a0]">{c.count}</span>
+                      <span className="text-[10px] font-mono text-skin-base">{c.count}</span>
                     </div>
                   </div>
                 </div>

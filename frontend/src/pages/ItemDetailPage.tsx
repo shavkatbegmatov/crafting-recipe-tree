@@ -129,7 +129,7 @@ export default function ItemDetailPage() {
       <button
         type="button"
         onClick={goBack}
-        className="text-[#8a7a60] hover:text-[#d4c4a0] text-sm flex items-center gap-1 transition-colors"
+        className="text-skin-muted hover:text-skin-base text-sm flex items-center gap-1 transition-colors"
       >
         <ArrowLeft size={14} /> {t('detail.back')}
       </button>
@@ -156,14 +156,14 @@ export default function ItemDetailPage() {
         <div className="p-5 flex-1 min-w-0">
           {/* Header with edit button */}
           <div className="flex items-start justify-between gap-4 mb-3">
-            <h1 className="text-xl font-semibold text-[#d4c4a0]">{itemName}</h1>
+            <h1 className="text-xl font-semibold text-skin-base">{itemName}</h1>
             <div className="flex items-center gap-2">
               <CategoryBadge code={item.categoryCode} size="md" />
               {isAdmin && !editing && (
                 <>
                   <button
                     onClick={() => downloadExport({ ids: [itemId], withDependencies: true })}
-                    className="flex items-center gap-1 text-xs text-[#8a7a60] hover:text-dark-gold transition-colors border border-dark-border rounded px-2 py-1 hover:border-dark-gold/40"
+                    className="flex items-center gap-1 text-xs text-skin-muted hover:text-dark-gold transition-colors border border-dark-border rounded px-2 py-1 hover:border-dark-gold/40"
                     title={t('portage.export.download')}
                   >
                     <Download size={12} />
@@ -175,7 +175,7 @@ export default function ItemDetailPage() {
                       className={`flex items-center gap-1 text-xs transition-colors border rounded px-2 py-1 ${
                         editingRecipe
                           ? 'bg-dark-gold/15 text-dark-gold border-dark-gold/40'
-                          : 'text-[#8a7a60] hover:text-dark-gold border-dark-border hover:border-dark-gold/40'
+                          : 'text-skin-muted hover:text-dark-gold border-dark-border hover:border-dark-gold/40'
                       }`}
                       title={t('recipeEditor.toggleTitle')}
                     >
@@ -185,7 +185,7 @@ export default function ItemDetailPage() {
                   )}
                   <button
                     onClick={startEdit}
-                    className="flex items-center gap-1 text-xs text-[#8a7a60] hover:text-dark-gold transition-colors border border-dark-border rounded px-2 py-1 hover:border-dark-gold/40"
+                    className="flex items-center gap-1 text-xs text-skin-muted hover:text-dark-gold transition-colors border border-dark-border rounded px-2 py-1 hover:border-dark-gold/40"
                   >
                     <Pencil size={12} />
                     {t('edit.button')}
@@ -200,11 +200,11 @@ export default function ItemDetailPage() {
             <div className="space-y-4 mt-4">
               {/* Category selector */}
               <div>
-                <label className="block text-xs text-[#8a7a60] mb-1">{t('edit.category')}</label>
+                <label className="block text-xs text-skin-muted mb-1">{t('edit.category')}</label>
                 <select
                   value={editData.categoryId}
                   onChange={(e) => updateField('categoryId', e.target.value)}
-                  className="w-full sm:w-64 bg-dark-bg border border-dark-border rounded px-3 py-2 text-sm text-[#d4c4a0] focus:outline-none focus:border-dark-gold/50"
+                  className="w-full sm:w-64 bg-dark-bg border border-dark-border rounded px-3 py-2 text-sm text-skin-base focus:outline-none focus:border-dark-gold/50"
                 >
                   {categories?.map((cat) => (
                     <option key={cat.id} value={cat.id}>
@@ -216,7 +216,7 @@ export default function ItemDetailPage() {
 
               {/* Tags */}
               <div>
-                <label className="block text-xs text-[#8a7a60] mb-2">{t('edit.tags')}</label>
+                <label className="block text-xs text-skin-muted mb-2">{t('edit.tags')}</label>
                 <div className="flex flex-wrap gap-1.5">
                   {allTags?.map((tag) => {
                     const selected = selectedTagIds.includes(tag.id)
@@ -253,11 +253,11 @@ export default function ItemDetailPage() {
                   { key: 'nameUzCyr', label: t('edit.nameUzCyr') },
                 ].map(({ key, label }) => (
                   <div key={key}>
-                    <label className="block text-xs text-[#8a7a60] mb-1">{label}</label>
+                    <label className="block text-xs text-skin-muted mb-1">{label}</label>
                     <input
                       value={editData[key as keyof typeof editData]}
                       onChange={(e) => updateField(key, e.target.value)}
-                      className="w-full bg-dark-bg border border-dark-border rounded px-3 py-2 text-sm text-[#d4c4a0] focus:outline-none focus:border-dark-gold/50"
+                      className="w-full bg-dark-bg border border-dark-border rounded px-3 py-2 text-sm text-skin-base focus:outline-none focus:border-dark-gold/50"
                     />
                   </div>
                 ))}
@@ -271,12 +271,12 @@ export default function ItemDetailPage() {
                   { key: 'descriptionUzCyr', label: t('edit.descUzCyr') },
                 ].map(({ key, label }) => (
                   <div key={key}>
-                    <label className="block text-xs text-[#8a7a60] mb-1">{label}</label>
+                    <label className="block text-xs text-skin-muted mb-1">{label}</label>
                     <textarea
                       value={editData[key as keyof typeof editData]}
                       onChange={(e) => updateField(key, e.target.value)}
                       rows={2}
-                      className="w-full bg-dark-bg border border-dark-border rounded px-3 py-2 text-sm text-[#d4c4a0] focus:outline-none focus:border-dark-gold/50 resize-none"
+                      className="w-full bg-dark-bg border border-dark-border rounded px-3 py-2 text-sm text-skin-base focus:outline-none focus:border-dark-gold/50 resize-none"
                     />
                   </div>
                 ))}
@@ -293,7 +293,7 @@ export default function ItemDetailPage() {
                 </button>
                 <button
                   onClick={cancelEdit}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded text-sm text-[#8a7a60] border border-dark-border hover:text-[#d4c4a0] hover:border-[#4a4238] transition-colors"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded text-sm text-skin-muted border border-dark-border hover:text-skin-base hover:border-[#4a4238] transition-colors"
                 >
                   <X size={14} />
                   {t('edit.cancel')}
@@ -303,7 +303,7 @@ export default function ItemDetailPage() {
           ) : (
             <>
               {itemDesc && (
-                <p className="text-sm text-[#8a7a60] mb-4">{itemDesc}</p>
+                <p className="text-sm text-skin-muted mb-4">{itemDesc}</p>
               )}
 
               {/* Tags display */}
@@ -328,10 +328,10 @@ export default function ItemDetailPage() {
               <div className="flex items-center justify-between text-sm">
                 <div className="flex items-center gap-4">
                   {item.craftTimeSeconds > 0 && (
-                    <div className="flex items-center gap-1.5 text-[#8a7a60]">
+                    <div className="flex items-center gap-1.5 text-skin-muted">
                       <Clock size={14} />
                       <span>{t('detail.craftTime')}</span>
-                      <span className="font-mono text-[#d4c4a0]">{item.craftTimeSeconds}s</span>
+                      <span className="font-mono text-skin-base">{item.craftTimeSeconds}s</span>
                     </div>
                   )}
                 </div>
@@ -340,7 +340,7 @@ export default function ItemDetailPage() {
 
               {item.ingredients && item.ingredients.length > 0 && (
                 <div className="mt-4 pt-4 border-t border-dark-border">
-                  <h3 className="text-xs font-medium text-[#8a7a60] mb-2 flex items-center gap-1.5">
+                  <h3 className="text-xs font-medium text-skin-muted mb-2 flex items-center gap-1.5">
                     <Beaker size={13} />
                     {t('detail.directIngredients')}
                   </h3>
@@ -358,12 +358,12 @@ export default function ItemDetailPage() {
                           />
                           <Link
                             to={`/items/${ing.ingredientItemId}`}
-                            className="text-[#d4c4a0] hover:text-dark-gold hover:underline transition-colors"
+                            className="text-skin-base hover:text-dark-gold hover:underline transition-colors"
                           >
                             {ingName}
                           </Link>
                           <span className="text-[#3a3228]">—</span>
-                          <span className="font-mono text-[#8a7a60]">
+                          <span className="font-mono text-skin-muted">
                             {ing.quantity % 1 === 0 ? ing.quantity : Number(ing.quantity).toFixed(4)}
                           </span>
                           <CategoryBadge code={ing.ingredientCategory} />
@@ -407,8 +407,8 @@ export default function ItemDetailPage() {
           )}
           {showUsedIn && (
             <div className="bg-dark-card border border-dark-border rounded-lg p-5">
-              <h2 className="text-sm font-semibold text-[#d4c4a0] mb-3 flex items-center gap-2">
-                <ArrowRight size={16} className="text-[#8a7a60]" />
+              <h2 className="text-sm font-semibold text-skin-base mb-3 flex items-center gap-2">
+                <ArrowRight size={16} className="text-skin-muted" />
                 {t('detail.usedIn')}
               </h2>
               <div className="space-y-1.5">
@@ -431,7 +431,7 @@ export default function ItemDetailPage() {
                       >
                         {usedInName}
                       </Link>
-                      <span className="font-mono text-[#8a7a60]">
+                      <span className="font-mono text-skin-muted">
                         x{u.quantity % 1 === 0 ? u.quantity : Number(u.quantity).toFixed(4)}
                       </span>
                       <CategoryBadge code={u.categoryCode} />

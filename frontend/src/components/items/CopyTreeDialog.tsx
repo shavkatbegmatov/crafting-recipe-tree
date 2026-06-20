@@ -92,16 +92,16 @@ export default function CopyTreeDialog({
         {/* Header */}
         <div className="flex items-start justify-between gap-3 p-5 border-b border-dark-border">
           <div className="min-w-0">
-            <h2 className="text-base font-semibold text-[#d4c4a0] truncate">
+            <h2 className="text-base font-semibold text-skin-base truncate">
               {t('recipeEditor.copyTreeTitle', { itemName })}
             </h2>
-            <p className="text-xs text-[#8a7a60] mt-1 font-mono">
-              {fromVersion} <span className="text-[#5a4e3a]">→</span> {toVersion}
+            <p className="text-xs text-skin-muted mt-1 font-mono">
+              {fromVersion} <span className="text-skin-dark">→</span> {toVersion}
             </p>
           </div>
           <button
             onClick={onClose}
-            className="text-[#8a7a60] hover:text-[#d4c4a0] transition-colors shrink-0"
+            className="text-skin-muted hover:text-skin-base transition-colors shrink-0"
             title={t('edit.cancel')}
           >
             <X size={18} />
@@ -112,7 +112,7 @@ export default function CopyTreeDialog({
         <div className="flex-1 overflow-y-auto p-5 space-y-4">
           {/* Policy selector */}
           <fieldset className="space-y-1.5">
-            <legend className="text-xs text-[#8a7a60] mb-1.5">
+            <legend className="text-xs text-skin-muted mb-1.5">
               {t('recipeEditor.copyTreePolicyLabel')}
             </legend>
             {(
@@ -138,8 +138,8 @@ export default function CopyTreeDialog({
                   onChange={() => setPolicy(v)}
                   className="accent-dark-gold"
                 />
-                <Icon size={14} className="text-[#8a7a60]" />
-                <span className="text-sm text-[#d4c4a0]">
+                <Icon size={14} className="text-skin-muted" />
+                <span className="text-sm text-skin-base">
                   {t(`recipeEditor.${label}`)}
                 </span>
               </label>
@@ -148,12 +148,12 @@ export default function CopyTreeDialog({
 
           {/* Preview section */}
           <div className="border-t border-dark-border pt-4">
-            <h3 className="text-xs font-medium text-[#8a7a60] mb-2">
+            <h3 className="text-xs font-medium text-skin-muted mb-2">
               {t('recipeEditor.copyTreePreviewTitle')}
             </h3>
 
             {isPreviewing && (
-              <div className="flex items-center gap-2 text-sm text-[#8a7a60] py-4">
+              <div className="flex items-center gap-2 text-sm text-skin-muted py-4">
                 <Loader2 size={14} className="animate-spin" />
                 {t('recipeEditor.copyTreePreviewLoading')}
               </div>
@@ -221,7 +221,7 @@ export default function CopyTreeDialog({
           <button
             onClick={onClose}
             disabled={isConfirming}
-            className="px-3 py-2 rounded text-sm text-[#8a7a60] hover:text-[#d4c4a0] hover:bg-dark-hover transition-colors disabled:opacity-50"
+            className="px-3 py-2 rounded text-sm text-skin-muted hover:text-skin-base hover:bg-dark-hover transition-colors disabled:opacity-50"
           >
             {t('edit.cancel')}
           </button>
@@ -257,7 +257,7 @@ function PreviewSection({ title, entries, variant, getColor, getName }: PreviewS
   const accent: Record<typeof variant, string> = {
     copied: 'text-emerald-300',
     overwritten: 'text-amber-300',
-    skipped: 'text-[#8a7a60]',
+    skipped: 'text-skin-muted',
     missing: 'text-sky-300',
   }
   return (
@@ -266,7 +266,7 @@ function PreviewSection({ title, entries, variant, getColor, getName }: PreviewS
         <span>{title}</span>
       </summary>
       {entries.length === 0 ? (
-        <p className="text-xs text-[#5a4e3a] mt-1.5 ml-3">—</p>
+        <p className="text-xs text-skin-dark mt-1.5 ml-3">—</p>
       ) : (
         <ul className="mt-1.5 ml-1 space-y-1 max-h-40 overflow-y-auto pr-1">
           {entries.map((e) => {
@@ -286,7 +286,7 @@ function PreviewSection({ title, entries, variant, getColor, getName }: PreviewS
                   {getName(e)}
                 </span>
                 {e.categoryCode && (
-                  <span className="text-[10px] text-[#5a4e3a] ml-auto font-mono shrink-0">
+                  <span className="text-[10px] text-skin-dark ml-auto font-mono shrink-0">
                     {e.categoryCode}
                   </span>
                 )}
