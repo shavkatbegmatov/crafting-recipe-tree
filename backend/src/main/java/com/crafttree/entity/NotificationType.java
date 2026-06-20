@@ -17,6 +17,9 @@ public final class NotificationType {
     /** Foydalanuvchiga: arizasi rad etildi. */
     public static final String ACCESS_REQUEST_REJECTED = "ACCESS_REQUEST_REJECTED";
 
+    /** Foydalanuvchiga: chat xabarida @username bilan eslatildi. */
+    public static final String CHAT_MENTION = "CHAT_MENTION";
+
     private NotificationType() {
         // utility klass — instansiya yaratilmaydi
     }

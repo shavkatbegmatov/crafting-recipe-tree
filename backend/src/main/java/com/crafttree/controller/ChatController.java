@@ -11,11 +11,13 @@ import com.crafttree.dto.PresenceDto;
 import com.crafttree.dto.ReactionGroupDto;
 import com.crafttree.entity.ChatMessage;
 import com.crafttree.entity.ChatMessageReaction;
+import com.crafttree.entity.NotificationType;
 import com.crafttree.entity.User;
 import com.crafttree.repository.ChatMessageReactionRepository;
 import com.crafttree.repository.ChatMessageRepository;
 import com.crafttree.repository.UserRepository;
 import com.crafttree.service.ChatModerationService;
+import com.crafttree.service.NotificationService;
 import com.crafttree.service.ChatPresenceService;
 import com.crafttree.service.RateLimiterService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,8 +38,12 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 @RestController
@@ -52,6 +58,7 @@ public class ChatController {
     private final ChatModerationService moderationService;
     private final RateLimiterService rateLimiter;
     private final ChatMessageReactionRepository reactionRepo;
+    private final NotificationService notificationService;
 
     /** Chat spam himoyasi: bitta foydalanuvchidan daqiqasiga maksimal xabar. */
     private static final int CHAT_BURST = 15;
@@ -148,6 +155,7 @@ public class ChatController {
 
         ChatMessageDto dto = ChatMessageDto.from(entity);
         messaging.convertAndSend("/topic/chat", dto);
+        notifyMentions(content.trim(), fresh);
         log.debug("Chat from {}: {}", fresh.getUsername(), content.trim());
     }
 
@@ -235,5 +243,37 @@ public class ChatController {
             }
         }
         return null;
+    }
+
+    // ── @mention ──
+
+    // @ oldidan harf/raqam/_ bo'lmasligi shart (email manzili @mention bo'lib qolmasligi uchun).
+    private static final Pattern MENTION_PATTERN = Pattern.compile("(?<![A-Za-z0-9_])@([A-Za-z0-9_]{1,50})");
+
+    /** Xabar matnidan @username eslatmalarini ajratib oladi (takrorsiz, tartib saqlangan). */
+    static Set<String> extractMentions(String content) {
+        if (content == null || content.indexOf('@') < 0) {
+            return Set.of();
+        }
+        Set<String> usernames = new LinkedHashSet<>();
+        Matcher m = MENTION_PATTERN.matcher(content);
+        while (m.find()) {
+            usernames.add(m.group(1));
+        }
+        return usernames;
+    }
+
+    /** Eslatilgan (mavjud, faol, o'zi bo'lmagan) foydalanuvchilarga bildirishnoma yuboradi. */
+    private void notifyMentions(String content, User sender) {
+        Set<String> usernames = extractMentions(content);
+        usernames.remove(sender.getUsername());
+        if (usernames.isEmpty()) {
+            return;
+        }
+        for (User u : userRepository.findByUsernameIn(usernames)) {
+            if (u.isEnabled()) {
+                notificationService.notifyUser(u, NotificationType.CHAT_MENTION, sender.getUsername(), "/");
+            }
+        }
     }
 }

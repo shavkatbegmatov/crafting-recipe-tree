@@ -512,7 +512,8 @@
     "type": {
       "ACCESS_REQUEST_SUBMITTED": "{{actor}} админ ҳуқуқини сўради",
       "ACCESS_REQUEST_APPROVED": "Админ ҳуқуқингиз тасдиқланди 🎉",
-      "ACCESS_REQUEST_REJECTED": "Админ ҳуқуқи аризангиз рад этилди"
+      "ACCESS_REQUEST_REJECTED": "Админ ҳуқуқи аризангиз рад этилди",
+      "CHAT_MENTION": "{{actor}} сизни чатда эслатди"
     }
   },
   "chatAdmin": {
