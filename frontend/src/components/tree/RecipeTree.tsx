@@ -64,14 +64,14 @@ export default function RecipeTree({ itemId, quantity = 1, onQuantityChange }: P
 
   return (
     <div className="bg-dark-card border border-dark-border rounded-lg p-5">
-      <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
-        <h2 className="text-sm font-semibold text-[#d4c4a0] flex items-center gap-2">
+      <div className="mb-4">
+        <h2 className="text-sm font-semibold text-[#d4c4a0] flex items-center gap-2 mb-3">
           <GitBranch size={16} className="text-[#8a7a60]" />
           {t('tree.title')}
         </h2>
 
         {!isRaw && (
-          <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
             {onQuantityChange && (
               <QuantityInput value={quantity} onChange={onQuantityChange} />
             )}
