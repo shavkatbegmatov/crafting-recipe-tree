@@ -211,10 +211,22 @@ export default function UserDropdown() {
         />
       </button>
 
-      {/* Dropdown panel */}
+      {/* Dropdown panel + orqa backdrop (dropdownni fonu/kontentdan ajratadi) */}
       <AnimatePresence>
         {open && (
           <motion.div
+            key="user-dropdown-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            onClick={() => setOpen(false)}
+            className="fixed inset-x-0 bottom-0 top-14 z-40 bg-black/40"
+          />
+        )}
+        {open && (
+          <motion.div
+            key="user-dropdown-panel"
             initial={{ opacity: 0, y: -4, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.97 }}
