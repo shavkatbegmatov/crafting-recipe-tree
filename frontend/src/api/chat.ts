@@ -20,9 +20,17 @@ export interface ChatMessageDto {
   reactions?: ReactionGroup[]
 }
 
-export async function fetchChatHistory(limit = 50): Promise<ChatMessageDto[]> {
+export async function fetchChatHistory(limit = 50, before?: number): Promise<ChatMessageDto[]> {
   const { data } = await client.get<ChatMessageDto[]>('/chat/messages', {
-    params: { limit },
+    params: { limit, before },
+  })
+  return data
+}
+
+/** Xabarlarni matn bo'yicha qidirish (eng yangi birinchi). */
+export async function searchChatMessages(q: string, limit = 30): Promise<ChatMessageDto[]> {
+  const { data } = await client.get<ChatMessageDto[]>('/chat/search', {
+    params: { q, limit },
   })
   return data
 }

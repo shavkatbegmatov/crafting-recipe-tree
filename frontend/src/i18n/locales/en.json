@@ -548,6 +548,9 @@
   "chat": {
     "reply": "Reply",
     "react": "React",
+    "search": "Search",
+    "searchPlaceholder": "Search messages...",
+    "searchEmpty": "Nothing found",
     "edit": "Edit",
     "delete": "Delete",
     "edited": "edited",
