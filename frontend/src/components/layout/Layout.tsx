@@ -9,6 +9,7 @@ import WelcomePage from '../../pages/WelcomePage'
 
 export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [chatOpen, setChatOpen] = useState(false)
   const { user, isLoading } = useAuth()
   const location = useLocation()
 
@@ -27,11 +28,15 @@ export default function Layout() {
         <>
           <div className="flex flex-1 overflow-hidden">
             <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-            <main className="flex-1 overflow-y-auto p-6">
+            <main
+              className={`flex-1 overflow-y-auto p-6 transition-[margin] duration-300 ease-out ${
+                chatOpen ? 'lg:mr-96' : ''
+              }`}
+            >
               <Outlet />
             </main>
           </div>
-          <ChatButton />
+          <ChatButton open={chatOpen} onOpen={() => setChatOpen(true)} onClose={() => setChatOpen(false)} />
         </>
       ) : (
         <main className="flex-1 overflow-y-auto xl:overflow-hidden">

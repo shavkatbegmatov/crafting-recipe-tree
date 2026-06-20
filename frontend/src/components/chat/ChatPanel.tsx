@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useLayoutEffect, type KeyboardEvent, type ChangeEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import {
   MessageCircle, X, Send, Shield, Crown, Loader2, LogIn, Megaphone,
   Reply, Pencil, Trash2, CornerUpLeft, SmilePlus, Search, Paperclip,
@@ -450,17 +450,21 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
   const othersTyping = typingUsers.filter((u) => u !== user?.username)
 
   return (
-    <AnimatePresence>
-      {open && (
-        <motion.div
-          initial={{ opacity: 0, y: 20, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 20, scale: 0.95 }}
-          transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-          className="fixed bottom-20 right-4 sm:right-6 w-[340px] sm:w-[380px] h-[520px] max-h-[72vh]
-                     bg-dark-card border border-dark-border rounded-2xl shadow-2xl shadow-black/40
-                     flex flex-col z-50 overflow-hidden"
-        >
+    <>
+      {/* Backdrop — faqat planshet/mobil (lg+'da kontent suriladi, backdrop shart emas) */}
+      <div
+        onClick={onClose}
+        className={`fixed inset-x-0 bottom-0 top-14 z-30 bg-black/50 transition-opacity duration-200 lg:hidden ${
+          open ? 'opacity-100' : 'pointer-events-none opacity-0'
+        }`}
+      />
+      {/* Drawer — o'ngdan to'liq balandlik, header ostidan. Inline transform — ishonchli, reduced-motion-safe */}
+      <div
+        style={{ transform: open ? 'translateX(0)' : 'translateX(100%)' }}
+        className="fixed top-14 right-0 bottom-0 w-full max-w-96 z-40
+                   bg-dark-card border-l border-dark-border shadow-2xl shadow-black/40
+                   flex flex-col overflow-hidden transition-transform duration-300 ease-out"
+      >
           {/* ── Header ── */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-dark-border bg-dark-panel/50">
             <div className="flex items-center gap-2 min-w-0">
@@ -732,8 +736,7 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
               </div>
             )}
           </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+      </div>
+    </>
   )
 }
