@@ -86,6 +86,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     localStorage.setItem('token', res.token)
     setUser(authUser)
+    // Login javobi (LoginResponse) to'liq profilni (displayName, referal kodi, a'zo sanasi,
+    // referallar soni) o'z ichiga olmaydi — register kabi darhol getMe() bilan to'ldiramiz,
+    // shunda profil menyusi sahifani yangilamasdan (F5'siz) to'liq ko'rinadi.
+    try {
+      const full = await getMe()
+      setUser({ ...full, token: res.token })
+    } catch {
+      /* login muvaffaqiyatli; to'liq profil keyingi yuklashda keladi */
+    }
     return { success: true as const }
   }, [])
 
