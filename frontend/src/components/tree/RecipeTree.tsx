@@ -71,13 +71,13 @@ export default function RecipeTree({ itemId, quantity = 1, onQuantityChange }: P
         </h2>
 
         {!isRaw && (
-          <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
+          <div className="flex items-center gap-x-3 gap-y-2 flex-wrap">
             {onQuantityChange && (
               <QuantityInput value={quantity} onChange={onQuantityChange} />
             )}
-            <div className="flex items-center gap-2 text-xs">
+            <div className="flex items-center gap-1.5 text-xs">
               <span className="text-[#8a7a60]">{t('tree.openDepth')}:</span>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-0.5">
                 {DEPTH_OPTIONS.map((opt) => {
                   const active = opt === defaultOpenDepth
                   const label = opt === Infinity ? '∞' : String(opt)
@@ -89,7 +89,7 @@ export default function RecipeTree({ itemId, quantity = 1, onQuantityChange }: P
                       onClick={() => setDefaultOpenDepth(opt)}
                       aria-pressed={active}
                       title={title}
-                      className={`min-w-7 h-7 px-2 rounded border font-mono transition-colors ${
+                      className={`min-w-6 h-7 px-1 rounded border font-mono transition-colors ${
                         active
                           ? 'bg-[#3a3a3f] border-[#8a7a60] text-[#d4c4a0]'
                           : 'bg-transparent border-dark-border text-[#8a7a60] hover:bg-dark-hover hover:text-[#d4c4a0]'
