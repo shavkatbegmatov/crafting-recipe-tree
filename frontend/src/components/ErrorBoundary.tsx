@@ -30,10 +30,10 @@ export default class ErrorBoundary extends Component<Props, State> {
       return (
         <div className="min-h-screen flex items-center justify-center bg-dark-bg px-4">
           <div className="text-center max-w-md">
-            <h1 className="text-lg font-semibold text-[#d4c4a0] mb-2">
+            <h1 className="text-lg font-semibold text-skin-base mb-2">
               {i18n.t('errorBoundary.title')}
             </h1>
-            <p className="text-sm text-[#8a7a60] mb-5">{i18n.t('errorBoundary.message')}</p>
+            <p className="text-sm text-skin-muted mb-5">{i18n.t('errorBoundary.message')}</p>
             <button
               onClick={() => window.location.reload()}
               className="inline-flex items-center gap-1.5 text-sm px-4 py-2 rounded-lg

@@ -150,17 +150,17 @@ export default function RecipeEditor({ itemId, itemName, onClose }: Props) {
     <div className="bg-dark-card border border-dark-border rounded-lg p-5 space-y-4">
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
-          <h2 className="text-sm font-semibold text-[#d4c4a0]">
+          <h2 className="text-sm font-semibold text-skin-base">
             {t('recipeEditor.title', { itemName })}
           </h2>
-          <p className="text-xs text-[#8a7a60] mt-0.5">
+          <p className="text-xs text-skin-muted mt-0.5">
             {t('gameVersion.title')}:{' '}
-            <span className="font-mono text-[#d4c4a0]">{effectiveVersion ?? '—'}</span>
+            <span className="font-mono text-skin-base">{effectiveVersion ?? '—'}</span>
           </p>
         </div>
         <button
           onClick={onClose}
-          className="text-[#8a7a60] hover:text-[#d4c4a0] transition-colors"
+          className="text-skin-muted hover:text-skin-base transition-colors"
           title={t('edit.cancel')}
         >
           <X size={18} />
@@ -170,7 +170,7 @@ export default function RecipeEditor({ itemId, itemName, onClose }: Props) {
       {/* Craft time + notes */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
-          <label className="block text-xs text-[#8a7a60] mb-1">
+          <label className="block text-xs text-skin-muted mb-1">
             {t('detail.craftTime')} (s)
           </label>
           <input
@@ -179,28 +179,28 @@ export default function RecipeEditor({ itemId, itemName, onClose }: Props) {
             step={1}
             value={craftTime}
             onChange={(e) => setCraftTime(e.target.value)}
-            className="w-full bg-dark-bg border border-dark-border rounded px-3 py-2 text-sm text-[#d4c4a0] focus:outline-none focus:border-dark-gold/50 font-mono"
+            className="w-full bg-dark-bg border border-dark-border rounded px-3 py-2 text-sm text-skin-base focus:outline-none focus:border-dark-gold/50 font-mono"
           />
         </div>
         <div>
-          <label className="block text-xs text-[#8a7a60] mb-1">{t('recipeEditor.notes')}</label>
+          <label className="block text-xs text-skin-muted mb-1">{t('recipeEditor.notes')}</label>
           <input
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             placeholder={t('recipeEditor.notesPlaceholder')}
-            className="w-full bg-dark-bg border border-dark-border rounded px-3 py-2 text-sm text-[#d4c4a0] focus:outline-none focus:border-dark-gold/50"
+            className="w-full bg-dark-bg border border-dark-border rounded px-3 py-2 text-sm text-skin-base focus:outline-none focus:border-dark-gold/50"
           />
         </div>
       </div>
 
       {/* Ingredient list */}
       <div>
-        <h3 className="text-xs font-medium text-[#8a7a60] mb-2 flex items-center gap-1.5">
+        <h3 className="text-xs font-medium text-skin-muted mb-2 flex items-center gap-1.5">
           {t('detail.directIngredients')}
         </h3>
 
         {lines.length === 0 && (
-          <p className="text-sm text-[#5a4e3a] py-3">{t('recipeEditor.empty')}</p>
+          <p className="text-sm text-skin-dark py-3">{t('recipeEditor.empty')}</p>
         )}
 
         <div className="space-y-1.5">
@@ -228,11 +228,11 @@ export default function RecipeEditor({ itemId, itemName, onClose }: Props) {
                   step="0.0001"
                   value={line.quantity}
                   onChange={(e) => updateQuantity(line.ingredientItemId, e.target.value)}
-                  className="w-24 bg-dark-bg border border-dark-border rounded px-2 py-1 text-sm text-[#d4c4a0] focus:outline-none focus:border-dark-gold/50 font-mono text-right"
+                  className="w-24 bg-dark-bg border border-dark-border rounded px-2 py-1 text-sm text-skin-base focus:outline-none focus:border-dark-gold/50 font-mono text-right"
                 />
                 <button
                   onClick={() => removeLine(line.ingredientItemId)}
-                  className="text-[#8a7a60] hover:text-red-400 transition-colors"
+                  className="text-skin-muted hover:text-red-400 transition-colors"
                   title={t('edit.cancel')}
                 >
                   <Trash2 size={14} />
@@ -245,14 +245,14 @@ export default function RecipeEditor({ itemId, itemName, onClose }: Props) {
         {/* Add ingredient */}
         <div className="mt-3 relative">
           <div className="flex items-center gap-2 bg-dark-bg border border-dark-border rounded px-2.5 py-1.5">
-            <Search size={14} className="text-[#5a4e3a]" />
+            <Search size={14} className="text-skin-dark" />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={t('recipeEditor.addIngredientPlaceholder')}
-              className="flex-1 bg-transparent text-sm text-[#d4c4a0] focus:outline-none placeholder-[#5a4e3a]"
+              className="flex-1 bg-transparent text-sm text-skin-base focus:outline-none placeholder-[#5a4e3a]"
             />
-            <Plus size={14} className="text-[#5a4e3a]" />
+            <Plus size={14} className="text-skin-dark" />
           </div>
           {filteredCandidates.length > 0 && (
             <div className="absolute z-10 left-0 right-0 top-full mt-1 bg-dark-card border border-dark-border rounded-lg shadow-xl max-h-72 overflow-y-auto">
@@ -281,8 +281,8 @@ export default function RecipeEditor({ itemId, itemName, onClose }: Props) {
 
       {/* Copy from another version */}
       {otherVersionsForCopy.length > 0 && (
-        <details className="text-xs text-[#8a7a60]">
-          <summary className="cursor-pointer hover:text-[#d4c4a0] flex items-center gap-1.5 select-none">
+        <details className="text-xs text-skin-muted">
+          <summary className="cursor-pointer hover:text-skin-base flex items-center gap-1.5 select-none">
             <Copy size={12} />
             {t('recipeEditor.copyFromTitle')}
           </summary>
@@ -292,12 +292,12 @@ export default function RecipeEditor({ itemId, itemName, onClose }: Props) {
                 key={r.id}
                 className="flex items-center gap-1.5 flex-wrap"
               >
-                <span className="text-xs font-mono text-[#8a7a60] min-w-[3.5rem]">
+                <span className="text-xs font-mono text-skin-muted min-w-[3.5rem]">
                   {r.gameVersion}
                 </span>
                 <button
                   onClick={() => handleCopyFrom(r.gameVersion)}
-                  className="flex items-center gap-1 text-xs px-2.5 py-1 rounded border border-dark-border hover:border-dark-gold/40 hover:text-[#d4c4a0] transition-colors"
+                  className="flex items-center gap-1 text-xs px-2.5 py-1 rounded border border-dark-border hover:border-dark-gold/40 hover:text-skin-base transition-colors"
                   disabled={copyMutation.isPending}
                   title={t('recipeEditor.copyOnlyThisRecipe')}
                 >
@@ -306,7 +306,7 @@ export default function RecipeEditor({ itemId, itemName, onClose }: Props) {
                 </button>
                 <button
                   onClick={() => setTreeCopySource(r.gameVersion)}
-                  className="flex items-center gap-1 text-xs px-2.5 py-1 rounded border border-dark-border hover:border-dark-gold/40 hover:text-[#d4c4a0] transition-colors"
+                  className="flex items-center gap-1 text-xs px-2.5 py-1 rounded border border-dark-border hover:border-dark-gold/40 hover:text-skin-base transition-colors"
                   title={t('recipeEditor.copyTreeButtonTitle')}
                 >
                   <GitBranch size={11} />

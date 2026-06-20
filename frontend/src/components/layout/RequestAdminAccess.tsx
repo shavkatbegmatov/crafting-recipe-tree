@@ -70,7 +70,7 @@ export default function RequestAdminAccess() {
   }
 
   const sectionTitle = (
-    <span className="flex items-center gap-1 text-[10px] font-medium text-[#8a7a60] uppercase tracking-wider mb-2">
+    <span className="flex items-center gap-1 text-[10px] font-medium text-skin-muted uppercase tracking-wider mb-2">
       <Shield className="w-3 h-3" />
       {t('accessRequest.title')}
     </span>
@@ -90,14 +90,14 @@ export default function RequestAdminAccess() {
               <Clock className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
               <div className="min-w-0">
                 <p className="text-[11px] text-amber-300 font-medium">{t('accessRequest.pending')}</p>
-                <p className="text-[10px] text-[#8a7a60] mt-0.5">{t('accessRequest.pendingHint')}</p>
+                <p className="text-[10px] text-skin-muted mt-0.5">{t('accessRequest.pendingHint')}</p>
               </div>
             </div>
             <button
               onClick={cancel}
               disabled={cancelMut.isPending}
               className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-[11px]
-                text-[#8a7a60] border border-dark-border hover:text-[#d4c4a0] hover:border-[#4a4238]
+                text-skin-muted border border-dark-border hover:text-skin-base hover:border-[#4a4238]
                 transition-colors disabled:opacity-50"
             >
               {cancelMut.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : <X className="w-3 h-3" />}
@@ -113,7 +113,7 @@ export default function RequestAdminAccess() {
               <Sparkles className="w-3.5 h-3.5 text-green-400 shrink-0 mt-0.5" />
               <div className="min-w-0">
                 <p className="text-[11px] text-green-300 font-medium">{t('accessRequest.approved')}</p>
-                <p className="text-[10px] text-[#8a7a60] mt-0.5">{t('accessRequest.approvedHint')}</p>
+                <p className="text-[10px] text-skin-muted mt-0.5">{t('accessRequest.approvedHint')}</p>
               </div>
             </div>
             <button
@@ -138,7 +138,7 @@ export default function RequestAdminAccess() {
                 <div className="min-w-0">
                   <p className="text-[11px] text-red-300 font-medium">{t('accessRequest.rejected')}</p>
                   {request?.reviewNote && (
-                    <p className="text-[10px] text-[#8a7a60] mt-0.5">
+                    <p className="text-[10px] text-skin-muted mt-0.5">
                       {t('accessRequest.reason')} {request.reviewNote}
                     </p>
                   )}
@@ -158,7 +158,7 @@ export default function RequestAdminAccess() {
               </button>
             ) : (
               <div className="space-y-2">
-                <p className="text-[10px] text-[#8a7a60]">{t('accessRequest.formTitle')}</p>
+                <p className="text-[10px] text-skin-muted">{t('accessRequest.formTitle')}</p>
                 <textarea
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
@@ -166,7 +166,7 @@ export default function RequestAdminAccess() {
                   rows={2}
                   placeholder={t('accessRequest.messagePlaceholder')}
                   className="w-full bg-dark-bg border border-dark-border rounded-lg px-2.5 py-1.5 resize-none
-                    text-xs text-[#d4c4a0] placeholder:text-[#8a7a60]/40
+                    text-xs text-skin-base placeholder:text-skin-muted/40
                     focus:outline-none focus:border-dark-gold/40 transition-colors"
                   autoFocus
                 />
@@ -184,8 +184,8 @@ export default function RequestAdminAccess() {
                   </button>
                   <button
                     onClick={() => { setFormOpen(false); setMessage(''); setError(null) }}
-                    className="px-3 py-1.5 rounded-lg text-[11px] text-[#8a7a60] border border-dark-border
-                      hover:text-[#d4c4a0] transition-colors"
+                    className="px-3 py-1.5 rounded-lg text-[11px] text-skin-muted border border-dark-border
+                      hover:text-skin-base transition-colors"
                   >
                     {t('accessRequest.close')}
                   </button>

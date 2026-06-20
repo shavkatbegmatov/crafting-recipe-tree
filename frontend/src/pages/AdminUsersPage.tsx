@@ -27,7 +27,7 @@ function Avatar({ name, role }: { name: string; role: UserRole }) {
     <div
       className={`w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0
         ${gold ? 'bg-dark-gold/25 text-dark-gold ring-1 ring-dark-gold/40'
-               : 'bg-dark-hover text-[#d4c4a0] ring-1 ring-dark-border'}`}
+               : 'bg-dark-hover text-skin-base ring-1 ring-dark-border'}`}
     >
       {initials}
     </div>
@@ -39,7 +39,7 @@ function RoleBadge({ role, label }: { role: UserRole; label: string }) {
   const cfg = {
     SUPER_ADMIN: { Icon: Crown, cls: 'bg-dark-gold/20 text-dark-gold border-dark-gold/40' },
     ADMIN: { Icon: Shield, cls: 'bg-sky-500/15 text-sky-300 border-sky-500/30' },
-    USER: { Icon: UserIcon, cls: 'bg-dark-hover text-[#8a7a60] border-dark-border' },
+    USER: { Icon: UserIcon, cls: 'bg-dark-hover text-skin-muted border-dark-border' },
   }[role]
   return (
     <span className={`inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full border ${cfg.cls}`}>
@@ -53,11 +53,11 @@ function RoleBadge({ role, label }: { role: UserRole; label: string }) {
 function StatCard({ label, value, Icon, accent }: { label: string; value?: number; Icon: typeof Users; accent?: boolean }) {
   return (
     <div className={`bg-dark-card border rounded-lg p-3 ${accent ? 'border-dark-gold/30' : 'border-dark-border'}`}>
-      <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-[#8a7a60] mb-1">
+      <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-skin-muted mb-1">
         <Icon className={`w-3 h-3 ${accent ? 'text-dark-gold' : ''}`} />
         {label}
       </div>
-      <div className={`text-xl font-semibold ${accent ? 'text-dark-gold' : 'text-[#d4c4a0]'}`}>
+      <div className={`text-xl font-semibold ${accent ? 'text-dark-gold' : 'text-skin-base'}`}>
         {value ?? '—'}
       </div>
     </div>
@@ -157,7 +157,7 @@ export default function AdminUsersPage() {
   const filterBtn = (active: boolean) =>
     `text-xs px-2.5 py-1.5 rounded border transition-colors ${
       active ? 'bg-dark-gold/20 text-dark-gold border-dark-gold/40'
-             : 'bg-dark-bg text-[#8a7a60] border-dark-border hover:text-[#d4c4a0]'
+             : 'bg-dark-bg text-skin-muted border-dark-border hover:text-skin-base'
     }`
 
   const totalPages = data?.totalPages ?? 0
@@ -168,17 +168,17 @@ export default function AdminUsersPage() {
       <button
         type="button"
         onClick={goBack}
-        className="text-[#8a7a60] hover:text-[#d4c4a0] text-sm flex items-center gap-1 transition-colors"
+        className="text-skin-muted hover:text-skin-base text-sm flex items-center gap-1 transition-colors"
       >
         <ArrowLeft size={14} /> {t('common.back')}
       </button>
 
       <div>
-        <h1 className="text-xl font-semibold text-[#d4c4a0] flex items-center gap-2">
+        <h1 className="text-xl font-semibold text-skin-base flex items-center gap-2">
           <Users size={18} className="text-dark-gold" />
           {t('adminUsers.title')}
         </h1>
-        <p className="text-xs text-[#8a7a60] mt-1">{t('adminUsers.subtitle')}</p>
+        <p className="text-xs text-skin-muted mt-1">{t('adminUsers.subtitle')}</p>
       </div>
 
       {/* Statistika */}
@@ -193,13 +193,13 @@ export default function AdminUsersPage() {
       {/* Filtrlar */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-3 flex-wrap">
         <div className="relative flex-1 min-w-[200px]">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8a7a60]" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-skin-muted" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t('adminUsers.search')}
-            className="w-full bg-dark-bg border border-dark-border rounded pl-9 pr-3 py-2 text-sm text-[#d4c4a0]
-              placeholder:text-[#8a7a60]/50 focus:outline-none focus:border-dark-gold/50"
+            className="w-full bg-dark-bg border border-dark-border rounded pl-9 pr-3 py-2 text-sm text-skin-base
+              placeholder:text-skin-muted/50 focus:outline-none focus:border-dark-gold/50"
           />
         </div>
 
@@ -232,7 +232,7 @@ export default function AdminUsersPage() {
         <div className={`bg-dark-card border border-dark-border rounded-lg overflow-x-auto transition-opacity ${isFetching ? 'opacity-60' : ''}`}>
           <table className="w-full text-sm min-w-[640px]">
             <thead>
-              <tr className="border-b border-dark-border bg-dark-bg/30 text-[#8a7a60]">
+              <tr className="border-b border-dark-border bg-dark-bg/30 text-skin-muted">
                 <th className="text-left py-2.5 px-3 font-medium">{t('adminUsers.col.user')}</th>
                 <th className="text-left py-2.5 px-3 font-medium">{t('adminUsers.col.role')}</th>
                 <th className="text-left py-2.5 px-3 font-medium">{t('adminUsers.col.status')}</th>
@@ -250,14 +250,14 @@ export default function AdminUsersPage() {
                       <Avatar name={u.displayName || u.username} role={u.role} />
                       <div className="min-w-0">
                         <div className="flex items-center gap-1.5">
-                          <span className="text-[#d4c4a0] truncate">{u.displayName || u.username}</span>
+                          <span className="text-skin-base truncate">{u.displayName || u.username}</span>
                           {isSelf(u) && (
                             <span className="text-[9px] px-1 py-0.5 rounded bg-dark-gold/15 text-dark-gold border border-dark-gold/25">
                               {t('adminUsers.self')}
                             </span>
                           )}
                         </div>
-                        <div className="text-[11px] text-[#8a7a60]">@{u.username}</div>
+                        <div className="text-[11px] text-skin-muted">@{u.username}</div>
                       </div>
                     </div>
                   </td>
@@ -269,7 +269,7 @@ export default function AdminUsersPage() {
                         value={u.role}
                         disabled={roleMut.isPending}
                         onChange={(e) => changeRole(u, e.target.value as UserRole)}
-                        className="bg-dark-bg border border-dark-border rounded px-2 py-1 text-xs text-[#d4c4a0]
+                        className="bg-dark-bg border border-dark-border rounded px-2 py-1 text-xs text-skin-base
                           focus:outline-none focus:border-dark-gold/50 cursor-pointer"
                       >
                         {ROLES.map((r) => (
@@ -295,14 +295,14 @@ export default function AdminUsersPage() {
                   </td>
 
                   {/* Referral */}
-                  <td className="py-2.5 px-3 text-xs text-[#8a7a60]">
-                    <div className="font-mono text-[#d4c4a0]">{u.referralCode}</div>
+                  <td className="py-2.5 px-3 text-xs text-skin-muted">
+                    <div className="font-mono text-skin-base">{u.referralCode}</div>
                     {u.referralCount > 0 && <div>{t('adminUsers.referralsCount', { count: u.referralCount })}</div>}
                     {u.referredByUsername && <div className="text-[10px]">{t('adminUsers.invitedBy', { name: u.referredByUsername })}</div>}
                   </td>
 
                   {/* Sana */}
-                  <td className="py-2.5 px-3 text-xs text-[#8a7a60] font-mono whitespace-nowrap">
+                  <td className="py-2.5 px-3 text-xs text-skin-muted font-mono whitespace-nowrap">
                     {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '—'}
                   </td>
 
@@ -313,7 +313,7 @@ export default function AdminUsersPage() {
                         onClick={() => toggleStatus(u)}
                         disabled={!canManage(u) || statusMut.isPending}
                         title={u.enabled ? t('adminUsers.action.block') : t('adminUsers.action.unblock')}
-                        className="p-1.5 rounded border border-dark-border text-[#8a7a60] enabled:hover:text-dark-gold
+                        className="p-1.5 rounded border border-dark-border text-skin-muted enabled:hover:text-dark-gold
                           enabled:hover:border-dark-gold/40 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                       >
                         {u.enabled ? <Ban size={13} /> : <CheckCircle2 size={13} />}
@@ -322,7 +322,7 @@ export default function AdminUsersPage() {
                         onClick={() => openReset(u)}
                         disabled={!canManage(u)}
                         title={t('adminUsers.action.resetPassword')}
-                        className="p-1.5 rounded border border-dark-border text-[#8a7a60] enabled:hover:text-dark-gold
+                        className="p-1.5 rounded border border-dark-border text-skin-muted enabled:hover:text-dark-gold
                           enabled:hover:border-dark-gold/40 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                       >
                         <KeyRound size={13} />
@@ -342,7 +342,7 @@ export default function AdminUsersPage() {
               ))}
               {data && data.content.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="py-10 text-center text-sm text-[#5a4e3a]">
+                  <td colSpan={6} className="py-10 text-center text-sm text-skin-dark">
                     {t('adminUsers.empty')}
                   </td>
                 </tr>
@@ -354,7 +354,7 @@ export default function AdminUsersPage() {
 
       {/* Sahifalash */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between text-xs text-[#8a7a60]">
+        <div className="flex items-center justify-between text-xs text-skin-muted">
           <span>{t('adminUsers.pageInfo', { current: page + 1, total: totalPages })}</span>
           <div className="flex items-center gap-1">
             <button
@@ -383,31 +383,31 @@ export default function AdminUsersPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-[#d4c4a0] flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-skin-base flex items-center gap-2">
                 <KeyRound size={15} className="text-dark-gold" />
                 {t('adminUsers.reset.title')}
               </h3>
-              <button onClick={closeReset} className="text-[#8a7a60] hover:text-[#d4c4a0] transition-colors">
+              <button onClick={closeReset} className="text-skin-muted hover:text-skin-base transition-colors">
                 <X size={16} />
               </button>
             </div>
-            <p className="text-xs text-[#8a7a60]">
+            <p className="text-xs text-skin-muted">
               {t('adminUsers.reset.forUser', { name: resetTarget.displayName || resetTarget.username })}
             </p>
 
             {!resultPw ? (
               <>
                 <div>
-                  <label className="block text-xs text-[#8a7a60] mb-1">{t('adminUsers.reset.passwordLabel')}</label>
+                  <label className="block text-xs text-skin-muted mb-1">{t('adminUsers.reset.passwordLabel')}</label>
                   <input
                     type="text"
                     value={resetPwInput}
                     onChange={(e) => setResetPwInput(e.target.value)}
                     placeholder="••••••"
-                    className="w-full bg-dark-bg border border-dark-border rounded px-3 py-2 text-sm text-[#d4c4a0]
+                    className="w-full bg-dark-bg border border-dark-border rounded px-3 py-2 text-sm text-skin-base
                       focus:outline-none focus:border-dark-gold/50 font-mono"
                   />
-                  <p className="text-[10px] text-[#8a7a60]/70 mt-1">{t('adminUsers.reset.passwordHint')}</p>
+                  <p className="text-[10px] text-skin-muted/70 mt-1">{t('adminUsers.reset.passwordHint')}</p>
                 </div>
                 <button
                   onClick={submitReset}
@@ -422,7 +422,7 @@ export default function AdminUsersPage() {
             ) : (
               <>
                 <div>
-                  <label className="block text-xs text-[#8a7a60] mb-1">{t('adminUsers.reset.resultLabel')}</label>
+                  <label className="block text-xs text-skin-muted mb-1">{t('adminUsers.reset.resultLabel')}</label>
                   <button
                     onClick={copyResult}
                     className="w-full flex items-center gap-2 bg-dark-bg border border-dark-border rounded px-3 py-2
@@ -432,14 +432,14 @@ export default function AdminUsersPage() {
                     {copied ? (
                       <span className="flex items-center gap-1 text-[10px] text-green-400"><Check className="w-3 h-3" />{t('adminUsers.reset.copied')}</span>
                     ) : (
-                      <span className="flex items-center gap-1 text-[10px] text-[#8a7a60] group-hover:text-dark-gold"><Copy className="w-3 h-3" />{t('adminUsers.reset.copy')}</span>
+                      <span className="flex items-center gap-1 text-[10px] text-skin-muted group-hover:text-dark-gold"><Copy className="w-3 h-3" />{t('adminUsers.reset.copy')}</span>
                     )}
                   </button>
                   <p className="text-[10px] text-amber-400/80 mt-1.5">{t('adminUsers.reset.resultHint')}</p>
                 </div>
                 <button
                   onClick={closeReset}
-                  className="w-full py-2 rounded text-sm text-[#8a7a60] border border-dark-border hover:text-[#d4c4a0] transition-colors"
+                  className="w-full py-2 rounded text-sm text-skin-muted border border-dark-border hover:text-skin-base transition-colors"
                 >
                   {t('adminUsers.reset.close')}
                 </button>

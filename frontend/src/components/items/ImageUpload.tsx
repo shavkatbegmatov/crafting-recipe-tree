@@ -120,7 +120,7 @@ export default function ImageUpload({ itemId }: Props) {
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-1.5 text-xs text-[#8a7a60] hover:text-dark-gold transition-colors border border-dark-border rounded px-3 py-1.5 hover:border-dark-gold/40"
+        className="flex items-center gap-1.5 text-xs text-skin-muted hover:text-dark-gold transition-colors border border-dark-border rounded px-3 py-1.5 hover:border-dark-gold/40"
       >
         <Upload size={13} />
         {t('upload.button')}
@@ -131,11 +131,11 @@ export default function ImageUpload({ itemId }: Props) {
   return (
     <div className="bg-dark-panel border border-dark-border rounded-lg p-4 space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-medium text-[#d4c4a0] flex items-center gap-2">
+        <h3 className="text-sm font-medium text-skin-base flex items-center gap-2">
           <ImageIcon size={15} />
           {t('upload.title')}
         </h3>
-        <button onClick={handleCancel} className="text-[#8a7a60] hover:text-[#d4c4a0]">
+        <button onClick={handleCancel} className="text-skin-muted hover:text-skin-base">
           <X size={16} />
         </button>
       </div>
@@ -156,11 +156,11 @@ export default function ImageUpload({ itemId }: Props) {
         {preview ? (
           <img src={preview} alt="Preview" className="max-h-40 mx-auto rounded" />
         ) : (
-          <div className="text-[#8a7a60]">
+          <div className="text-skin-muted">
             <Upload size={24} className="mx-auto mb-2" />
             <p className="text-sm">{t('upload.selectFile')}</p>
             <p className="text-xs mt-1">{t('upload.fileHint')}</p>
-            <div className="flex items-center justify-center gap-1.5 mt-2 text-xs text-[#5a4e3a]">
+            <div className="flex items-center justify-center gap-1.5 mt-2 text-xs text-skin-dark">
               <Clipboard size={11} />
               {t('upload.pasteHint')}
             </div>
@@ -177,7 +177,7 @@ export default function ImageUpload({ itemId }: Props) {
 
       {file && (
         <div className="space-y-3">
-          <label className="flex items-center gap-2 text-sm text-[#d4c4a0] cursor-pointer">
+          <label className="flex items-center gap-2 text-sm text-skin-base cursor-pointer">
             <input
               type="checkbox"
               checked={removeBg}
@@ -192,7 +192,7 @@ export default function ImageUpload({ itemId }: Props) {
               <div className="w-full bg-dark-bg rounded-full h-1.5">
                 <div className="bg-dark-gold h-1.5 rounded-full transition-all" style={{ width: `${progress}%` }} />
               </div>
-              <p className="text-xs text-[#8a7a60]">{t('upload.uploading', { progress })}</p>
+              <p className="text-xs text-skin-muted">{t('upload.uploading', { progress })}</p>
             </div>
           )}
 

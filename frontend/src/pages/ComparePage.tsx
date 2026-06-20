@@ -67,29 +67,29 @@ export default function ComparePage() {
       <button
         type="button"
         onClick={goBack}
-        className="text-[#8a7a60] hover:text-[#d4c4a0] text-sm flex items-center gap-1 transition-colors"
+        className="text-skin-muted hover:text-skin-base text-sm flex items-center gap-1 transition-colors"
       >
         <ArrowLeft size={14} /> {t('common.back')}
       </button>
 
       <div>
-        <h1 className="text-xl font-semibold text-[#d4c4a0] flex items-center gap-2">
+        <h1 className="text-xl font-semibold text-skin-base flex items-center gap-2">
           <GitCompare size={18} className="text-dark-gold" />
           {t('compare.title')}
         </h1>
-        <p className="text-xs text-[#8a7a60] mt-1">{t('compare.subtitle')}</p>
+        <p className="text-xs text-skin-muted mt-1">{t('compare.subtitle')}</p>
       </div>
 
       {/* Qidirib qo'shish (limit MAX_COMPARE) */}
       {selected.length < MAX_COMPARE && (
         <div className="relative">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8a7a60]" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-skin-muted" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t('compare.search')}
-            className="w-full bg-dark-bg border border-dark-border rounded pl-9 pr-3 py-2 text-sm text-[#d4c4a0]
-              placeholder:text-[#8a7a60]/50 focus:outline-none focus:border-dark-gold/50"
+            className="w-full bg-dark-bg border border-dark-border rounded pl-9 pr-3 py-2 text-sm text-skin-base
+              placeholder:text-skin-muted/50 focus:outline-none focus:border-dark-gold/50"
           />
           {searchResults.length > 0 && (
             <div className="absolute z-20 mt-1 w-full bg-dark-card border border-dark-border rounded-lg shadow-2xl overflow-hidden">
@@ -100,7 +100,7 @@ export default function ComparePage() {
                   className="w-full flex items-center gap-2.5 px-3 py-2 text-left hover:bg-dark-hover transition-colors"
                 >
                   <ItemImageIcon imageUrl={i.imageUrl} alt={getField(i, 'name')} size={22} fallbackColor={colorOf(i.categoryCode)} />
-                  <span className="flex-1 text-sm text-[#d4c4a0] truncate">{getField(i, 'name')}</span>
+                  <span className="flex-1 text-sm text-skin-base truncate">{getField(i, 'name')}</span>
                   <Plus size={14} className="text-dark-gold" />
                 </button>
               ))}
@@ -110,7 +110,7 @@ export default function ComparePage() {
       )}
 
       {selected.length === 0 ? (
-        <div className="bg-dark-card border border-dark-border rounded-lg py-12 text-center text-sm text-[#5a4e3a]">
+        <div className="bg-dark-card border border-dark-border rounded-lg py-12 text-center text-sm text-skin-dark">
           {t('compare.empty')}
         </div>
       ) : (
@@ -124,12 +124,12 @@ export default function ComparePage() {
                 {/* Sarlavha */}
                 <div className="p-3 border-b border-dark-border flex items-center gap-2.5">
                   <ItemImageIcon imageUrl={item?.imageUrl} alt={item ? getField(item, 'name') : ''} size={32} fallbackColor={colorOf(item?.categoryCode)} />
-                  <span className="flex-1 text-sm font-medium text-[#d4c4a0] truncate">
+                  <span className="flex-1 text-sm font-medium text-skin-base truncate">
                     {item ? getField(item, 'name') : `#${id}`}
                   </span>
                   <button
                     onClick={() => remove(id)}
-                    className="p-1 rounded text-[#8a7a60] hover:text-red-400 hover:bg-red-400/10 transition-colors"
+                    className="p-1 rounded text-skin-muted hover:text-red-400 hover:bg-red-400/10 transition-colors"
                   >
                     <X size={14} />
                   </button>
@@ -138,41 +138,41 @@ export default function ComparePage() {
                 {/* Qatorlar */}
                 <div className="p-3 space-y-3 text-sm flex-1">
                   <div>
-                    <div className="text-[10px] text-[#8a7a60] uppercase tracking-wider mb-1">{t('compare.category')}</div>
+                    <div className="text-[10px] text-skin-muted uppercase tracking-wider mb-1">{t('compare.category')}</div>
                     {item && <CategoryBadge code={item.categoryCode} />}
                   </div>
 
                   <div>
-                    <div className="text-[10px] text-[#8a7a60] uppercase tracking-wider mb-1">{t('compare.craftTime')}</div>
-                    <span className="flex items-center gap-1 text-[#d4c4a0]">
-                      <Clock size={13} className="text-[#8a7a60]" />
+                    <div className="text-[10px] text-skin-muted uppercase tracking-wider mb-1">{t('compare.craftTime')}</div>
+                    <span className="flex items-center gap-1 text-skin-base">
+                      <Clock size={13} className="text-skin-muted" />
                       <span className="font-mono">{item && item.craftTimeSeconds > 0 ? formatTime(item.craftTimeSeconds) : '—'}</span>
                     </span>
                   </div>
 
                   <div>
-                    <div className="text-[10px] text-[#8a7a60] uppercase tracking-wider mb-1">
+                    <div className="text-[10px] text-skin-muted uppercase tracking-wider mb-1">
                       {t('compare.totalTime')}
                     </div>
-                    <span className="font-mono text-[#d4c4a0]">
+                    <span className="font-mono text-skin-base">
                       {res?.isLoading ? <Loader2 size={13} className="animate-spin inline" /> : raw ? formatTime(raw.totalCraftTimeSeconds) : '—'}
                     </span>
                   </div>
 
                   <div>
-                    <div className="text-[10px] text-[#8a7a60] uppercase tracking-wider mb-1.5">
+                    <div className="text-[10px] text-skin-muted uppercase tracking-wider mb-1.5">
                       {t('compare.rawMaterials')}
                     </div>
                     {res?.isLoading ? (
                       <Loader2 size={14} className="animate-spin text-dark-gold" />
                     ) : !raw || raw.rawMaterials.length === 0 ? (
-                      <span className="text-xs text-[#5a4e3a]">{t('compare.noRecipe')}</span>
+                      <span className="text-xs text-skin-dark">{t('compare.noRecipe')}</span>
                     ) : (
                       <div className="space-y-1.5">
                         {raw.rawMaterials.map((m) => (
                           <div key={m.id} className="flex items-center gap-2 text-xs">
                             <ItemImageIcon imageUrl={m.imageUrl} alt={getField(m, 'name')} size={18} fallbackColor={colorOf(m.categoryCode)} />
-                            <span className="flex-1 text-[#d4c4a0] truncate">{getField(m, 'name')}</span>
+                            <span className="flex-1 text-skin-base truncate">{getField(m, 'name')}</span>
                             <span className="font-mono text-dark-gold shrink-0">{fmt(m.totalQuantity)}</span>
                           </div>
                         ))}

@@ -30,8 +30,8 @@ export default function RecipeHistorySection({ itemId }: Props) {
 
   return (
     <div className="bg-dark-card border border-dark-border rounded-lg p-5">
-      <h2 className="text-sm font-semibold text-[#d4c4a0] mb-4 flex items-center gap-2">
-        <History size={16} className="text-[#8a7a60]" />
+      <h2 className="text-sm font-semibold text-skin-base mb-4 flex items-center gap-2">
+        <History size={16} className="text-skin-muted" />
         {t('gameVersion.history')}
       </h2>
 
@@ -50,15 +50,15 @@ export default function RecipeHistorySection({ itemId }: Props) {
                 onClick={() => setOpenIds((prev) => ({ ...prev, [r.id]: !isOpen }))}
                 className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-dark-hover/50 transition-colors text-left"
               >
-                {isOpen ? <ChevronDown size={14} className="text-[#8a7a60]" /> : <ChevronRight size={14} className="text-[#8a7a60]" />}
-                <span className="font-mono text-[#d4c4a0]">{r.gameVersion}</span>
-                <span className="text-xs text-[#5a4e3a]">·</span>
-                <span className="text-xs text-[#8a7a60] flex items-center gap-1">
+                {isOpen ? <ChevronDown size={14} className="text-skin-muted" /> : <ChevronRight size={14} className="text-skin-muted" />}
+                <span className="font-mono text-skin-base">{r.gameVersion}</span>
+                <span className="text-xs text-skin-dark">·</span>
+                <span className="text-xs text-skin-muted flex items-center gap-1">
                   <Clock size={11} />
                   {formatTime(r.craftTimeSeconds)}
                 </span>
                 {r.notes && (
-                  <span className="text-xs text-[#5a4e3a] italic truncate max-w-[18rem]">
+                  <span className="text-xs text-skin-dark italic truncate max-w-[18rem]">
                     {r.notes}
                   </span>
                 )}
@@ -74,7 +74,7 @@ export default function RecipeHistorySection({ itemId }: Props) {
                         e.stopPropagation()
                         setSelectedVersion(r.gameVersion)
                       }}
-                      className="text-[10px] px-1.5 py-0.5 rounded text-[#8a7a60] hover:text-dark-gold hover:bg-dark-gold/10 transition-colors flex items-center gap-1"
+                      className="text-[10px] px-1.5 py-0.5 rounded text-skin-muted hover:text-dark-gold hover:bg-dark-gold/10 transition-colors flex items-center gap-1"
                       title={t('gameVersion.viewThisVersion')}
                     >
                       <Star size={10} />
@@ -87,7 +87,7 @@ export default function RecipeHistorySection({ itemId }: Props) {
               {isOpen && (
                 <div className="px-4 pb-3 pt-1 border-t border-dark-border/50">
                   {r.ingredients.length === 0 ? (
-                    <p className="text-xs text-[#5a4e3a] py-1">{t('gameVersion.noRecipes')}</p>
+                    <p className="text-xs text-skin-dark py-1">{t('gameVersion.noRecipes')}</p>
                   ) : (
                     <div className="space-y-1">
                       {r.ingredients.map((ing) => {
@@ -109,7 +109,7 @@ export default function RecipeHistorySection({ itemId }: Props) {
                               {ingName}
                             </Link>
                             <span className="text-[#3a3228]">—</span>
-                            <span className="font-mono text-[#8a7a60]">
+                            <span className="font-mono text-skin-muted">
                               {ing.quantity % 1 === 0 ? ing.quantity : Number(ing.quantity).toFixed(4)}
                             </span>
                           </div>

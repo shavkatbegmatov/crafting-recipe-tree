@@ -79,7 +79,7 @@ export default function TreeNode({
           </Link>
 
           {displayQuantity !== 1 && (
-            <span className="text-xs font-mono text-[#8a7a60]">
+            <span className="text-xs font-mono text-skin-muted">
               x{displayQuantity % 1 === 0 ? displayQuantity : displayQuantity.toFixed(2)}
             </span>
           )}

@@ -28,7 +28,7 @@ function Avatar({ name, role }: { name: string; role: UserRole }) {
     <div
       className={`w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0
         ${gold ? 'bg-dark-gold/25 text-dark-gold ring-1 ring-dark-gold/40'
-               : 'bg-dark-hover text-[#d4c4a0] ring-1 ring-dark-border'}`}
+               : 'bg-dark-hover text-skin-base ring-1 ring-dark-border'}`}
     >
       {initials}
     </div>
@@ -40,7 +40,7 @@ function RoleChip({ role, label }: { role: UserRole; label: string }) {
   const cfg = {
     SUPER_ADMIN: { Icon: Crown, cls: 'text-dark-gold' },
     ADMIN: { Icon: Shield, cls: 'text-sky-300' },
-    USER: { Icon: UserIcon, cls: 'text-[#8a7a60]' },
+    USER: { Icon: UserIcon, cls: 'text-skin-muted' },
   }[role]
   return (
     <span className={`inline-flex items-center gap-1 text-[10px] ${cfg.cls}`}>
@@ -56,7 +56,7 @@ function StatusBadge({ status, label }: { status: AccessRequestStatus; label: st
     PENDING: { Icon: Clock, cls: 'bg-amber-500/15 text-amber-300 border-amber-500/30' },
     APPROVED: { Icon: CheckCircle2, cls: 'bg-green-500/15 text-green-300 border-green-500/30' },
     REJECTED: { Icon: XCircle, cls: 'bg-red-500/15 text-red-300 border-red-500/30' },
-    CANCELLED: { Icon: MinusCircle, cls: 'bg-dark-hover text-[#8a7a60] border-dark-border' },
+    CANCELLED: { Icon: MinusCircle, cls: 'bg-dark-hover text-skin-muted border-dark-border' },
   }[status]
   return (
     <span className={`inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full border ${cfg.cls}`}>
@@ -119,7 +119,7 @@ export default function AdminAccessRequestsPage() {
   const filterBtn = (active: boolean) =>
     `text-xs px-2.5 py-1.5 rounded border transition-colors ${
       active ? 'bg-dark-gold/20 text-dark-gold border-dark-gold/40'
-             : 'bg-dark-bg text-[#8a7a60] border-dark-border hover:text-[#d4c4a0]'
+             : 'bg-dark-bg text-skin-muted border-dark-border hover:text-skin-base'
     }`
 
   const totalPages = data?.totalPages ?? 0
@@ -130,13 +130,13 @@ export default function AdminAccessRequestsPage() {
       <button
         type="button"
         onClick={goBack}
-        className="text-[#8a7a60] hover:text-[#d4c4a0] text-sm flex items-center gap-1 transition-colors"
+        className="text-skin-muted hover:text-skin-base text-sm flex items-center gap-1 transition-colors"
       >
         <ArrowLeft size={14} /> {t('common.back')}
       </button>
 
       <div>
-        <h1 className="text-xl font-semibold text-[#d4c4a0] flex items-center gap-2">
+        <h1 className="text-xl font-semibold text-skin-base flex items-center gap-2">
           <ShieldQuestion size={18} className="text-dark-gold" />
           {t('accessRequest.adminTitle')}
           {pendingCount != null && pendingCount > 0 && (
@@ -145,7 +145,7 @@ export default function AdminAccessRequestsPage() {
             </span>
           )}
         </h1>
-        <p className="text-xs text-[#8a7a60] mt-1">{t('accessRequest.adminSubtitle')}</p>
+        <p className="text-xs text-skin-muted mt-1">{t('accessRequest.adminSubtitle')}</p>
       </div>
 
       {/* Status filtri */}
@@ -164,7 +164,7 @@ export default function AdminAccessRequestsPage() {
       {isLoading ? (
         <div className="flex justify-center py-12"><Spinner /></div>
       ) : data && data.content.length === 0 ? (
-        <div className="bg-dark-card border border-dark-border rounded-lg py-12 text-center text-sm text-[#5a4e3a]">
+        <div className="bg-dark-card border border-dark-border rounded-lg py-12 text-center text-sm text-skin-dark">
           {t('accessRequest.empty')}
         </div>
       ) : (
@@ -177,24 +177,24 @@ export default function AdminAccessRequestsPage() {
                 <div className="flex-1 min-w-0">
                   {/* Sarlavha qatori */}
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-sm text-[#d4c4a0] truncate">{r.displayName || r.username}</span>
-                    <span className="text-[11px] text-[#8a7a60]">@{r.username}</span>
+                    <span className="text-sm text-skin-base truncate">{r.displayName || r.username}</span>
+                    <span className="text-[11px] text-skin-muted">@{r.username}</span>
                     <RoleChip role={r.currentRole} label={t(`adminUsers.role.${r.currentRole}`)} />
-                    <span className="text-[#5a4e3a] text-[10px]">→</span>
+                    <span className="text-skin-dark text-[10px]">→</span>
                     <RoleChip role={r.requestedRole} label={t(`adminUsers.role.${r.requestedRole}`)} />
                     <StatusBadge status={r.status} label={t(`accessRequest.statusLabel.${r.status}`)} />
                   </div>
 
                   {/* Foydalanuvchi izohi */}
                   <div className="flex items-start gap-1.5 mt-1.5">
-                    <MessageSquare className="w-3 h-3 text-[#8a7a60] shrink-0 mt-0.5" />
-                    <p className="text-xs text-[#8a7a60] italic">
+                    <MessageSquare className="w-3 h-3 text-skin-muted shrink-0 mt-0.5" />
+                    <p className="text-xs text-skin-muted italic">
                       {r.message || t('accessRequest.noMessage')}
                     </p>
                   </div>
 
                   {/* Sana + ko'rib chiqilgan ma'lumot */}
-                  <div className="flex items-center gap-3 mt-1.5 text-[10px] text-[#8a7a60]/70">
+                  <div className="flex items-center gap-3 mt-1.5 text-[10px] text-skin-muted/70">
                     <span>{new Date(r.createdAt).toLocaleString()}</span>
                     {r.status !== 'PENDING' && r.reviewedByUsername && (
                       <span>{t('accessRequest.reviewedBy', { name: r.reviewedByUsername })}</span>
@@ -203,7 +203,7 @@ export default function AdminAccessRequestsPage() {
 
                   {/* Super-admin javob izohi */}
                   {r.reviewNote && (
-                    <p className="text-[10px] text-[#8a7a60] mt-1 pl-1 border-l-2 border-dark-border">
+                    <p className="text-[10px] text-skin-muted mt-1 pl-1 border-l-2 border-dark-border">
                       {t('accessRequest.reviewNoteLabel')} {r.reviewNote}
                     </p>
                   )}
@@ -238,7 +238,7 @@ export default function AdminAccessRequestsPage() {
 
       {/* Sahifalash */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between text-xs text-[#8a7a60]">
+        <div className="flex items-center justify-between text-xs text-skin-muted">
           <span>{t('adminUsers.pageInfo', { current: page + 1, total: totalPages })}</span>
           <div className="flex items-center gap-1">
             <button
@@ -267,34 +267,34 @@ export default function AdminAccessRequestsPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-[#d4c4a0] flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-skin-base flex items-center gap-2">
                 {review.type === 'approve' ? (
                   <><CheckCircle2 size={15} className="text-green-400" /> {t('accessRequest.approve.title')}</>
                 ) : (
                   <><XCircle size={15} className="text-red-400" /> {t('accessRequest.reject.title')}</>
                 )}
               </h3>
-              <button onClick={closeReview} className="text-[#8a7a60] hover:text-[#d4c4a0] transition-colors">
+              <button onClick={closeReview} className="text-skin-muted hover:text-skin-base transition-colors">
                 <X size={16} />
               </button>
             </div>
 
-            <p className="text-xs text-[#8a7a60]">
+            <p className="text-xs text-skin-muted">
               {review.type === 'approve'
                 ? t('accessRequest.approve.confirm', { name: review.request.displayName || review.request.username })
                 : t('accessRequest.reject.confirm', { name: review.request.displayName || review.request.username })}
             </p>
 
             <div>
-              <label className="block text-xs text-[#8a7a60] mb-1">{t('accessRequest.modal.noteLabel')}</label>
+              <label className="block text-xs text-skin-muted mb-1">{t('accessRequest.modal.noteLabel')}</label>
               <textarea
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 maxLength={500}
                 rows={2}
                 placeholder={t('accessRequest.modal.notePlaceholder')}
-                className="w-full bg-dark-bg border border-dark-border rounded px-3 py-2 resize-none text-sm text-[#d4c4a0]
-                  placeholder:text-[#8a7a60]/40 focus:outline-none focus:border-dark-gold/50"
+                className="w-full bg-dark-bg border border-dark-border rounded px-3 py-2 resize-none text-sm text-skin-base
+                  placeholder:text-skin-muted/40 focus:outline-none focus:border-dark-gold/50"
               />
             </div>
 
@@ -316,7 +316,7 @@ export default function AdminAccessRequestsPage() {
               </button>
               <button
                 onClick={closeReview}
-                className="px-4 py-2 rounded text-sm text-[#8a7a60] border border-dark-border hover:text-[#d4c4a0] transition-colors"
+                className="px-4 py-2 rounded text-sm text-skin-muted border border-dark-border hover:text-skin-base transition-colors"
               >
                 {t('accessRequest.modal.cancel')}
               </button>

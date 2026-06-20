@@ -4,8 +4,8 @@ const STYLES: Record<PortageAction, { label: string; cls: string }> = {
   CREATE:    { label: '+',  cls: 'bg-green-500/15 text-green-400 border-green-500/30' },
   UPDATE:    { label: '~',  cls: 'bg-sky-500/15 text-sky-300 border-sky-500/30' },
   REPLACE:   { label: '↻',  cls: 'bg-amber-500/15 text-amber-300 border-amber-500/30' },
-  SKIP:      { label: '·',  cls: 'bg-dark-hover text-[#8a7a60] border-dark-border' },
-  UNCHANGED: { label: '=',  cls: 'bg-dark-hover text-[#8a7a60] border-dark-border' },
+  SKIP:      { label: '·',  cls: 'bg-dark-hover text-skin-muted border-dark-border' },
+  UNCHANGED: { label: '=',  cls: 'bg-dark-hover text-skin-muted border-dark-border' },
   FAIL:      { label: '!',  cls: 'bg-red-500/15 text-red-400 border-red-500/30' },
 }
 

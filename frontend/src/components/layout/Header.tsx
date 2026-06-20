@@ -21,21 +21,21 @@ export default function Header({ onToggleSidebar }: Props) {
         <button
           onClick={onToggleSidebar}
           aria-label={t('sidebar.elements')}
-          className="lg:hidden text-[#8a7a60] hover:text-[#d4c4a0] transition-colors"
+          className="lg:hidden text-skin-muted hover:text-skin-base transition-colors"
         >
           <Menu size={20} />
         </button>
       )}
-      <Link to="/" className="flex items-center gap-2 text-[#d4c4a0] hover:text-[#e8d8b0] transition-colors">
+      <Link to="/" className="flex items-center gap-2 text-skin-base hover:text-[#e8d8b0] transition-colors">
         <Boxes size={22} className="text-dark-gold" />
         <span className="font-semibold text-lg">{t('app.title')}</span>
       </Link>
-      <span className="text-xs text-[#8a7a60] ml-2 hidden sm:inline">{t('app.subtitle')}</span>
+      <span className="text-xs text-skin-muted ml-2 hidden sm:inline">{t('app.subtitle')}</span>
 
       {user && (
         <Link
           to="/calculator"
-          className="flex items-center gap-1 text-xs px-2 py-1 ml-1 rounded text-[#8a7a60]
+          className="flex items-center gap-1 text-xs px-2 py-1 ml-1 rounded text-skin-muted
             hover:text-dark-gold hover:bg-dark-hover/60 transition-colors"
         >
           <Calculator size={14} />
@@ -46,7 +46,7 @@ export default function Header({ onToggleSidebar }: Props) {
       {user && (
         <Link
           to="/craftable"
-          className="flex items-center gap-1 text-xs px-2 py-1 rounded text-[#8a7a60]
+          className="flex items-center gap-1 text-xs px-2 py-1 rounded text-skin-muted
             hover:text-dark-gold hover:bg-dark-hover/60 transition-colors"
         >
           <Wand2 size={14} />
@@ -57,7 +57,7 @@ export default function Header({ onToggleSidebar }: Props) {
       {user && (
         <Link
           to="/favorites"
-          className="flex items-center gap-1 text-xs px-2 py-1 rounded text-[#8a7a60]
+          className="flex items-center gap-1 text-xs px-2 py-1 rounded text-skin-muted
             hover:text-dark-gold hover:bg-dark-hover/60 transition-colors"
         >
           <Star size={14} />
@@ -68,7 +68,7 @@ export default function Header({ onToggleSidebar }: Props) {
       {user && (
         <Link
           to="/inventory"
-          className="flex items-center gap-1 text-xs px-2 py-1 rounded text-[#8a7a60]
+          className="flex items-center gap-1 text-xs px-2 py-1 rounded text-skin-muted
             hover:text-dark-gold hover:bg-dark-hover/60 transition-colors"
         >
           <Package size={14} />
@@ -78,7 +78,7 @@ export default function Header({ onToggleSidebar }: Props) {
 
       <Link
         to="/compare"
-        className="flex items-center gap-1 text-xs px-2 py-1 rounded text-[#8a7a60]
+        className="flex items-center gap-1 text-xs px-2 py-1 rounded text-skin-muted
           hover:text-dark-gold hover:bg-dark-hover/60 transition-colors"
       >
         <GitCompare size={14} />
@@ -98,7 +98,7 @@ export default function Header({ onToggleSidebar }: Props) {
               className={`text-xs px-2 py-1 rounded transition-colors ${
                 i18n.language === lang.code
                   ? 'bg-dark-gold/20 text-dark-gold border border-dark-gold/40'
-                  : 'text-[#8a7a60] hover:text-[#d4c4a0] border border-transparent'
+                  : 'text-skin-muted hover:text-skin-base border border-transparent'
               }`}
               title={lang.name}
             >
@@ -118,7 +118,7 @@ export default function Header({ onToggleSidebar }: Props) {
             <div className="flex items-center gap-2">
               <Link
                 to="/login"
-                className="flex items-center gap-1 text-xs text-[#8a7a60] hover:text-dark-gold transition-colors"
+                className="flex items-center gap-1 text-xs text-skin-muted hover:text-dark-gold transition-colors"
               >
                 <LogIn size={13} />
                 {t('auth.login')}

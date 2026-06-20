@@ -109,8 +109,8 @@ export default function ExportPanel() {
     <div className="grid grid-cols-1 xl:grid-cols-[1fr_360px] gap-4">
       <div className="bg-dark-card border border-dark-border rounded-xl p-5 space-y-5">
         <header>
-          <h3 className="text-base font-semibold text-[#d4c4a0]">{t('portage.export.scope')}</h3>
-          <p className="text-xs text-[#8a7a60] mt-0.5">{t('portage.export.scopeHint')}</p>
+          <h3 className="text-base font-semibold text-skin-base">{t('portage.export.scope')}</h3>
+          <p className="text-xs text-skin-muted mt-0.5">{t('portage.export.scopeHint')}</p>
         </header>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -133,11 +133,11 @@ export default function ExportPanel() {
                 className={`text-xs px-3 py-1.5 rounded-md border transition-colors ${
                   categoryCode === c.code
                     ? 'bg-dark-gold/20 text-dark-gold border-dark-gold/40'
-                    : 'bg-dark-bg text-[#8a7a60] border-dark-border hover:text-[#d4c4a0] hover:border-[#4a4238]'
+                    : 'bg-dark-bg text-skin-muted border-dark-border hover:text-skin-base hover:border-[#4a4238]'
                 }`}
               >
                 {getField(c, 'name')}
-                <span className="ml-1.5 text-[10px] text-[#8a7a60]">{c.code}</span>
+                <span className="ml-1.5 text-[10px] text-skin-muted">{c.code}</span>
               </button>
             ))}
           </div>
@@ -152,7 +152,7 @@ export default function ExportPanel() {
                 className={`text-xs px-3 py-1.5 rounded-md border transition-colors ${
                   tagCode === t2.code
                     ? 'bg-dark-gold/20 text-dark-gold border-dark-gold/40'
-                    : 'bg-dark-bg text-[#8a7a60] border-dark-border hover:text-[#d4c4a0] hover:border-[#4a4238]'
+                    : 'bg-dark-bg text-skin-muted border-dark-border hover:text-skin-base hover:border-[#4a4238]'
                 }`}
               >
                 {getField(t2, 'name')}
@@ -165,26 +165,26 @@ export default function ExportPanel() {
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <div className="relative flex-1">
-                <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#8a7a60]" />
+                <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-skin-muted" />
                 <input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder={t('portage.export.searchItems')}
                   className="w-full bg-dark-bg border border-dark-border rounded-md pl-8 pr-3 py-1.5
-                    text-xs text-[#d4c4a0] placeholder:text-[#8a7a60]/60
+                    text-xs text-skin-base placeholder:text-skin-muted/60
                     focus:outline-none focus:border-dark-gold/40"
                 />
               </div>
               <button
                 onClick={() => setAllPicked(filteredItems.map((i) => i.id))}
-                className="text-[11px] px-2.5 py-1.5 rounded-md text-[#8a7a60] border border-dark-border hover:text-dark-gold hover:border-dark-gold/40"
+                className="text-[11px] px-2.5 py-1.5 rounded-md text-skin-muted border border-dark-border hover:text-dark-gold hover:border-dark-gold/40"
                 disabled={!filteredItems.length}
               >
                 {t('portage.export.selectAllShown')}
               </button>
               <button
                 onClick={clearPicked}
-                className="text-[11px] px-2.5 py-1.5 rounded-md text-[#8a7a60] border border-dark-border hover:text-red-400 hover:border-red-500/40"
+                className="text-[11px] px-2.5 py-1.5 rounded-md text-skin-muted border border-dark-border hover:text-red-400 hover:border-red-500/40"
                 disabled={!pickedIds.size}
               >
                 {t('portage.export.clearSelection')}
@@ -193,9 +193,9 @@ export default function ExportPanel() {
 
             <div className="max-h-[340px] overflow-y-auto rounded-lg border border-dark-border bg-dark-bg/40 divide-y divide-dark-border/50">
               {itemsLoading ? (
-                <div className="text-center text-[#8a7a60] text-xs py-6">{t('sidebar.loading')}</div>
+                <div className="text-center text-skin-muted text-xs py-6">{t('sidebar.loading')}</div>
               ) : filteredItems.length === 0 ? (
-                <div className="text-center text-[#8a7a60] text-xs py-6">{t('itemList.empty')}</div>
+                <div className="text-center text-skin-muted text-xs py-6">{t('itemList.empty')}</div>
               ) : (
                 filteredItems.map((it) => {
                   const picked = pickedIds.has(it.id)
@@ -204,28 +204,28 @@ export default function ExportPanel() {
                       key={it.id}
                       onClick={() => togglePicked(it.id)}
                       className={`w-full flex items-center gap-3 px-3 py-2 text-left text-xs transition-colors
-                        ${picked ? 'bg-dark-gold/10 text-[#d4c4a0]' : 'text-[#8a7a60] hover:text-[#d4c4a0] hover:bg-dark-hover/40'}`}
+                        ${picked ? 'bg-dark-gold/10 text-skin-base' : 'text-skin-muted hover:text-skin-base hover:bg-dark-hover/40'}`}
                     >
                       {picked ? (
                         <CheckSquare size={14} className="text-dark-gold" />
                       ) : (
-                        <Square size={14} className="text-[#8a7a60]" />
+                        <Square size={14} className="text-skin-muted" />
                       )}
                       <span className="flex-1 truncate">{getField(it, 'name')}</span>
-                      <span className="text-[10px] text-[#8a7a60]/70 font-mono">{it.categoryCode}</span>
+                      <span className="text-[10px] text-skin-muted/70 font-mono">{it.categoryCode}</span>
                     </button>
                   )
                 })
               )}
             </div>
-            <p className="text-[11px] text-[#8a7a60]">
+            <p className="text-[11px] text-skin-muted">
               {t('portage.export.pickedCount', { n: pickedIds.size })}
             </p>
           </div>
         )}
 
         {mode !== 'all' && (
-          <label className="flex items-center gap-2 text-xs text-[#d4c4a0] cursor-pointer select-none">
+          <label className="flex items-center gap-2 text-xs text-skin-base cursor-pointer select-none">
             <input
               type="checkbox"
               checked={withDeps}
@@ -235,22 +235,22 @@ export default function ExportPanel() {
             {t('portage.export.withDependencies')}
             <Info
               size={12}
-              className="text-[#8a7a60]"
+              className="text-skin-muted"
               aria-label={t('portage.export.withDependenciesHint')}
             />
-            <span className="text-[11px] text-[#8a7a60]">{t('portage.export.withDependenciesHint')}</span>
+            <span className="text-[11px] text-skin-muted">{t('portage.export.withDependenciesHint')}</span>
           </label>
         )}
       </div>
 
       <aside className="bg-dark-card border border-dark-border rounded-xl p-5 flex flex-col gap-4 h-fit xl:sticky xl:top-2">
         <header>
-          <h3 className="text-base font-semibold text-[#d4c4a0]">{t('portage.export.previewTitle')}</h3>
-          <p className="text-xs text-[#8a7a60] mt-0.5">{t('portage.export.previewHint')}</p>
+          <h3 className="text-base font-semibold text-skin-base">{t('portage.export.previewTitle')}</h3>
+          <p className="text-xs text-skin-muted mt-0.5">{t('portage.export.previewHint')}</p>
         </header>
 
         {!selection ? (
-          <p className="text-xs text-[#8a7a60] italic">{t('portage.export.previewEmpty')}</p>
+          <p className="text-xs text-skin-muted italic">{t('portage.export.previewEmpty')}</p>
         ) : (
           <>
             <div className="grid grid-cols-2 gap-2">
@@ -262,7 +262,7 @@ export default function ExportPanel() {
             </div>
 
             {previewing && (
-              <p className="flex items-center gap-2 text-[11px] text-[#8a7a60]">
+              <p className="flex items-center gap-2 text-[11px] text-skin-muted">
                 <Loader2 size={12} className="animate-spin" /> {t('portage.preview.calculating')}
               </p>
             )}
@@ -301,7 +301,7 @@ function ModeButton({
       className={`flex items-center justify-center gap-2 py-2 rounded-lg border text-xs font-medium transition-colors ${
         active
           ? 'bg-dark-gold/20 text-dark-gold border-dark-gold/40'
-          : 'bg-dark-bg text-[#8a7a60] border-dark-border hover:text-[#d4c4a0] hover:border-[#4a4238]'
+          : 'bg-dark-bg text-skin-muted border-dark-border hover:text-skin-base hover:border-[#4a4238]'
       }`}
     >
       {icon}

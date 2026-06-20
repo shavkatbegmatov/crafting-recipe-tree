@@ -26,12 +26,12 @@ export default function AdminPortagePage() {
           <button
             type="button"
             onClick={goBack}
-            className="text-xs text-[#8a7a60] hover:text-dark-gold inline-flex items-center gap-1 mb-2"
+            className="text-xs text-skin-muted hover:text-dark-gold inline-flex items-center gap-1 mb-2"
           >
             <ArrowLeft size={12} /> {t('common.back')}
           </button>
-          <h1 className="text-xl font-semibold text-[#d4c4a0]">{t('portage.pageTitle')}</h1>
-          <p className="text-xs text-[#8a7a60] mt-1 max-w-2xl">{t('portage.pageHint')}</p>
+          <h1 className="text-xl font-semibold text-skin-base">{t('portage.pageTitle')}</h1>
+          <p className="text-xs text-skin-muted mt-1 max-w-2xl">{t('portage.pageHint')}</p>
         </div>
       </header>
 
@@ -56,7 +56,7 @@ function TabButton({
       className={`px-4 py-2.5 -mb-px flex items-center gap-2 text-sm font-medium border-b-2 transition-colors
         ${active
           ? 'border-dark-gold text-dark-gold'
-          : 'border-transparent text-[#8a7a60] hover:text-[#d4c4a0]'}`}
+          : 'border-transparent text-skin-muted hover:text-skin-base'}`}
     >
       {icon}
       {label}
