@@ -12,6 +12,11 @@ frontend/dist/
 frontend/tsconfig.tsbuildinfo
 frontend/*.tsbuildinfo
 
+# Playwright (E2E)
+frontend/test-results/
+frontend/playwright-report/
+frontend/playwright/.cache/
+
 # IDE
 .idea/
 *.iml
