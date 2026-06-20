@@ -40,10 +40,11 @@ export default function ItemCard({ item }: Props) {
           />
         </div>
       ) : (
-        /* Rasmsiz item — bir xil tepa blok saqlanadi: sarlavha o'z joyida qoladi va
+        /* Rasmsiz item — rasm bloki PNG ikonkalar bilan bir xil balandlikda (py-4 + w-12 h-12),
+           shunda karta boshqalardan baland bo'lib qolmaydi; sarlavha o'z joyida qoladi va
            FavoriteButton (yulduzcha) sarlavha/badge bilan ustma-ust tushmaydi. */
-        <div className="aspect-[4/3] bg-dark-panel/40 flex items-center justify-center">
-          <ImageOff size={32} strokeWidth={1.5} className="text-dark-border" />
+        <div className="py-4 bg-dark-panel/40 flex items-center justify-center">
+          <ImageOff strokeWidth={1.5} className="w-12 h-12 text-dark-border" />
         </div>
       )}
       <div className="p-3">
