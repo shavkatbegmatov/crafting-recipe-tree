@@ -29,7 +29,7 @@
 |-------|--------------|
 | **Backend** | Java 17, Spring Boot 3.4.4 (Web, Data JPA, Security, WebSocket, Validation, Cache, Actuator), Hibernate 6.6, Flyway, PostgreSQL, JJWT, springdoc-openapi |
 | **Frontend** | React 18, TypeScript 5, Vite 5, TanStack Query, React Router, react-i18next, Tailwind CSS, framer-motion, @stomp/stompjs |
-| **Testing** | JUnit 5 + Mockito + AssertJ (backend), Vitest + jsdom (frontend) |
+| **Testing** | JUnit 5 + Mockito + AssertJ (backend), Vitest + jsdom + Playwright E2E (frontend) |
 | **CI/CD** | GitHub Actions → GHCR (Docker images) → Coolify |
 
 ## Architecture
@@ -100,11 +100,16 @@ The Vite dev server proxies `/api`, `/uploads`, and `/ws` to the backend (defaul
 # Backend — JUnit 5 + Mockito
 cd backend && ./mvnw test
 
-# Frontend — Vitest
+# Frontend — Vitest (unit)
 cd frontend && npm run test
+
+# Frontend — Playwright E2E smoke (dev-server avtomatik ko'tariladi)
+cd frontend && npm run test:e2e
 ```
 
-Both suites run in CI on every push and pull request.
+All three suites run in CI on every push and pull request. Chat'ning real-time
+oqimlari (WebSocket) backend ishlab turganda qo'lda E2E qilinadi — smoke testlar
+backend'siz ham marshrutlash/render'ni tekshiradi.
 
 ## API Documentation & Monitoring
 

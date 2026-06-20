@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e": "playwright test",
     "sync:uploads": "node ../scripts/sync-uploads.mjs"
   },
   "dependencies": {
@@ -25,6 +26,7 @@
     "react-router-dom": "^6.25.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.0",
     "@types/node": "^20.19.42",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
