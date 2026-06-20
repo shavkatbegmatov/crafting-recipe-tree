@@ -20,6 +20,19 @@ export default function GameVersionSelector() {
     return () => document.removeEventListener('mousedown', onClick)
   }, [])
 
+  // Ochilganda boshqa menyularga "yopil" signalini beramiz (o'zaro istisno)
+  useEffect(() => {
+    if (open) window.dispatchEvent(new CustomEvent('app:menu-open', { detail: 'gameversion' }))
+  }, [open])
+
+  useEffect(() => {
+    function onOtherOpen(e: Event) {
+      if ((e as CustomEvent).detail !== 'gameversion') setOpen(false)
+    }
+    window.addEventListener('app:menu-open', onOtherOpen)
+    return () => window.removeEventListener('app:menu-open', onOtherOpen)
+  }, [])
+
   const label = effectiveVersion ?? '—'
   const followingCurrent = selectedVersion === null
 

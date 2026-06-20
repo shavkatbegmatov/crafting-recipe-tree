@@ -105,6 +105,23 @@ export default function UserDropdown() {
     return () => document.removeEventListener('keydown', handleKey)
   }, [open])
 
+  // Ochilganda boshqa menyularga (bildirishnoma, til) "yopil" signalini beramiz
+  useEffect(() => {
+    if (open) window.dispatchEvent(new CustomEvent('app:menu-open', { detail: 'user' }))
+  }, [open])
+
+  // Boshqa menyu ochilsa bu dropdownni (va edit holatini) yopamiz
+  useEffect(() => {
+    function onOtherOpen(e: Event) {
+      if ((e as CustomEvent).detail !== 'user') {
+        setOpen(false)
+        resetEdit()
+      }
+    }
+    window.addEventListener('app:menu-open', onOtherOpen)
+    return () => window.removeEventListener('app:menu-open', onOtherOpen)
+  }, [])
+
   if (!user) return null
 
   const displayName = user.displayName || user.username
