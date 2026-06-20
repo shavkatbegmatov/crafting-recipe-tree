@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Clock } from 'lucide-react'
+import { Clock, ImageOff } from 'lucide-react'
 import type { CraftItem } from '../../api/types'
 import CategoryBadge from '../ui/CategoryBadge'
 import SafeImage from '../ui/SafeImage'
@@ -23,7 +23,7 @@ export default function ItemCard({ item }: Props) {
       <div className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
         <FavoriteButton itemId={item.id} />
       </div>
-      {item.imageUrl && (
+      {item.imageUrl ? (
         <div className={`bg-dark-panel overflow-hidden flex items-center justify-center ${
           isPng ? 'py-4' : 'aspect-[4/3]'
         }`}>
@@ -38,6 +38,12 @@ export default function ItemCard({ item }: Props) {
             }`}
             iconSize={isPng ? 24 : 40}
           />
+        </div>
+      ) : (
+        /* Rasmsiz item — bir xil tepa blok saqlanadi: sarlavha o'z joyida qoladi va
+           FavoriteButton (yulduzcha) sarlavha/badge bilan ustma-ust tushmaydi. */
+        <div className="aspect-[4/3] bg-dark-panel/40 flex items-center justify-center">
+          <ImageOff size={32} strokeWidth={1.5} className="text-dark-border" />
         </div>
       )}
       <div className="p-3">

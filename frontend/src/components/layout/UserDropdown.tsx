@@ -189,6 +189,7 @@ export default function UserDropdown() {
     : null
 
   return (
+    <>
     <div ref={dropdownRef} className="relative">
       {/* Trigger */}
       <button
@@ -211,19 +212,8 @@ export default function UserDropdown() {
         />
       </button>
 
-      {/* Dropdown panel + orqa backdrop (dropdownni fonu/kontentdan ajratadi) */}
+      {/* Dropdown panel */}
       <AnimatePresence>
-        {open && (
-          <motion.div
-            key="user-dropdown-backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.15 }}
-            onClick={() => setOpen(false)}
-            className="fixed inset-x-0 bottom-0 top-14 z-40 bg-black/40"
-          />
-        )}
         {open && (
           <motion.div
             key="user-dropdown-panel"
@@ -553,5 +543,25 @@ export default function UserDropdown() {
         )}
       </AnimatePresence>
     </div>
+
+      {/* Backdrop — ref konteyneridan TASHQARIDA: tashqi-klik useEffect (mousedown)
+          uni "tashqari" deb biladi va dropdownni (hamda edit holatini) darhol yopadi. */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            key="user-dropdown-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            onClick={() => {
+              setOpen(false)
+              resetEdit()
+            }}
+            className="fixed inset-x-0 bottom-0 top-14 z-40 bg-black/40"
+          />
+        )}
+      </AnimatePresence>
+    </>
   )
 }
