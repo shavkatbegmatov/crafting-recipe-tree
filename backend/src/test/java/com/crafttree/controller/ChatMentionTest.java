@@ -2,7 +2,10 @@ package com.crafttree.controller;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Set;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 /** {@link ChatController#extractMentions} — @username ajratish mantiqining unit testlari. */
 class ChatMentionTest {
@@ -36,5 +39,17 @@ class ChatMentionTest {
         assertThat(ChatController.extractMentions("oddiy xabar matni")).isEmpty();
         assertThat(ChatController.extractMentions(null)).isEmpty();
         assertThat(ChatController.extractMentions("")).isEmpty();
+    }
+
+    @Test
+    void resultIsAlwaysMutable() {
+        // Regressiya: @ bo'lmaganda ham natija remove() bilan ishlatilishi mumkin bo'lishi shart.
+        // Avval Set.of() (o'zgarmas) qaytarib, notifyMentions'dagi remove() UnsupportedOperationException
+        // berardi — bu har bir @siz oddiy xabarni saqlanmasligiga olib kelardi.
+        Set<String> noMention = ChatController.extractMentions("oddiy xabar, @ yo'q");
+        assertThatCode(() -> noMention.remove("kimdir")).doesNotThrowAnyException();
+
+        Set<String> withMention = ChatController.extractMentions("@admin salom");
+        assertThatCode(() -> withMention.remove("admin")).doesNotThrowAnyException();
     }
 }

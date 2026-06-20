@@ -30,6 +30,7 @@ public class ChatMessageDto {
     private String replyToUsername;
     private String replyToContent;
     private List<ReactionGroupDto> reactions;
+    private AttachmentDto attachment;
 
     /** Diqqat: reply'ning LAZY user/content o'qilgani uchun tranzaksiya ichida chaqirilishi kerak. */
     public static ChatMessageDto from(ChatMessage entity) {
@@ -48,6 +49,7 @@ public class ChatMessageDto {
                     .replyToContent(c.length() > 80 ? c.substring(0, 80) + "…" : c);
         }
         b.reactions(groupReactions(entity.getReactions()));
+        b.attachment(AttachmentDto.from(entity.getAttachment()));
         return b.build();
     }
 

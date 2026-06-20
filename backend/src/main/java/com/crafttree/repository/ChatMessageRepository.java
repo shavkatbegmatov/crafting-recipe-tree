@@ -22,15 +22,15 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
      */
     // Reply va uning egasi ham oldindan yuklanadi — ChatMessageDto.from reply preview'ni o'qiydi,
     // open-in-view:false bilan bu LazyInitializationException (500) bermasligi uchun.
-    @EntityGraph(attributePaths = {"user", "replyTo", "replyTo.user", "reactions", "reactions.user"})
+    @EntityGraph(attributePaths = {"user", "replyTo", "replyTo.user", "reactions", "reactions.user", "attachment"})
     Page<ChatMessage> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
     /** Infinite-scroll: berilgan id'dan eski (kichikroq) xabarlar — yuqoriga aylantirilganda yuklash. */
-    @EntityGraph(attributePaths = {"user", "replyTo", "replyTo.user", "reactions", "reactions.user"})
+    @EntityGraph(attributePaths = {"user", "replyTo", "replyTo.user", "reactions", "reactions.user", "attachment"})
     Page<ChatMessage> findByIdLessThanOrderByCreatedAtDesc(Long id, Pageable pageable);
 
     /** Foydalanuvchi qidiruvi: matn bo'yicha (eng yangi birinchi). DTO.from uchun to'liq graf. */
-    @EntityGraph(attributePaths = {"user", "replyTo", "replyTo.user", "reactions", "reactions.user"})
+    @EntityGraph(attributePaths = {"user", "replyTo", "replyTo.user", "reactions", "reactions.user", "attachment"})
     @Query("SELECT m FROM ChatMessage m WHERE LOWER(m.content) LIKE LOWER(CONCAT('%', :q, '%')) ORDER BY m.createdAt DESC")
     Page<ChatMessage> searchByContent(@Param("q") String q, Pageable pageable);
 

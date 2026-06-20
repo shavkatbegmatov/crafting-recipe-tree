@@ -11,4 +11,6 @@ public class ChatSendRequest {
     private String content;
     /** Ixtiyoriy — javob berilayotgan xabar id'si (reply). */
     private Long replyToId;
+    /** Ixtiyoriy — oldindan yuklangan ulanma (rasm/fayl) id'si. */
+    private Long attachmentId;
 }
