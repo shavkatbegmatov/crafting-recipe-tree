@@ -238,10 +238,12 @@ export default function UserDropdown() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.97 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 top-full mt-1.5 w-72 sm:w-80
-              bg-dark-card border border-dark-border rounded-xl
-              shadow-2xl shadow-black/50 z-[60] overflow-hidden"
+            className="absolute right-0 top-full mt-2 w-72 sm:w-80
+              bg-dark-card border border-dark-gold/25 rounded-xl
+              shadow-[0_18px_50px_rgba(0,0,0,0.6),0_0_30px_rgba(200,160,80,0.10)] z-[60] overflow-hidden"
           >
+            {/* HUD yuqori gold chizig'i */}
+            <span className="block h-0.5 bg-gradient-to-r from-transparent via-dark-gold/60 to-transparent" />
             {/* ── Profile header ── */}
             <div className="px-4 pt-4 pb-3">
               {!editMode ? (

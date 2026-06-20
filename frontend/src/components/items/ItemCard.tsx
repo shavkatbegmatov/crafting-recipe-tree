@@ -56,12 +56,15 @@ export default function ItemCard({ item }: Props) {
           </h3>
           <CategoryBadge code={item.categoryCode} />
         </div>
-        {item.craftTimeSeconds > 0 && (
-          <div className="flex items-center gap-1 text-xs text-skin-muted">
-            <Clock size={12} />
-            <span className="font-mono">{formatTime(item.craftTimeSeconds)}</span>
-          </div>
-        )}
+        {/* Vaqt qatori har doim joy egallaydi — vaqtli/vaqtsiz kartalar bir xil balandlikda */}
+        <div className="h-[18px] flex items-center gap-1 text-xs text-skin-muted">
+          {item.craftTimeSeconds > 0 && (
+            <>
+              <Clock size={12} className="text-dark-gold/70" />
+              <span className="font-mono">{formatTime(item.craftTimeSeconds)}</span>
+            </>
+          )}
+        </div>
       </div>
     </Link>
   )
