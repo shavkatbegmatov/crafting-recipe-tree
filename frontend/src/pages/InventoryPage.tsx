@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { Boxes, CheckCircle2, AlertCircle, Check, Loader2, LogIn } from 'lucide-react'
+import { Boxes, CheckCircle2, AlertCircle, Check, Loader2, LogIn, ArrowLeft } from 'lucide-react'
 import { useLocalizedField } from '../hooks/useLanguage'
 import { useCategories } from '../hooks/useItems'
 import { useCraftable } from '../hooks/useCraftable'
 import { useContentWidth } from '../hooks/useContentWidth'
+import { useGoBack } from '../hooks/useGoBack'
 import { useAuth } from '../contexts/AuthContext'
 import { useInventory, useSaveInventory } from '../hooks/useInventory'
 import MaterialPicker, { type PickedItem } from '../components/items/MaterialPicker'
@@ -23,6 +24,7 @@ export default function InventoryPage() {
   const { getField } = useLocalizedField()
   const { user } = useAuth()
   const contentWidth = useContentWidth('max-w-4xl')
+  const goBack = useGoBack('/')
   const { data: categories } = useCategories()
   const { data: inventory } = useInventory(!!user)
   const saveInv = useSaveInventory()
@@ -99,6 +101,14 @@ export default function InventoryPage() {
 
   return (
     <div className={`space-y-5 ${contentWidth}`}>
+      <button
+        type="button"
+        onClick={goBack}
+        className="text-[#8a7a60] hover:text-[#d4c4a0] text-sm flex items-center gap-1 transition-colors"
+      >
+        <ArrowLeft size={14} /> {t('common.back')}
+      </button>
+
       <div>
         <h1 className="text-xl font-semibold text-[#d4c4a0] flex items-center gap-2">
           <Boxes size={18} className="text-dark-gold" />
