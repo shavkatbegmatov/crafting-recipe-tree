@@ -43,6 +43,20 @@ export default function NotificationBell() {
     return () => document.removeEventListener('mousedown', onClick)
   }, [open])
 
+  // Ochilganda boshqa menyularga (profil, til) "yopil" signalini beramiz
+  useEffect(() => {
+    if (open) window.dispatchEvent(new CustomEvent('app:menu-open', { detail: 'notif' }))
+  }, [open])
+
+  // Boshqa menyu ochilsa bu dropdownni yopamiz — bir vaqtda faqat bittasi ochiq turadi
+  useEffect(() => {
+    function onOtherOpen(e: Event) {
+      if ((e as CustomEvent).detail !== 'notif') setOpen(false)
+    }
+    window.addEventListener('app:menu-open', onOtherOpen)
+    return () => window.removeEventListener('app:menu-open', onOtherOpen)
+  }, [])
+
   const items = page?.content ?? []
   const unreadCount = unread ?? 0
 
