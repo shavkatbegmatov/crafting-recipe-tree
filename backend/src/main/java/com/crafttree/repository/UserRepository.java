@@ -8,12 +8,16 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByUsername(String username);
+
+    /** Mention (@username) eslatmalari uchun bir nechta foydalanuvchini birdan topish. */
+    List<User> findByUsernameIn(Collection<String> usernames);
 
     Optional<User> findByReferralCode(String referralCode);
 

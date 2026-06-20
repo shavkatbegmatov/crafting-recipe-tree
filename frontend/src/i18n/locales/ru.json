@@ -512,7 +512,8 @@
     "type": {
       "ACCESS_REQUEST_SUBMITTED": "{{actor}} запросил права администратора",
       "ACCESS_REQUEST_APPROVED": "Вам выданы права администратора 🎉",
-      "ACCESS_REQUEST_REJECTED": "Ваш запрос на права администратора отклонён"
+      "ACCESS_REQUEST_REJECTED": "Ваш запрос на права администратора отклонён",
+      "CHAT_MENTION": "{{actor}} упомянул вас в чате"
     }
   },
   "chatAdmin": {

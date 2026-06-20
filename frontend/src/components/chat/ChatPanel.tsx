@@ -46,6 +46,21 @@ function sameGroup(a: ChatMessageDto, b: ChatMessageDto): boolean {
   )
 }
 
+const MENTION_RE = /(?<![A-Za-z0-9_])(@[A-Za-z0-9_]+)/g
+
+/** Matndagi @username eslatmalarini oltin rangda ajratib ko'rsatadi. */
+function renderContent(content: string) {
+  return content.split(MENTION_RE).map((part, i) =>
+    part.startsWith('@') && part.length > 1 ? (
+      <span key={i} className="text-dark-gold font-medium">
+        {part}
+      </span>
+    ) : (
+      part
+    ),
+  )
+}
+
 /* ────── avatar ────── */
 
 function Avatar({ name }: { name: string }) {
@@ -191,7 +206,7 @@ function ChatRow({
                 <p className="text-[10px] text-[#8a7a60] truncate max-w-[200px]">{msg.replyToContent}</p>
               </div>
             )}
-            {msg.content}
+            {renderContent(msg.content)}
             {msg.editedAt && (
               <span className="text-[9px] italic opacity-50 ml-1.5 select-none">({t('chat.edited')})</span>
             )}
@@ -242,6 +257,8 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
   const [draft, setDraft] = useState('')
   const [replyingTo, setReplyingTo] = useState<ChatMessageDto | null>(null)
   const [editing, setEditing] = useState<ChatMessageDto | null>(null)
+  const [mentionQuery, setMentionQuery] = useState<string | null>(null)
+  const [mentionIndex, setMentionIndex] = useState(0)
   const bottomRef = useRef<HTMLDivElement>(null)
   const taRef = useRef<HTMLTextAreaElement>(null)
 
@@ -296,7 +313,61 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
     setDraft('')
   }
 
+  // ── @mention autocomplete ──
+  const mentionCandidates =
+    mentionQuery !== null
+      ? onlineUsers
+          .filter((u) => u !== user?.username && u.toLowerCase().startsWith(mentionQuery.toLowerCase()))
+          .slice(0, 5)
+      : []
+
+  /** Kursordan oldingi matnda tugallanmagan @so'z bo'lsa — picker uchun query o'rnatadi. */
+  const detectMention = (ta: HTMLTextAreaElement) => {
+    const cursor = ta.selectionStart ?? ta.value.length
+    const m = ta.value.slice(0, cursor).match(/@([A-Za-z0-9_]*)$/)
+    setMentionQuery(m ? m[1] : null)
+    setMentionIndex(0)
+  }
+
+  /** Tanlangan username'ni @so'z o'rniga qo'yadi va kursorni undan keyinga o'tkazadi. */
+  const insertMention = (username: string) => {
+    const ta = taRef.current
+    if (!ta) return
+    const cursor = ta.selectionStart ?? draft.length
+    const before = draft.slice(0, cursor).replace(/@([A-Za-z0-9_]*)$/, `@${username} `)
+    const after = draft.slice(cursor)
+    setDraft(before + after)
+    setMentionQuery(null)
+    requestAnimationFrame(() => {
+      ta.focus()
+      ta.setSelectionRange(before.length, before.length)
+    })
+  }
+
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    // Mention picker ochiq bo'lsa — strelka/Enter/Tab navigatsiyani o'zlashtiradi.
+    if (mentionQuery !== null && mentionCandidates.length > 0) {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault()
+        setMentionIndex((i) => (i + 1) % mentionCandidates.length)
+        return
+      }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault()
+        setMentionIndex((i) => (i - 1 + mentionCandidates.length) % mentionCandidates.length)
+        return
+      }
+      if (e.key === 'Enter' || e.key === 'Tab') {
+        e.preventDefault()
+        insertMention(mentionCandidates[mentionIndex])
+        return
+      }
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        setMentionQuery(null)
+        return
+      }
+    }
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       handleSend()
@@ -438,12 +509,36 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
             )}
 
             {user ? (
-              <div className="flex items-end gap-2">
+              <div className="relative flex items-end gap-2">
+                {/* @mention autocomplete dropdown */}
+                {mentionQuery !== null && mentionCandidates.length > 0 && (
+                  <div className="absolute bottom-full left-0 mb-1 w-48 bg-dark-card border border-dark-border
+                                  rounded-lg shadow-xl shadow-black/40 overflow-hidden z-30">
+                    {mentionCandidates.map((u, idx) => (
+                      <button
+                        key={u}
+                        onClick={() => insertMention(u)}
+                        onMouseEnter={() => setMentionIndex(idx)}
+                        className={`w-full flex items-center gap-2 px-2.5 py-1.5 text-left text-xs transition-colors ${
+                          idx === mentionIndex ? 'bg-dark-gold/20 text-dark-gold' : 'text-[#d4c4a0] hover:bg-dark-hover'
+                        }`}
+                      >
+                        <span
+                          className="w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-bold text-white shrink-0"
+                          style={{ backgroundColor: avatarColor(u) }}
+                        >
+                          {initials(u)}
+                        </span>
+                        <span className="truncate">{u}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
                 <textarea
                   ref={taRef}
                   rows={1}
                   value={draft}
-                  onChange={(e) => { setDraft(e.target.value); sendTyping() }}
+                  onChange={(e) => { setDraft(e.target.value); sendTyping(); detectMention(e.target) }}
                   onKeyDown={handleKeyDown}
                   maxLength={2000}
                   placeholder={t('chat.placeholder')}

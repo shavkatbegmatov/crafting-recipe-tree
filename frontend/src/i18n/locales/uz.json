@@ -520,7 +520,8 @@
     "type": {
       "ACCESS_REQUEST_SUBMITTED": "{{actor}} admin huquqini so'radi",
       "ACCESS_REQUEST_APPROVED": "Admin huquqingiz tasdiqlandi 🎉",
-      "ACCESS_REQUEST_REJECTED": "Admin huquqi arizangiz rad etildi"
+      "ACCESS_REQUEST_REJECTED": "Admin huquqi arizangiz rad etildi",
+      "CHAT_MENTION": "{{actor}} sizni chatda eslatdi"
     }
   },
   "chatAdmin": {

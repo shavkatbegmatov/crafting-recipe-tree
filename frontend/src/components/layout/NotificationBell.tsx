@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Bell, ShieldQuestion, ShieldCheck, XCircle, Check } from 'lucide-react'
+import { Bell, ShieldQuestion, ShieldCheck, XCircle, Check, AtSign } from 'lucide-react'
 import {
   useNotifications,
   useUnreadCount,
@@ -16,6 +16,7 @@ const ICONS: Record<NotificationType, { Icon: typeof Bell; cls: string }> = {
   ACCESS_REQUEST_SUBMITTED: { Icon: ShieldQuestion, cls: 'text-dark-gold' },
   ACCESS_REQUEST_APPROVED: { Icon: ShieldCheck, cls: 'text-green-400' },
   ACCESS_REQUEST_REJECTED: { Icon: XCircle, cls: 'text-red-400' },
+  CHAT_MENTION: { Icon: AtSign, cls: 'text-dark-gold' },
 }
 
 /** Header'dagi bildirishnoma qo'ng'irog'i: o'qilmagan badge + dropdown ro'yxat. */

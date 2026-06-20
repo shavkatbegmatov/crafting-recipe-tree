@@ -4,6 +4,7 @@ export type NotificationType =
   | 'ACCESS_REQUEST_SUBMITTED'
   | 'ACCESS_REQUEST_APPROVED'
   | 'ACCESS_REQUEST_REJECTED'
+  | 'CHAT_MENTION'
 
 export interface AppNotification {
   id: number
