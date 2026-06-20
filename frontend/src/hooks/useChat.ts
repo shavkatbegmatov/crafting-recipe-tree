@@ -14,6 +14,9 @@ interface UseChatReturn {
   react: (messageId: number, emoji: string) => void
   sendTyping: () => void
   loadingHistory: boolean
+  loadingMore: boolean
+  hasMore: boolean
+  loadMore: () => void
   onlineUsers: string[]
   typingUsers: string[]
 }
@@ -22,6 +25,8 @@ export function useChat(active: boolean): UseChatReturn {
   const [messages, setMessages] = useState<ChatMessageDto[]>([])
   const [connected, setConnected] = useState(false)
   const [loadingHistory, setLoadingHistory] = useState(false)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [hasMore, setHasMore] = useState(true)
   const [onlineUsers, setOnlineUsers] = useState<string[]>([])
   const [typingUsers, setTypingUsers] = useState<string[]>([])
   const qc = useQueryClient()
@@ -43,8 +48,9 @@ export function useChat(active: boolean): UseChatReturn {
     let cancelled = false
 
     setLoadingHistory(true)
+    setHasMore(true)
     fetchChatHistory(50)
-      .then((history) => { if (!cancelled) setMessages(history) })
+      .then((history) => { if (!cancelled) { setMessages(history); setHasMore(history.length >= 50) } })
       .catch(() => {})
       .finally(() => { if (!cancelled) setLoadingHistory(false) })
 
@@ -165,5 +171,23 @@ export function useChat(active: boolean): UseChatReturn {
     c.publish({ destination: '/app/chat.typing', body: '{}' })
   }, [])
 
-  return { messages, connected, send, edit, remove, react, sendTyping, loadingHistory, onlineUsers, typingUsers }
+  // Infinite-scroll: yuqoriga aylantirilganda eng eski xabardan oldingilarni yuklab, boshiga qo'shamiz.
+  const loadMore = useCallback(async () => {
+    if (loadingMore || !hasMore || messages.length === 0) return
+    setLoadingMore(true)
+    try {
+      const older = await fetchChatHistory(50, messages[0].id)
+      if (older.length < 50) setHasMore(false)
+      if (older.length > 0) setMessages((cur) => [...older, ...cur])
+    } catch {
+      // tarmoq xatosi — jimgina o'tamiz
+    } finally {
+      setLoadingMore(false)
+    }
+  }, [loadingMore, hasMore, messages])
+
+  return {
+    messages, connected, send, edit, remove, react, sendTyping,
+    loadingHistory, loadingMore, hasMore, loadMore, onlineUsers, typingUsers,
+  }
 }

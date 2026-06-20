@@ -556,6 +556,9 @@
   "chat": {
     "reply": "Javob berish",
     "react": "Reaksiya",
+    "search": "Qidirish",
+    "searchPlaceholder": "Xabarlarni qidirish...",
+    "searchEmpty": "Hech narsa topilmadi",
     "edit": "Tahrirlash",
     "delete": "O'chirish",
     "edited": "tahrirlangan",

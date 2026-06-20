@@ -548,6 +548,9 @@
   "chat": {
     "reply": "Ответить",
     "react": "Реакция",
+    "search": "Поиск",
+    "searchPlaceholder": "Поиск сообщений...",
+    "searchEmpty": "Ничего не найдено",
     "edit": "Изменить",
     "delete": "Удалить",
     "edited": "изменено",

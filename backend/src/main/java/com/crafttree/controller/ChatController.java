@@ -71,19 +71,41 @@ public class ChatController {
     @GetMapping("/api/chat/messages")
     @Operation(summary = "Get recent chat messages")
     public List<ChatMessageDto> getMessages(
-            @RequestParam(defaultValue = "50") int limit) {
+            @RequestParam(defaultValue = "50") int limit,
+            @RequestParam(required = false) Long before) {
 
         limit = Math.min(limit, 200); // cap
+        var pageReq = PageRequest.of(0, limit);
+        // before berilsa — undan eski xabarlar (infinite-scroll yuqoriga); aks holda — eng so'nggilari.
+        var page = (before != null)
+                ? chatRepo.findByIdLessThanOrderByCreatedAtDesc(before, pageReq)
+                : chatRepo.findAllByOrderByCreatedAtDesc(pageReq);
         // getContent() o'zgarmas (immutable) ro'yxat qaytaradi — reverse() uni o'zgartira olishi
         // uchun mutable nusxaga olamiz (aks holda 2+ xabarda UnsupportedOperationException).
-        List<ChatMessageDto> msgs = new ArrayList<>(
-                chatRepo.findAllByOrderByCreatedAtDesc(PageRequest.of(0, limit))
-                        .map(ChatMessageDto::from)
-                        .getContent());
+        List<ChatMessageDto> msgs = new ArrayList<>(page.map(ChatMessageDto::from).getContent());
 
         // Repo returns DESC; reverse to chronological order for the client
         Collections.reverse(msgs);
         return msgs;
+    }
+
+    /**
+     * REST: Xabarlarni matn bo'yicha qidirish (eng yangi birinchi).
+     * Natija xronologik tartiblanmaydi — qidiruv ro'yxati sifatida ko'rsatiladi.
+     */
+    @GetMapping("/api/chat/search")
+    @Operation(summary = "Chat xabarlarini matn bo'yicha qidirish")
+    public List<ChatMessageDto> searchMessages(
+            @RequestParam String q,
+            @RequestParam(defaultValue = "30") int limit) {
+
+        if (q == null || q.isBlank()) {
+            return List.of();
+        }
+        limit = Math.min(Math.max(limit, 1), 100);
+        return chatRepo.searchByContent(q.trim(), PageRequest.of(0, limit))
+                .map(ChatMessageDto::from)
+                .getContent();
     }
 
     /**
