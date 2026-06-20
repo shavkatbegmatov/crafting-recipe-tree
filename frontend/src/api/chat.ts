@@ -7,6 +7,15 @@ export interface ReactionGroup {
   users: string[]
 }
 
+/** Xabarga ulangan fayl (rasm). url — /api bilan boshlanadigan nisbiy manzil. */
+export interface Attachment {
+  id: number
+  filename: string
+  contentType: string
+  sizeBytes: number
+  url: string
+}
+
 export interface ChatMessageDto {
   id: number
   username: string
@@ -18,6 +27,7 @@ export interface ChatMessageDto {
   replyToUsername?: string | null
   replyToContent?: string | null
   reactions?: ReactionGroup[]
+  attachment?: Attachment | null
 }
 
 export async function fetchChatHistory(limit = 50, before?: number): Promise<ChatMessageDto[]> {
@@ -33,6 +43,20 @@ export async function searchChatMessages(q: string, limit = 30): Promise<ChatMes
     params: { q, limit },
   })
   return data
+}
+
+/** Rasm yuklash — qaytgan ulanmani keyin xabarga (attachmentId) bog'lanadi. */
+export async function uploadChatFile(file: File): Promise<Attachment> {
+  const form = new FormData()
+  form.append('file', file)
+  const { data } = await client.post<Attachment>('/chat/upload', form)
+  return data
+}
+
+/** Ulanmaning to'liq URL'i (dev'da Vite proxy, prod'da backend originiga). */
+export function attachmentUrl(att: Attachment): string {
+  const base = (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? ''
+  return base + att.url
 }
 
 export interface PresenceDto {

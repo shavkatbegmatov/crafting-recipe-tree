@@ -8,7 +8,7 @@ import { getWsUrl } from '../utils/wsUrl'
 interface UseChatReturn {
   messages: ChatMessageDto[]
   connected: boolean
-  send: (content: string, replyToId?: number | null) => void
+  send: (content: string, replyToId?: number | null, attachmentId?: number | null) => void
   edit: (id: number, content: string) => void
   remove: (id: number) => void
   react: (messageId: number, emoji: string) => void
@@ -133,12 +133,17 @@ export function useChat(active: boolean): UseChatReturn {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active])
 
-  const send = useCallback((content: string, replyToId?: number | null) => {
+  const send = useCallback((content: string, replyToId?: number | null, attachmentId?: number | null) => {
     const c = clientRef.current
-    if (!c?.active || !content.trim()) return
+    if (!c?.active) return
+    if (!content.trim() && attachmentId == null) return // matnsiz va filesiz — yubormaymiz
     c.publish({
       destination: '/app/chat.send',
-      body: JSON.stringify({ content: content.trim(), replyToId: replyToId ?? null }),
+      body: JSON.stringify({
+        content: content.trim(),
+        replyToId: replyToId ?? null,
+        attachmentId: attachmentId ?? null,
+      }),
     })
   }, [])
 

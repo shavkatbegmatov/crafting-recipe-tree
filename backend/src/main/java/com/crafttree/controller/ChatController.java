@@ -1,5 +1,6 @@
 package com.crafttree.controller;
 
+import com.crafttree.dto.AttachmentDto;
 import com.crafttree.dto.ChatAnnouncementDto;
 import com.crafttree.dto.ChatEditRequest;
 import com.crafttree.dto.ChatIdRequest;
@@ -9,10 +10,12 @@ import com.crafttree.dto.ChatReactionUpdate;
 import com.crafttree.dto.ChatSendRequest;
 import com.crafttree.dto.PresenceDto;
 import com.crafttree.dto.ReactionGroupDto;
+import com.crafttree.entity.ChatAttachment;
 import com.crafttree.entity.ChatMessage;
 import com.crafttree.entity.ChatMessageReaction;
 import com.crafttree.entity.NotificationType;
 import com.crafttree.entity.User;
+import com.crafttree.repository.ChatAttachmentRepository;
 import com.crafttree.repository.ChatMessageReactionRepository;
 import com.crafttree.repository.ChatMessageRepository;
 import com.crafttree.repository.UserRepository;
@@ -25,6 +28,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.CacheControl;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -32,7 +38,9 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -59,10 +67,16 @@ public class ChatController {
     private final RateLimiterService rateLimiter;
     private final ChatMessageReactionRepository reactionRepo;
     private final NotificationService notificationService;
+    private final ChatAttachmentRepository attachmentRepo;
 
     /** Chat spam himoyasi: bitta foydalanuvchidan daqiqasiga maksimal xabar. */
     private static final int CHAT_BURST = 15;
     private static final Duration CHAT_WINDOW = Duration.ofMinutes(1);
+
+    /** Ulanma cheklovlari: faqat rasm turlari, maksimal 5 MB. */
+    private static final Set<String> ALLOWED_ATTACHMENT_TYPES =
+            Set.of("image/png", "image/jpeg", "image/gif", "image/webp");
+    private static final long MAX_ATTACHMENT_BYTES = 5L * 1024 * 1024;
 
     /**
      * REST: Fetch the last N chat messages (for initial load / scrollback).
@@ -127,6 +141,56 @@ public class ChatController {
     }
 
     /**
+     * REST: Rasm yuklash. STOMP multipart yubora olmaydi — avval shu yerga yuklanib,
+     * qaytgan id keyin {@code /app/chat.send}da {@code attachmentId} sifatida ulanadi.
+     */
+    @PostMapping("/api/chat/upload")
+    @Operation(summary = "Chat ulanmasini (rasm) yuklash")
+    public ResponseEntity<AttachmentDto> upload(@RequestParam("file") MultipartFile file, Principal principal) {
+        User user = extractUser(principal);
+        if (user == null) {
+            return ResponseEntity.status(401).build();
+        }
+        if (file == null || file.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        if (file.getSize() > MAX_ATTACHMENT_BYTES) {
+            return ResponseEntity.status(413).build(); // Payload Too Large
+        }
+        String contentType = file.getContentType();
+        if (contentType == null || !ALLOWED_ATTACHMENT_TYPES.contains(contentType)) {
+            return ResponseEntity.status(415).build(); // Unsupported Media Type
+        }
+        try {
+            ChatAttachment a = ChatAttachment.builder()
+                    .filename(sanitizeFilename(file.getOriginalFilename()))
+                    .contentType(contentType)
+                    .sizeBytes(file.getSize())
+                    .data(file.getBytes())
+                    .uploadedBy(user)
+                    .build();
+            attachmentRepo.save(a);
+            return ResponseEntity.ok(AttachmentDto.from(a));
+        } catch (IOException e) {
+            log.warn("Attachment upload failed", e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    /** REST: Ulanmani ko'rsatish/yuklab olish. Brauzer keshlashi uchun uzoq muddatli cache. */
+    @GetMapping("/api/chat/attachment/{id}")
+    @Operation(summary = "Chat ulanmasini olish")
+    public ResponseEntity<byte[]> attachment(@PathVariable Long id) {
+        return attachmentRepo.findById(id)
+                .map(a -> ResponseEntity.ok()
+                        .contentType(MediaType.parseMediaType(a.getContentType()))
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + a.getFilename() + "\"")
+                        .cacheControl(CacheControl.maxAge(Duration.ofDays(30)).cachePublic())
+                        .body(a.getData()))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    /**
      * STOMP: Receive a message from an authenticated user and broadcast
      * it to all subscribers on /topic/chat.
      */
@@ -138,9 +202,11 @@ public class ChatController {
             return;
         }
 
-        String content = request.getContent();
-        if (content == null || content.isBlank() || content.length() > 2000) {
-            return; // silently drop invalid
+        String text = request.getContent() == null ? "" : request.getContent().trim();
+        boolean hasAttachment = request.getAttachmentId() != null;
+        // Matnsiz xabarga faqat ulanma bo'lsa ruxsat; juda uzun matn — rad etiladi.
+        if ((text.isEmpty() && !hasAttachment) || text.length() > 2000) {
+            return;
         }
 
         User user = extractUser(principal);
@@ -167,18 +233,22 @@ public class ChatController {
 
         ChatMessage.ChatMessageBuilder builder = ChatMessage.builder()
                 .user(fresh)
-                .content(content.trim());
+                .content(text);
         // Reply — javob berilayotgan xabar (mavjud bo'lsa) bog'lanadi.
         if (request.getReplyToId() != null) {
             chatRepo.findById(request.getReplyToId()).ifPresent(builder::replyTo);
+        }
+        // Ulanma — oldindan yuklangan fayl (mavjud bo'lsa) bog'lanadi.
+        if (hasAttachment) {
+            attachmentRepo.findById(request.getAttachmentId()).ifPresent(builder::attachment);
         }
         ChatMessage entity = builder.build();
         chatRepo.save(entity);
 
         ChatMessageDto dto = ChatMessageDto.from(entity);
         messaging.convertAndSend("/topic/chat", dto);
-        notifyMentions(content.trim(), fresh);
-        log.debug("Chat from {}: {}", fresh.getUsername(), content.trim());
+        notifyMentions(text, fresh);
+        log.debug("Chat from {}: {}", fresh.getUsername(), text);
     }
 
     /** O'z xabarini tahrirlash. Faqat egasi; tahrirlangan vaqt belgilanib, real-vaqtda tarqatiladi. */
@@ -274,10 +344,11 @@ public class ChatController {
 
     /** Xabar matnidan @username eslatmalarini ajratib oladi (takrorsiz, tartib saqlangan). */
     static Set<String> extractMentions(String content) {
-        if (content == null || content.indexOf('@') < 0) {
-            return Set.of();
-        }
+        // Har doim o'zgartirilishi mumkin (mutable) to'plam qaytariladi — chaqiruvchi remove() qila oladi.
         Set<String> usernames = new LinkedHashSet<>();
+        if (content == null || content.indexOf('@') < 0) {
+            return usernames;
+        }
         Matcher m = MENTION_PATTERN.matcher(content);
         while (m.find()) {
             usernames.add(m.group(1));
@@ -288,6 +359,11 @@ public class ChatController {
     /** Eslatilgan (mavjud, faol, o'zi bo'lmagan) foydalanuvchilarga bildirishnoma yuboradi. */
     private void notifyMentions(String content, User sender) {
         Set<String> usernames = extractMentions(content);
+        // extractMentions @ bo'lmasa Set.of() (o'zgarmas) qaytaradi — remove() chaqirsak
+        // UnsupportedOperationException bo'lardi, shuning uchun avval bo'sh-tekshiruv.
+        if (usernames.isEmpty()) {
+            return;
+        }
         usernames.remove(sender.getUsername());
         if (usernames.isEmpty()) {
             return;
@@ -297,5 +373,14 @@ public class ChatController {
                 notificationService.notifyUser(u, NotificationType.CHAT_MENTION, sender.getUsername(), "/");
             }
         }
+    }
+
+    /** Fayl nomini xavfsiz holatga keltiradi (yo'l/maxsus belgilarsiz, 255 belgigacha). */
+    private static String sanitizeFilename(String name) {
+        if (name == null || name.isBlank()) {
+            return "file";
+        }
+        String cleaned = name.replaceAll("[^A-Za-z0-9._-]", "_");
+        return cleaned.length() > 255 ? cleaned.substring(0, 255) : cleaned;
     }
 }

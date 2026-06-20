@@ -41,6 +41,11 @@ public class ChatMessage {
     @Builder.Default
     private Set<ChatMessageReaction> reactions = new HashSet<>();
 
+    /** Ulangan fayl (rasm/hujjat). Null — oddiy matn xabari. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "attachment_id")
+    private ChatAttachment attachment;
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 

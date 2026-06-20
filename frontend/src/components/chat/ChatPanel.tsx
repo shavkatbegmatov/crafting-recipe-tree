@@ -1,15 +1,15 @@
-import { useState, useRef, useEffect, useLayoutEffect, type KeyboardEvent } from 'react'
+import { useState, useRef, useEffect, useLayoutEffect, type KeyboardEvent, type ChangeEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
   MessageCircle, X, Send, Shield, Crown, Loader2, LogIn, Megaphone,
-  Reply, Pencil, Trash2, CornerUpLeft, SmilePlus, Search,
+  Reply, Pencil, Trash2, CornerUpLeft, SmilePlus, Search, Paperclip,
 } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 import { useChat } from '../../hooks/useChat'
 import { useAnnouncement } from '../../hooks/useAnnouncement'
-import type { ChatMessageDto } from '../../api/chat'
-import { searchChatMessages } from '../../api/chat'
+import type { ChatMessageDto, Attachment } from '../../api/chat'
+import { searchChatMessages, uploadChatFile, attachmentUrl } from '../../api/chat'
 import { avatarColor, initials } from '../../utils/avatarColor'
 
 /* ────── helpers ────── */
@@ -207,6 +207,17 @@ function ChatRow({
                 <p className="text-[10px] text-[#8a7a60] truncate max-w-[200px]">{msg.replyToContent}</p>
               </div>
             )}
+            {/* Ulangan rasm */}
+            {msg.attachment && (
+              <a href={attachmentUrl(msg.attachment)} target="_blank" rel="noreferrer" className="block mb-1">
+                <img
+                  src={attachmentUrl(msg.attachment)}
+                  alt={msg.attachment.filename}
+                  loading="lazy"
+                  className="max-w-full max-h-52 rounded-lg object-cover"
+                />
+              </a>
+            )}
             {renderContent(msg.content)}
             {msg.editedAt && (
               <span className="text-[9px] italic opacity-50 ml-1.5 select-none">({t('chat.edited')})</span>
@@ -266,8 +277,11 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState<ChatMessageDto[] | null>(null)
+  const [pendingAttachment, setPendingAttachment] = useState<Attachment | null>(null)
+  const [uploading, setUploading] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
   const taRef = useRef<HTMLTextAreaElement>(null)
+  const fileRef = useRef<HTMLInputElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const prevScrollHeight = useRef(0)
 
@@ -338,14 +352,34 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
     if (window.confirm(t('chat.confirmDelete'))) remove(m.id)
   }
 
+  const handleFile = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    e.target.value = '' // bir xil faylni qayta tanlay olish uchun tozalaymiz
+    if (!file) return
+    if (file.size > 5 * 1024 * 1024) {
+      alert(t('chat.fileTooLarge'))
+      return
+    }
+    setUploading(true)
+    try {
+      const att = await uploadChatFile(file)
+      setPendingAttachment(att)
+    } catch {
+      alert(t('chat.uploadFailed'))
+    } finally {
+      setUploading(false)
+    }
+  }
+
   const handleSend = () => {
-    if (!draft.trim() || !connected) return
+    if ((!draft.trim() && !pendingAttachment) || !connected) return
     if (editing) {
       edit(editing.id, draft)
       setEditing(null)
     } else {
-      send(draft, replyingTo?.id)
+      send(draft, replyingTo?.id, pendingAttachment?.id)
       setReplyingTo(null)
+      setPendingAttachment(null)
     }
     setDraft('')
   }
@@ -605,6 +639,25 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
               </div>
             )}
 
+            {/* Tanlangan rasm preview */}
+            {pendingAttachment && (
+              <div className="flex items-center gap-2 mb-2 px-2.5 py-1.5 rounded-lg bg-dark-bg border border-dark-border">
+                <img
+                  src={attachmentUrl(pendingAttachment)}
+                  alt={pendingAttachment.filename}
+                  className="w-10 h-10 rounded object-cover shrink-0"
+                />
+                <span className="text-[10px] text-[#8a7a60] truncate flex-1">{pendingAttachment.filename}</span>
+                <button
+                  onClick={() => setPendingAttachment(null)}
+                  className="p-1 rounded text-[#8a7a60] hover:text-red-400 transition-colors shrink-0"
+                  aria-label={t('chat.cancel')}
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
+
             {user ? (
               <div className="relative flex items-end gap-2">
                 {/* @mention autocomplete dropdown */}
@@ -631,6 +684,22 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
                     ))}
                   </div>
                 )}
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept="image/png,image/jpeg,image/gif,image/webp"
+                  className="hidden"
+                  onChange={handleFile}
+                />
+                <button
+                  onClick={() => fileRef.current?.click()}
+                  disabled={!connected || uploading}
+                  className="p-2 rounded-xl text-[#8a7a60] shrink-0 hover:text-dark-gold hover:bg-dark-hover
+                             transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                  aria-label={t('chat.attachFile')}
+                >
+                  {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Paperclip className="w-4 h-4" />}
+                </button>
                 <textarea
                   ref={taRef}
                   rows={1}
@@ -647,7 +716,7 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
                 />
                 <button
                   onClick={handleSend}
-                  disabled={!draft.trim() || !connected}
+                  disabled={(!draft.trim() && !pendingAttachment) || !connected}
                   className="p-2 rounded-xl bg-dark-gold/20 text-dark-gold shrink-0
                              hover:bg-dark-gold/30 transition-colors
                              disabled:opacity-30 disabled:cursor-not-allowed"
