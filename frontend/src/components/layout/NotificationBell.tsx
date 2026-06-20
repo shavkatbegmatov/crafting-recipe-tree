@@ -53,6 +53,7 @@ export default function NotificationBell() {
   }
 
   return (
+    <>
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen((o) => !o)}
@@ -68,17 +69,6 @@ export default function NotificationBell() {
       </button>
 
       <AnimatePresence>
-        {open && (
-          <motion.div
-            key="notif-backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.15 }}
-            onClick={() => setOpen(false)}
-            className="fixed inset-x-0 bottom-0 top-14 z-40 bg-black/40"
-          />
-        )}
         {open && (
           <motion.div
             key="notif-panel"
@@ -134,5 +124,22 @@ export default function NotificationBell() {
         )}
       </AnimatePresence>
     </div>
+
+      {/* Backdrop — ref konteyneridan TASHQARIDA. Shunda tashqi-klik useEffect (mousedown)
+          uni "tashqari" deb biladi va dropdownni darhol yopadi (backdrop o'z onClick'iga ham ega). */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            key="notif-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            onClick={() => setOpen(false)}
+            className="fixed inset-x-0 bottom-0 top-14 z-40 bg-black/40"
+          />
+        )}
+      </AnimatePresence>
+    </>
   )
 }
