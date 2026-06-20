@@ -1,15 +1,17 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { Star, Loader2, LogIn } from 'lucide-react'
+import { Star, Loader2, LogIn, ArrowLeft } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { useFavorites } from '../hooks/useFavorites'
 import { useContentWidth } from '../hooks/useContentWidth'
+import { useGoBack } from '../hooks/useGoBack'
 import ItemCard from '../components/items/ItemCard'
 
 export default function FavoritesPage() {
   const { t } = useTranslation()
   const { user } = useAuth()
   const contentWidth = useContentWidth('max-w-6xl')
+  const goBack = useGoBack('/')
   const { data: favorites, isLoading, isError } = useFavorites(!!user)
 
   if (!user) {
@@ -30,6 +32,14 @@ export default function FavoritesPage() {
 
   return (
     <div className={`space-y-5 ${contentWidth}`}>
+      <button
+        type="button"
+        onClick={goBack}
+        className="text-[#8a7a60] hover:text-[#d4c4a0] text-sm flex items-center gap-1 transition-colors"
+      >
+        <ArrowLeft size={14} /> {t('common.back')}
+      </button>
+
       <div>
         <h1 className="text-xl font-semibold text-[#d4c4a0] flex items-center gap-2">
           <Star size={18} className="text-dark-gold" />

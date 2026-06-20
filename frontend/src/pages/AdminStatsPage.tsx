@@ -1,12 +1,13 @@
 import { useTranslation } from 'react-i18next'
 import {
-  BarChart3, Boxes, Layers, FileText, Tag, Users, Shield, ShieldAlert,
+  BarChart3, ArrowLeft, Boxes, Layers, FileText, Tag, Users, Shield, ShieldAlert,
   Ban, MessageCircle, CalendarDays, Star, Package, Loader2, type LucideIcon,
 } from 'lucide-react'
 import { useAdminStats } from '../hooks/useAdminStats'
 import { useCategories } from '../hooks/useItems'
 import { useLocalizedField } from '../hooks/useLanguage'
 import { useContentWidth } from '../hooks/useContentWidth'
+import { useGoBack } from '../hooks/useGoBack'
 import { DEFAULT_CATEGORY_COLOR } from '../utils/constants'
 
 interface Stat {
@@ -36,6 +37,7 @@ export default function AdminStatsPage() {
   const { t } = useTranslation()
   const { getField } = useLocalizedField()
   const contentWidth = useContentWidth('max-w-5xl')
+  const goBack = useGoBack('/')
   const { data: stats, isLoading, isError } = useAdminStats()
   const { data: categories } = useCategories()
 
@@ -86,6 +88,14 @@ export default function AdminStatsPage() {
 
   return (
     <div className={`space-y-6 ${contentWidth}`}>
+      <button
+        type="button"
+        onClick={goBack}
+        className="text-[#8a7a60] hover:text-[#d4c4a0] text-sm flex items-center gap-1 transition-colors"
+      >
+        <ArrowLeft size={14} /> {t('common.back')}
+      </button>
+
       <div>
         <h1 className="text-xl font-semibold text-[#d4c4a0] flex items-center gap-2">
           <BarChart3 size={18} className="text-dark-gold" />

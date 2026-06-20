@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { useQueries } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
-import { GitCompare, Search, X, Plus, Clock, Loader2 } from 'lucide-react'
+import { GitCompare, Search, X, Plus, Clock, Loader2, ArrowLeft } from 'lucide-react'
 import { useItems, useCategories } from '../hooks/useItems'
 import { useGameVersion } from '../contexts/GameVersionContext'
 import { fetchRawTotals } from '../api/items'
 import { useLocalizedField } from '../hooks/useLanguage'
 import { useContentWidth } from '../hooks/useContentWidth'
+import { useGoBack } from '../hooks/useGoBack'
 import ItemImageIcon from '../components/ui/ItemImageIcon'
 import CategoryBadge from '../components/ui/CategoryBadge'
 import { formatTime } from '../utils/formatTime'
@@ -22,6 +23,7 @@ export default function ComparePage() {
   const { t } = useTranslation()
   const { getField } = useLocalizedField()
   const contentWidth = useContentWidth('max-w-5xl')
+  const goBack = useGoBack('/')
   const { effectiveVersion } = useGameVersion()
   const { data: allItems } = useItems(undefined)
   const { data: categories } = useCategories()
@@ -62,6 +64,14 @@ export default function ComparePage() {
 
   return (
     <div className={`space-y-5 ${contentWidth}`}>
+      <button
+        type="button"
+        onClick={goBack}
+        className="text-[#8a7a60] hover:text-[#d4c4a0] text-sm flex items-center gap-1 transition-colors"
+      >
+        <ArrowLeft size={14} /> {t('common.back')}
+      </button>
+
       <div>
         <h1 className="text-xl font-semibold text-[#d4c4a0] flex items-center gap-2">
           <GitCompare size={18} className="text-dark-gold" />
