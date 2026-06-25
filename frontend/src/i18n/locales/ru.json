@@ -47,7 +47,13 @@
     "error": "Произошла ошибка",
     "rawNoRecipe": "Это сырьё — рецепта нет",
     "openDepth": "Уровни",
-    "expandAll": "Раскрыть всё"
+    "expandAll": "Раскрыть всё",
+    "compareInventory": "С инвентарём",
+    "compareInventoryHint": "Раскрашивает элементы дерева по вашему инвентарю",
+    "invStatus": "Есть: {{have}} / Нужно: {{need}}",
+    "invEnough": "Достаточно",
+    "invPartial": "Частично",
+    "invNone": "Нет"
   },
   "rawTotals": {
     "title": "Всего сырья для {{count}} шт. {{itemName}}",

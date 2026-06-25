@@ -47,7 +47,13 @@
     "error": "An error occurred",
     "rawNoRecipe": "This is a raw material — no recipe",
     "openDepth": "Levels",
-    "expandAll": "Expand all"
+    "expandAll": "Expand all",
+    "compareInventory": "With inventory",
+    "compareInventoryHint": "Colors tree items by your inventory",
+    "invStatus": "Have: {{have}} / Need: {{need}}",
+    "invEnough": "Enough",
+    "invPartial": "Partial",
+    "invNone": "None"
   },
   "rawTotals": {
     "title": "Total raw materials for {{count}}x {{itemName}}",

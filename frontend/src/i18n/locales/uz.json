@@ -47,7 +47,13 @@
     "error": "Xatolik yuz berdi",
     "rawNoRecipe": "Bu xomashyo — retsepti yo'q",
     "openDepth": "Darajalar",
-    "expandAll": "Hammasini ochish"
+    "expandAll": "Hammasini ochish",
+    "compareInventory": "Inventar bilan",
+    "compareInventoryHint": "Daraxt elementlarini inventaringizga solishtirib rang beradi",
+    "invStatus": "Bor: {{have}} / Kerak: {{need}}",
+    "invEnough": "Yetarli",
+    "invPartial": "Qisman",
+    "invNone": "Yo'q"
   },
   "rawTotals": {
     "title": "{{count}} dona {{itemName}} uchun jami xomashyo",

@@ -47,7 +47,13 @@
     "error": "Хатолик юз берди",
     "rawNoRecipe": "Бу хомашё — рецепти йўқ",
     "openDepth": "Даражалар",
-    "expandAll": "Ҳаммасини очиш"
+    "expandAll": "Ҳаммасини очиш",
+    "compareInventory": "Инвентар билан",
+    "compareInventoryHint": "Дарахт элементларини инвентарингизга солиштириб ранг беради",
+    "invStatus": "Бор: {{have}} / Керак: {{need}}",
+    "invEnough": "Етарли",
+    "invPartial": "Қисман",
+    "invNone": "Йўқ"
   },
   "rawTotals": {
     "title": "{{count}} дона {{itemName}} учун жами хомашё",
