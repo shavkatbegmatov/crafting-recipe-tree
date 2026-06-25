@@ -55,6 +55,17 @@
     "invPartial": "Qisman",
     "invNone": "Yo'q"
   },
+  "plan": {
+    "title": "Kraft rejasi",
+    "targetQty": "Maqsad",
+    "steps": "Qadamlar",
+    "noSteps": "Bu item to'g'ridan yasaladi — oraliq qadam yo'q",
+    "sequential": "ketma-ket",
+    "parallel": "parallel",
+    "shopping": "Sotib olish kerak",
+    "have": "Bor",
+    "loginForInventory": "inventar bilan solishtirish uchun kiring"
+  },
   "rawTotals": {
     "title": "{{count}} dona {{itemName}} uchun jami xomashyo",
     "rawMaterial": "Xomashyo",

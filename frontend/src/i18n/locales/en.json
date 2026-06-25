@@ -55,6 +55,17 @@
     "invPartial": "Partial",
     "invNone": "None"
   },
+  "plan": {
+    "title": "Craft plan",
+    "targetQty": "Target",
+    "steps": "Steps",
+    "noSteps": "This item is crafted directly — no intermediate steps",
+    "sequential": "sequential",
+    "parallel": "parallel",
+    "shopping": "Need to buy",
+    "have": "Have",
+    "loginForInventory": "log in to use your inventory"
+  },
   "rawTotals": {
     "title": "Total raw materials for {{count}}x {{itemName}}",
     "rawMaterial": "Raw material",

@@ -55,6 +55,17 @@
     "invPartial": "Частично",
     "invNone": "Нет"
   },
+  "plan": {
+    "title": "План крафта",
+    "targetQty": "Цель",
+    "steps": "Шаги",
+    "noSteps": "Этот предмет крафтится напрямую — промежуточных шагов нет",
+    "sequential": "последовательно",
+    "parallel": "параллельно",
+    "shopping": "Нужно купить",
+    "have": "Есть",
+    "loginForInventory": "войдите для учёта инвентаря"
+  },
   "rawTotals": {
     "title": "Всего сырья для {{count}} шт. {{itemName}}",
     "rawMaterial": "Сырьё",

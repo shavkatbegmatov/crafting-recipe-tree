@@ -55,6 +55,17 @@
     "invPartial": "Қисман",
     "invNone": "Йўқ"
   },
+  "plan": {
+    "title": "Крафт режаси",
+    "targetQty": "Мақсад",
+    "steps": "Қадамлар",
+    "noSteps": "Бу итем тўғридан ясалади — оралиқ қадам йўқ",
+    "sequential": "кетма-кет",
+    "parallel": "параллел",
+    "shopping": "Сотиб олиш керак",
+    "have": "Бор",
+    "loginForInventory": "инвентар билан солиштириш учун киринг"
+  },
   "rawTotals": {
     "title": "{{count}} дона {{itemName}} учун жами хомашё",
     "rawMaterial": "Хомашё",
