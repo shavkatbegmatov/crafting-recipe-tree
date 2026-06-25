@@ -64,7 +64,13 @@
     "parallel": "parallel",
     "shopping": "Sotib olish kerak",
     "have": "Bor",
-    "loginForInventory": "inventar bilan solishtirish uchun kiring"
+    "loginForInventory": "inventar bilan solishtirish uchun kiring",
+    "craftNow": "{{count}} dona yasash",
+    "craftDone": "{{count}} dona yasaldi — inventar yangilandi",
+    "craftMissing": "Xomashyo yetishmaydi:"
+  },
+  "history": {
+    "title": "Kraft tarixim"
   },
   "rawTotals": {
     "title": "{{count}} dona {{itemName}} uchun jami xomashyo",

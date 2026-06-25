@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { ListChecks, ShoppingCart, Clock, Zap, Check } from 'lucide-react'
+import { ListChecks, ShoppingCart, Clock, Zap, Check, Hammer, AlertTriangle, Loader2 } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 import { useInventory } from '../../hooks/useInventory'
 import { useCraftPlan } from '../../hooks/useCraftPlan'
+import { useCraftBulk } from '../../hooks/useCraft'
 import { useLocalizedField } from '../../hooks/useLanguage'
 import { useCategories } from '../../hooks/useItems'
 import { formatTime } from '../../utils/formatTime'
@@ -21,8 +22,8 @@ interface Props {
 const fmt = (n: number) => (n % 1 === 0 ? String(n) : n.toFixed(2))
 
 /**
- * Kraft rejasi paneli: maqsad miqdori + qadam-baqadam yasash tartibi +
- * inventardan ayirilgan "sotib olish kerak" ro'yxati + ketma-ket/parallel vaqt.
+ * Kraft rejasi paneli: maqsad miqdori + qadam-baqadam tartib + inventar-aware shopping list +
+ * vaqt. Login bo'lsa "Yasash" tugmasi inventardan xomashyo ayiradi va tarixga yozadi.
  */
 export default function CraftPlanPanel({ itemId, isRaw }: Props) {
   const { t } = useTranslation()
@@ -33,9 +34,12 @@ export default function CraftPlanPanel({ itemId, isRaw }: Props) {
   const [qty, setQty] = useState(1)
   const invEntries = inventory ?? []
   const { data: plan, isLoading } = useCraftPlan(itemId, qty, invEntries, !isRaw)
+  const craft = useCraftBulk()
   const colorOf = (code?: string) => categories?.find((c) => c.code === code)?.color || DEFAULT_CATEGORY_COLOR
 
   if (isRaw) return null // xomashyoda reja yo'q
+
+  const result = craft.data
 
   return (
     <div className="panel p-5 space-y-4">
@@ -133,6 +137,41 @@ export default function CraftPlanPanel({ itemId, isRaw }: Props) {
                   )
                 })}
               </div>
+            </div>
+          )}
+
+          {/* Bulk craft — login bo'lsa: inventardan ayirib yasaydi, tarixga yozadi */}
+          {user && (
+            <div className="pt-3 border-t border-dark-border space-y-2">
+              <button
+                type="button"
+                onClick={() => craft.mutate({ itemId, quantity: qty })}
+                disabled={craft.isPending}
+                className="btn-base btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-60"
+              >
+                {craft.isPending ? <Loader2 size={15} className="animate-spin" /> : <Hammer size={15} />}
+                {t('plan.craftNow', { count: qty })}
+              </button>
+
+              {result && result.success && (
+                <div className="flex items-center gap-1.5 text-xs text-green-400">
+                  <Check size={13} /> {t('plan.craftDone', { count: qty })}
+                </div>
+              )}
+              {result && !result.success && result.missing && result.missing.length > 0 && (
+                <div className="text-xs text-red-400">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <AlertTriangle size={13} /> {t('plan.craftMissing')}
+                  </div>
+                  <div className="flex flex-wrap gap-x-3 gap-y-0.5 pl-5 text-skin-muted">
+                    {result.missing.map((m) => (
+                      <span key={m.itemId}>
+                        {getField(m, 'name')} <span className="font-mono text-red-400/80">({m.have}/{m.needed})</span>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </>

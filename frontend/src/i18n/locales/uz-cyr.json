@@ -64,7 +64,13 @@
     "parallel": "параллел",
     "shopping": "Сотиб олиш керак",
     "have": "Бор",
-    "loginForInventory": "инвентар билан солиштириш учун киринг"
+    "loginForInventory": "инвентар билан солиштириш учун киринг",
+    "craftNow": "{{count}} дона ясаш",
+    "craftDone": "{{count}} дона ясалди — инвентар янгиланди",
+    "craftMissing": "Хомашё етишмайди:"
+  },
+  "history": {
+    "title": "Крафт тарихим"
   },
   "rawTotals": {
     "title": "{{count}} дона {{itemName}} учун жами хомашё",

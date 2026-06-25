@@ -64,7 +64,13 @@
     "parallel": "параллельно",
     "shopping": "Нужно купить",
     "have": "Есть",
-    "loginForInventory": "войдите для учёта инвентаря"
+    "loginForInventory": "войдите для учёта инвентаря",
+    "craftNow": "Скрафтить {{count}} шт.",
+    "craftDone": "Скрафчено {{count}} шт. — инвентарь обновлён",
+    "craftMissing": "Не хватает сырья:"
+  },
+  "history": {
+    "title": "Моя история крафта"
   },
   "rawTotals": {
     "title": "Всего сырья для {{count}} шт. {{itemName}}",

@@ -64,7 +64,13 @@
     "parallel": "parallel",
     "shopping": "Need to buy",
     "have": "Have",
-    "loginForInventory": "log in to use your inventory"
+    "loginForInventory": "log in to use your inventory",
+    "craftNow": "Craft {{count}}",
+    "craftDone": "Crafted {{count}} — inventory updated",
+    "craftMissing": "Not enough materials:"
+  },
+  "history": {
+    "title": "My craft history"
   },
   "rawTotals": {
     "title": "Total raw materials for {{count}}x {{itemName}}",

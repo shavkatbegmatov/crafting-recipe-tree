@@ -1,25 +1,30 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { Boxes, CheckCircle2, AlertCircle, Check, Loader2, LogIn, ArrowLeft, Filter } from 'lucide-react'
+import { Boxes, CheckCircle2, AlertCircle, Check, Loader2, LogIn, ArrowLeft, Filter, History } from 'lucide-react'
 import { useCategories } from '../hooks/useItems'
 import { useCraftable } from '../hooks/useCraftable'
+import { useCraftHistory } from '../hooks/useCraft'
 import { useContentWidth } from '../hooks/useContentWidth'
 import { useGoBack } from '../hooks/useGoBack'
 import { useAuth } from '../contexts/AuthContext'
+import { useLocalizedField } from '../hooks/useLanguage'
 import { useInventory, useSaveInventory } from '../hooks/useInventory'
 import MaterialPicker, { type PickedItem } from '../components/items/MaterialPicker'
 import CraftableResultCard from '../components/items/CraftableResultCard'
+import ItemImageIcon from '../components/ui/ItemImageIcon'
 import Spinner from '../components/ui/Spinner'
 import { DEFAULT_CATEGORY_COLOR } from '../utils/constants'
 
 export default function InventoryPage() {
   const { t } = useTranslation()
+  const { getField } = useLocalizedField()
   const { user } = useAuth()
   const contentWidth = useContentWidth('max-w-4xl')
   const goBack = useGoBack('/')
   const { data: categories } = useCategories()
   const { data: inventory } = useInventory(!!user)
+  const { data: history } = useCraftHistory(!!user)
   const saveInv = useSaveInventory()
 
   const [selected, setSelected] = useState<PickedItem[]>([])
@@ -164,6 +169,37 @@ export default function InventoryPage() {
               )}
             </div>
           )}
+        </div>
+      )}
+
+      {/* Kraft tarixi — bulk craft yozuvlari (eng yangisi avval) */}
+      {history && history.content.length > 0 && (
+        <div>
+          <h2 className="text-sm font-medium text-skin-base mb-3 flex items-center gap-1.5">
+            <History size={15} className="text-dark-gold" /> {t('history.title')}
+          </h2>
+          <div className="space-y-1.5">
+            {history.content.map((log) => (
+              <div key={log.id} className="flex items-center gap-2.5 py-1.5 px-2 rounded-md bg-dark-bg/40 text-sm">
+                <ItemImageIcon
+                  imageUrl={log.imageUrl}
+                  alt={getField(log, 'resultItemName')}
+                  size={20}
+                  fallbackColor={colorOf(log.categoryCode)}
+                />
+                <Link
+                  to={`/items/${log.resultItemId}`}
+                  className="flex-1 text-skin-base hover:text-skin-accent truncate transition-colors"
+                >
+                  {getField(log, 'resultItemName')}
+                </Link>
+                <span className="text-xs font-mono text-dark-gold shrink-0">×{log.resultQuantity}</span>
+                <span className="text-[11px] text-skin-dark shrink-0">
+                  {new Date(log.craftedAt).toLocaleString()}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>
