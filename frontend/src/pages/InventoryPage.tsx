@@ -1,23 +1,20 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { Boxes, CheckCircle2, AlertCircle, Check, Loader2, LogIn, ArrowLeft } from 'lucide-react'
-import { useLocalizedField } from '../hooks/useLanguage'
+import { Boxes, CheckCircle2, AlertCircle, Check, Loader2, LogIn, ArrowLeft, Filter, History } from 'lucide-react'
 import { useCategories } from '../hooks/useItems'
 import { useCraftable } from '../hooks/useCraftable'
+import { useCraftHistory } from '../hooks/useCraft'
 import { useContentWidth } from '../hooks/useContentWidth'
 import { useGoBack } from '../hooks/useGoBack'
 import { useAuth } from '../contexts/AuthContext'
+import { useLocalizedField } from '../hooks/useLanguage'
 import { useInventory, useSaveInventory } from '../hooks/useInventory'
 import MaterialPicker, { type PickedItem } from '../components/items/MaterialPicker'
+import CraftableResultCard from '../components/items/CraftableResultCard'
 import ItemImageIcon from '../components/ui/ItemImageIcon'
 import Spinner from '../components/ui/Spinner'
 import { DEFAULT_CATEGORY_COLOR } from '../utils/constants'
-import type { CraftableItem } from '../api/craftable'
-
-function fmt(n: number): string {
-  return String(Math.round(n * 10000) / 10000)
-}
 
 export default function InventoryPage() {
   const { t } = useTranslation()
@@ -27,9 +24,11 @@ export default function InventoryPage() {
   const goBack = useGoBack('/')
   const { data: categories } = useCategories()
   const { data: inventory } = useInventory(!!user)
+  const { data: history } = useCraftHistory(!!user)
   const saveInv = useSaveInventory()
 
   const [selected, setSelected] = useState<PickedItem[]>([])
+  const [almostOnly, setAlmostOnly] = useState(false)
   const loadedRef = useRef(false)
 
   // Saqlangan inventarni bir marta local holatga ko'chiramiz.
@@ -56,7 +55,8 @@ export default function InventoryPage() {
 
   const colorOf = (code?: string) => categories?.find((c) => c.code === code)?.color || DEFAULT_CATEGORY_COLOR
   const fully = data?.filter((c) => c.fullyCraftable) ?? []
-  const partial = data?.filter((c) => !c.fullyCraftable) ?? []
+  const partialAll = data?.filter((c) => !c.fullyCraftable) ?? []
+  const partial = almostOnly ? partialAll.filter((c) => c.missingCount <= 2) : partialAll
 
   if (!user) {
     return (
@@ -73,31 +73,6 @@ export default function InventoryPage() {
       </div>
     )
   }
-
-  const card = (c: CraftableItem) => (
-    <div key={c.resultItemId} className="panel p-3">
-      <div className="flex items-center gap-2.5">
-        <ItemImageIcon imageUrl={c.imageUrl} alt={getField(c, 'resultItemName')} size={28} fallbackColor={colorOf(c.categoryCode)} />
-        <span className="flex-1 text-sm text-skin-base truncate">{getField(c, 'resultItemName')}</span>
-        {c.fullyCraftable && (
-          <span className="shrink-0 text-[11px] px-2 py-0.5 rounded-full bg-green-500/15 text-green-300 border border-green-500/30">
-            {t('craftable.canMake', { count: c.maxCraftable })}
-          </span>
-        )}
-      </div>
-      {!c.fullyCraftable && c.missing.length > 0 && (
-        <div className="mt-2 pl-1 space-y-0.5">
-          {c.missing.map((m) => (
-            <div key={m.itemId} className="flex items-center gap-1.5 text-[11px]">
-              <AlertCircle size={11} className="text-amber-400 shrink-0" />
-              <span className="text-skin-base">{getField(m, 'name')}</span>
-              <span className="text-skin-muted">— {t('craftable.needHave', { need: fmt(m.required), have: fmt(m.have) })}</span>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  )
 
   return (
     <div className={`space-y-5 ${contentWidth}`}>
@@ -142,7 +117,7 @@ export default function InventoryPage() {
             <div className="flex justify-center py-10"><Spinner /></div>
           ) : isError ? (
             <div className="py-8 text-center text-sm text-red-400">{t('craftable.error')}</div>
-          ) : fully.length === 0 && partial.length === 0 ? (
+          ) : fully.length === 0 && partialAll.length === 0 ? (
             <div className="panel py-10 text-center text-sm text-skin-dark">
               {t('craftable.noResults')}
             </div>
@@ -154,20 +129,77 @@ export default function InventoryPage() {
                     <CheckCircle2 size={15} className="text-green-400" />
                     {t('craftable.canCraft')} <span className="text-skin-muted">({fully.length})</span>
                   </h3>
-                  <div className="grid sm:grid-cols-2 gap-2.5">{fully.map(card)}</div>
+                  <div className="grid sm:grid-cols-2 gap-2.5">
+                    {fully.map((c) => (
+                      <CraftableResultCard key={c.resultItemId} item={c} categoryColor={colorOf(c.categoryCode)} />
+                    ))}
+                  </div>
                 </div>
               )}
-              {partial.length > 0 && (
+              {partialAll.length > 0 && (
                 <div className="space-y-2.5">
-                  <h3 className="text-sm font-medium text-skin-base flex items-center gap-1.5">
-                    <AlertCircle size={15} className="text-amber-400" />
-                    {t('craftable.almost')} <span className="text-skin-muted">({partial.length})</span>
-                  </h3>
-                  <div className="space-y-2.5">{partial.map(card)}</div>
+                  <div className="flex items-center justify-between gap-2">
+                    <h3 className="text-sm font-medium text-skin-base flex items-center gap-1.5">
+                      <AlertCircle size={15} className="text-amber-400" />
+                      {t('craftable.almost')} <span className="text-skin-muted">({partial.length})</span>
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => setAlmostOnly((v) => !v)}
+                      aria-pressed={almostOnly}
+                      className={`flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full border transition-colors ${
+                        almostOnly
+                          ? 'bg-dark-gold/20 text-dark-gold border-dark-gold/40'
+                          : 'text-skin-muted border-dark-border hover:text-skin-base hover:border-dark-border-hover'
+                      }`}
+                    >
+                      <Filter size={11} /> {t('craftable.almostOnly')}
+                    </button>
+                  </div>
+                  {partial.length === 0 ? (
+                    <p className="text-xs text-skin-dark py-3 text-center">{t('craftable.almostNone')}</p>
+                  ) : (
+                    <div className="space-y-2.5">
+                      {partial.map((c) => (
+                        <CraftableResultCard key={c.resultItemId} item={c} categoryColor={colorOf(c.categoryCode)} />
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
           )}
+        </div>
+      )}
+
+      {/* Kraft tarixi — bulk craft yozuvlari (eng yangisi avval) */}
+      {history && history.content.length > 0 && (
+        <div>
+          <h2 className="text-sm font-medium text-skin-base mb-3 flex items-center gap-1.5">
+            <History size={15} className="text-dark-gold" /> {t('history.title')}
+          </h2>
+          <div className="space-y-1.5">
+            {history.content.map((log) => (
+              <div key={log.id} className="flex items-center gap-2.5 py-1.5 px-2 rounded-md bg-dark-bg/40 text-sm">
+                <ItemImageIcon
+                  imageUrl={log.imageUrl}
+                  alt={getField(log, 'resultItemName')}
+                  size={20}
+                  fallbackColor={colorOf(log.categoryCode)}
+                />
+                <Link
+                  to={`/items/${log.resultItemId}`}
+                  className="flex-1 text-skin-base hover:text-skin-accent truncate transition-colors"
+                >
+                  {getField(log, 'resultItemName')}
+                </Link>
+                <span className="text-xs font-mono text-dark-gold shrink-0">×{log.resultQuantity}</span>
+                <span className="text-[11px] text-skin-dark shrink-0">
+                  {new Date(log.craftedAt).toLocaleString()}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>

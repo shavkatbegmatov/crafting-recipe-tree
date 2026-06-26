@@ -47,7 +47,30 @@
     "error": "An error occurred",
     "rawNoRecipe": "This is a raw material — no recipe",
     "openDepth": "Levels",
-    "expandAll": "Expand all"
+    "expandAll": "Expand all",
+    "compareInventory": "With inventory",
+    "compareInventoryHint": "Colors tree items by your inventory",
+    "invStatus": "Have: {{have}} / Need: {{need}}",
+    "invEnough": "Enough",
+    "invPartial": "Partial",
+    "invNone": "None"
+  },
+  "plan": {
+    "title": "Craft plan",
+    "targetQty": "Target",
+    "steps": "Steps",
+    "noSteps": "This item is crafted directly — no intermediate steps",
+    "sequential": "sequential",
+    "parallel": "parallel",
+    "shopping": "Need to buy",
+    "have": "Have",
+    "loginForInventory": "log in to use your inventory",
+    "craftNow": "Craft {{count}}",
+    "craftDone": "Crafted {{count}} — inventory updated",
+    "craftMissing": "Not enough materials:"
+  },
+  "history": {
+    "title": "My craft history"
   },
   "rawTotals": {
     "title": "Total raw materials for {{count}}x {{itemName}}",
@@ -410,6 +433,9 @@
     "inventory": "My materials",
     "canCraft": "You can craft",
     "almost": "Almost enough",
+    "missingCount": "{{count}} more",
+    "almostOnly": "Almost ready only",
+    "almostNone": "Nothing matches the filter",
     "noResults": "Nothing can be crafted from these materials",
     "error": "Search error",
     "canMake": "{{count}} pcs",

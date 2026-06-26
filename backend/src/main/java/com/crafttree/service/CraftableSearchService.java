@@ -60,6 +60,7 @@ public class CraftableSearchService {
 
             boolean relevant = false;           // foydalanuvchi materiallaridan kamida bittasi ishlatiladi
             BigDecimal maxCraftable = null;      // min(have/required) bo'yicha
+            BigDecimal completenessSum = BigDecimal.ZERO; // har ingredient bo'yicha min(have/required, 1) yig'indisi
             List<MissingMaterial> missing = new ArrayList<>();
 
             for (RecipeIngredient ri : ingredients) {
@@ -75,6 +76,12 @@ public class CraftableSearchService {
                         : BigDecimal.ZERO;
                 maxCraftable = (maxCraftable == null) ? possible : maxCraftable.min(possible);
 
+                // Tayyorlik ulushi: have/required (1 dan oshmaydi); required yo'q/0 bo'lsa — to'liq.
+                BigDecimal ratio = (required != null && required.signum() > 0)
+                        ? userHas.divide(required, 4, RoundingMode.HALF_UP).min(BigDecimal.ONE)
+                        : BigDecimal.ONE;
+                completenessSum = completenessSum.add(ratio);
+
                 if (required != null && userHas.compareTo(required) < 0) {
                     missing.add(MissingMaterial.from(ri.getIngredientItem(), required, userHas));
                 }
@@ -83,15 +90,21 @@ public class CraftableSearchService {
             // Faqat foydalanuvchi materiallariga aloqador retseptlarni qaytaramiz.
             if (relevant) {
                 int max = (maxCraftable != null) ? maxCraftable.intValue() : 0;
-                result.add(CraftableItemDto.from(recipe.getResultItem(), max, max >= 1, missing));
+                int total = ingredients.size();
+                double completeness = total > 0
+                        ? completenessSum.divide(BigDecimal.valueOf(total), 4, RoundingMode.HALF_UP).doubleValue()
+                        : 0.0;
+                result.add(CraftableItemDto.from(recipe.getResultItem(), max, max >= 1, completeness, total, missing));
             }
         }
 
-        // Avval to'liq yasaladiganlar, keyin ko'proq yasaladiganlar, keyin kamroq yetishmaydiganlar.
+        // Avval to'liq yasaladiganlar, keyin ko'proq yasaladiganlar, keyin tayyorligi yuqori
+        // (eng yaqin), oxirida kamroq yetishmaydiganlar.
         result.sort(Comparator
                 .comparing(CraftableItemDto::fullyCraftable).reversed()
                 .thenComparing(Comparator.comparingInt(CraftableItemDto::maxCraftable).reversed())
-                .thenComparingInt(c -> c.missing().size()));
+                .thenComparing(Comparator.comparingDouble(CraftableItemDto::completeness).reversed())
+                .thenComparingInt(CraftableItemDto::missingCount));
         return result;
     }
 }

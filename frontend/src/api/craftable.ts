@@ -25,6 +25,12 @@ export interface CraftableItem {
   imageUrl: string | null
   maxCraftable: number
   fullyCraftable: boolean
+  /** 0..1 — o'rtacha tayyorlik darajasi (har ingredient bo'yicha have/required). */
+  completeness: number
+  /** Retseptdagi jami ingredient turlari soni. */
+  totalIngredients: number
+  /** Yetishmayotgan ingredient turlari soni. */
+  missingCount: number
   missing: MissingMaterial[]
 }
 

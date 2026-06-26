@@ -1,5 +1,6 @@
 package com.crafttree.service;
 
+import com.crafttree.dto.CraftPlanDto;
 import com.crafttree.dto.RawTotalDto;
 import com.crafttree.dto.RecipeTreeNodeDto;
 import com.crafttree.entity.CraftItem;
@@ -91,6 +92,71 @@ public class RecipeTreeService {
                 .orElseThrow(() -> new ItemNotFoundException(itemId));
         GameVersion gv = gameVersionService.resolveOrCurrent(version);
         return calculateTotalCraftTime(item, gv, BigDecimal.ONE, new HashSet<>(), 0);
+    }
+
+    /**
+     * Kraft rejasi: oraliq itemlarni dependency tartibida (chuqurroq avval) qadamlarga ajratadi,
+     * xomashyoni inventardan ayirib "sotib olish kerak" ro'yxatini, hamda ketma-ket va parallel
+     * (kritik yo'l) jami vaqtni hisoblaydi.
+     */
+    public CraftPlanDto generateCraftPlan(Long itemId, int targetQuantity, String version,
+                                          Map<Long, BigDecimal> inventory) {
+        CraftItem item = craftItemRepository.findById(itemId)
+                .orElseThrow(() -> new ItemNotFoundException(itemId));
+        GameVersion gv = gameVersionService.resolveOrCurrent(version);
+        int qty = Math.max(1, targetQuantity);
+        BigDecimal target = BigDecimal.valueOf(qty);
+        Map<Long, BigDecimal> inv = inventory != null ? inventory : Map.of();
+
+        Map<Long, PlanNode> intermediate = new HashMap<>();
+        Map<Long, BigDecimal> rawMap = new LinkedHashMap<>();
+        Map<Long, CraftItem> rawLookup = new HashMap<>();
+        collectPlan(item, gv, target, 0, intermediate, rawMap, rawLookup, new HashSet<>());
+
+        // Qadamlar — oraliq itemlar, maxDepth bo'yicha kamayish tartibida (chuqurroq = avval yasaladi).
+        List<PlanNode> ordered = new ArrayList<>(intermediate.values());
+        ordered.sort(Comparator.comparingInt((PlanNode p) -> p.maxDepth).reversed());
+        List<CraftPlanDto.CraftStep> steps = new ArrayList<>();
+        int seqTime = 0;
+        int stepNum = 1;
+        for (PlanNode p : ordered) {
+            int t = p.ownTime != null
+                    ? BigDecimal.valueOf(p.ownTime).multiply(p.totalQty).setScale(0, RoundingMode.HALF_UP).intValue()
+                    : 0;
+            seqTime += t;
+            steps.add(CraftPlanDto.CraftStep.from(p.item, stepNum++,
+                    p.totalQty.setScale(4, RoundingMode.HALF_UP), t));
+        }
+
+        // Sotib olish ro'yxati: xomashyo jami - inventarda bor (kamida 0).
+        List<CraftPlanDto.ShoppingEntry> shopping = rawMap.entrySet().stream()
+                .sorted(Map.Entry.<Long, BigDecimal>comparingByValue().reversed())
+                .map(e -> {
+                    CraftItem raw = rawLookup.get(e.getKey());
+                    BigDecimal needed = e.getValue();
+                    BigDecimal have = inv.getOrDefault(e.getKey(), BigDecimal.ZERO);
+                    BigDecimal toProcure = needed.subtract(have).max(BigDecimal.ZERO);
+                    return CraftPlanDto.ShoppingEntry.from(raw,
+                            needed.setScale(4, RoundingMode.HALF_UP),
+                            have.setScale(4, RoundingMode.HALF_UP),
+                            toProcure.setScale(4, RoundingMode.HALF_UP));
+                })
+                .collect(Collectors.toList());
+
+        int parallel = criticalPath(item, gv, target, new HashSet<>(), 0);
+
+        return CraftPlanDto.builder()
+                .targetItemId(item.getId())
+                .targetItemName(item.getName())
+                .targetItemNameUz(item.getNameUz())
+                .targetItemNameEn(item.getNameEn())
+                .targetItemNameUzCyr(item.getNameUzCyr())
+                .targetQuantity(qty)
+                .steps(steps)
+                .shoppingList(shopping)
+                .totalTimeSeconds(seqTime)
+                .parallelTimeSeconds(parallel)
+                .build();
     }
 
     // -------------------------------------------------------------------------
@@ -208,5 +274,78 @@ public class RecipeTreeService {
                     new HashSet<>(visited), depth + 1);
         }
         return ownTime + childrenTime;
+    }
+
+    /** Rejani yig'adi: oraliq itemlar (yasash qadami) va xomashyo (sotib olish ro'yxati). */
+    private void collectPlan(CraftItem item, GameVersion gv, BigDecimal multiplier, int depth,
+                             Map<Long, PlanNode> intermediate, Map<Long, BigDecimal> rawMap,
+                             Map<Long, CraftItem> rawLookup, Set<Long> visited) {
+        if (depth > MAX_DEPTH || visited.contains(item.getId())) {
+            return;
+        }
+        if (RAW_CATEGORY.equals(item.getCategory().getCode())) {
+            rawMap.merge(item.getId(), multiplier, BigDecimal::add);
+            rawLookup.putIfAbsent(item.getId(), item);
+            return;
+        }
+
+        visited.add(item.getId());
+        Optional<Recipe> recipeOpt = recipeRepository.findByResultItemIdAndGameVersionId(item.getId(), gv.getId());
+
+        if (recipeOpt.isEmpty() || recipeOpt.get().getIngredients().isEmpty()) {
+            // Retsepti yo'q — xomashyodek ko'rinadi (sotib olish ro'yxatiga tushadi).
+            rawMap.merge(item.getId(), multiplier, BigDecimal::add);
+            rawLookup.putIfAbsent(item.getId(), item);
+            return;
+        }
+
+        Recipe recipe = recipeOpt.get();
+        PlanNode node = intermediate.computeIfAbsent(item.getId(), k -> new PlanNode(item));
+        node.totalQty = node.totalQty.add(multiplier);
+        node.maxDepth = Math.max(node.maxDepth, depth);
+        node.ownTime = recipe.getCraftTimeSeconds() != null
+                ? recipe.getCraftTimeSeconds() : item.getCraftTimeSeconds();
+
+        for (RecipeIngredient ri : recipe.getIngredients()) {
+            BigDecimal childQty = ri.getQuantity().multiply(multiplier);
+            collectPlan(ri.getIngredientItem(), gv, childQty, depth + 1,
+                    intermediate, rawMap, rawLookup, new HashSet<>(visited));
+        }
+    }
+
+    /** Parallel (kritik yo'l) vaqt: tugun o'z vaqti + eng uzun bola zanjiri. */
+    private int criticalPath(CraftItem item, GameVersion gv, BigDecimal quantity, Set<Long> visited, int depth) {
+        if (depth > MAX_DEPTH || visited.contains(item.getId())
+                || RAW_CATEGORY.equals(item.getCategory().getCode())) {
+            return 0;
+        }
+        visited.add(item.getId());
+        Optional<Recipe> recipeOpt = recipeRepository.findByResultItemIdAndGameVersionId(item.getId(), gv.getId());
+        Integer ownTimeSeconds = recipeOpt.map(Recipe::getCraftTimeSeconds).orElse(item.getCraftTimeSeconds());
+        int ownTime = ownTimeSeconds != null
+                ? BigDecimal.valueOf(ownTimeSeconds).multiply(quantity).setScale(0, RoundingMode.HALF_UP).intValue()
+                : 0;
+        if (recipeOpt.isEmpty()) {
+            return ownTime;
+        }
+        int maxChild = 0;
+        for (RecipeIngredient ri : recipeOpt.get().getIngredients()) {
+            BigDecimal childQty = ri.getQuantity().multiply(quantity);
+            maxChild = Math.max(maxChild, criticalPath(ri.getIngredientItem(), gv, childQty,
+                    new HashSet<>(visited), depth + 1));
+        }
+        return ownTime + maxChild;
+    }
+
+    /** Reja yig'ish uchun ichki yordamchi: oraliq itemning jami miqdori, eng chuqur darajasi, vaqti. */
+    private static final class PlanNode {
+        final CraftItem item;
+        BigDecimal totalQty = BigDecimal.ZERO;
+        int maxDepth = 0;
+        Integer ownTime;
+
+        PlanNode(CraftItem item) {
+            this.item = item;
+        }
     }
 }

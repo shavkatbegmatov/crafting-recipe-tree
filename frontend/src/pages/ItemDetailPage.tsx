@@ -9,6 +9,7 @@ import { updateItem, setItemTags } from '../api/items'
 import { useQueryClient } from '@tanstack/react-query'
 import RecipeTree from '../components/tree/RecipeTree'
 import RawTotals from '../components/tree/RawTotals'
+import CraftPlanPanel from '../components/tree/CraftPlanPanel'
 import CategoryBadge from '../components/ui/CategoryBadge'
 import ItemImageIcon from '../components/ui/ItemImageIcon'
 import Spinner from '../components/ui/Spinner'
@@ -404,6 +405,11 @@ export default function ItemDetailPage() {
               quantity={craftQuantity}
               onQuantityChange={setCraftQuantity}
             />
+          )}
+          {showCraftBlocks && (
+            <div className="md:col-span-full">
+              <CraftPlanPanel itemId={itemId} />
+            </div>
           )}
           {showUsedIn && (
             <div className="panel p-5">

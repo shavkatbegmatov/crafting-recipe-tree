@@ -47,7 +47,30 @@
     "error": "Хатолик юз берди",
     "rawNoRecipe": "Бу хомашё — рецепти йўқ",
     "openDepth": "Даражалар",
-    "expandAll": "Ҳаммасини очиш"
+    "expandAll": "Ҳаммасини очиш",
+    "compareInventory": "Инвентар билан",
+    "compareInventoryHint": "Дарахт элементларини инвентарингизга солиштириб ранг беради",
+    "invStatus": "Бор: {{have}} / Керак: {{need}}",
+    "invEnough": "Етарли",
+    "invPartial": "Қисман",
+    "invNone": "Йўқ"
+  },
+  "plan": {
+    "title": "Крафт режаси",
+    "targetQty": "Мақсад",
+    "steps": "Қадамлар",
+    "noSteps": "Бу итем тўғридан ясалади — оралиқ қадам йўқ",
+    "sequential": "кетма-кет",
+    "parallel": "параллел",
+    "shopping": "Сотиб олиш керак",
+    "have": "Бор",
+    "loginForInventory": "инвентар билан солиштириш учун киринг",
+    "craftNow": "{{count}} дона ясаш",
+    "craftDone": "{{count}} дона ясалди — инвентар янгиланди",
+    "craftMissing": "Хомашё етишмайди:"
+  },
+  "history": {
+    "title": "Крафт тарихим"
   },
   "rawTotals": {
     "title": "{{count}} дона {{itemName}} учун жами хомашё",
@@ -410,6 +433,9 @@
     "inventory": "Менинг материалларим",
     "canCraft": "Ясашингиз мумкин",
     "almost": "Деярли етади",
+    "missingCount": "яна {{count}} ресурс",
+    "almostOnly": "Фақат деярли",
+    "almostNone": "Бу фильтрга мос ҳеч нарса йўқ",
     "noResults": "Бу материаллардан ҳеч нарса ясаб бўлмайди",
     "error": "Қидиришда хатолик",
     "canMake": "{{count}} дона",

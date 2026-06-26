@@ -47,7 +47,30 @@
     "error": "Произошла ошибка",
     "rawNoRecipe": "Это сырьё — рецепта нет",
     "openDepth": "Уровни",
-    "expandAll": "Раскрыть всё"
+    "expandAll": "Раскрыть всё",
+    "compareInventory": "С инвентарём",
+    "compareInventoryHint": "Раскрашивает элементы дерева по вашему инвентарю",
+    "invStatus": "Есть: {{have}} / Нужно: {{need}}",
+    "invEnough": "Достаточно",
+    "invPartial": "Частично",
+    "invNone": "Нет"
+  },
+  "plan": {
+    "title": "План крафта",
+    "targetQty": "Цель",
+    "steps": "Шаги",
+    "noSteps": "Этот предмет крафтится напрямую — промежуточных шагов нет",
+    "sequential": "последовательно",
+    "parallel": "параллельно",
+    "shopping": "Нужно купить",
+    "have": "Есть",
+    "loginForInventory": "войдите для учёта инвентаря",
+    "craftNow": "Скрафтить {{count}} шт.",
+    "craftDone": "Скрафчено {{count}} шт. — инвентарь обновлён",
+    "craftMissing": "Не хватает сырья:"
+  },
+  "history": {
+    "title": "Моя история крафта"
   },
   "rawTotals": {
     "title": "Всего сырья для {{count}} шт. {{itemName}}",
@@ -410,6 +433,9 @@
     "inventory": "Мои материалы",
     "canCraft": "Можно скрафтить",
     "almost": "Почти хватает",
+    "missingCount": "ещё {{count}} ресурс.",
+    "almostOnly": "Только почти готовые",
+    "almostNone": "Ничего не подходит под фильтр",
     "noResults": "Из этих материалов ничего не скрафтить",
     "error": "Ошибка поиска",
     "canMake": "{{count}} шт.",

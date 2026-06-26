@@ -62,6 +62,8 @@ public class SecurityConfig {
                 // WebSocket + Chat
                 .requestMatchers("/ws/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/chat/**").permitAll()
+                // Kraft rejasi — autentifikatsiyalangan foydalanuvchi (admin-only POST items'dan OLDIN turishi shart)
+                .requestMatchers(HttpMethod.POST, "/api/items/*/craft-plan").authenticated()
                 // Admin endpoints — items
                 .requestMatchers(HttpMethod.PUT, "/api/items/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/api/items/**").hasRole("ADMIN")

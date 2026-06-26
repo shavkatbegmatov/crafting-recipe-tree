@@ -23,10 +23,17 @@ public record CraftableItemDto(
         int maxCraftable,
         /** Kamida 1 dona to'liq yasaladimi. */
         boolean fullyCraftable,
+        /** 0..1 — o'rtacha tayyorlik darajasi (har ingredient bo'yicha have/required, 1 dan oshmaydi). */
+        double completeness,
+        /** Retseptdagi jami ingredient turlari soni. */
+        int totalIngredients,
+        /** Yetishmayotgan ingredient turlari soni. */
+        int missingCount,
         /** Yetishmayotgan ingredientlar (bo'sh bo'lsa — hammasi yetarli). */
         List<MissingMaterial> missing
 ) {
-    public static CraftableItemDto from(CraftItem item, int maxCraftable, boolean fully, List<MissingMaterial> missing) {
+    public static CraftableItemDto from(CraftItem item, int maxCraftable, boolean fully,
+                                        double completeness, int totalIngredients, List<MissingMaterial> missing) {
         return CraftableItemDto.builder()
                 .resultItemId(item.getId())
                 .resultItemName(item.getName())
@@ -37,6 +44,9 @@ public record CraftableItemDto(
                 .imageUrl(item.getImageUrl())
                 .maxCraftable(maxCraftable)
                 .fullyCraftable(fully)
+                .completeness(completeness)
+                .totalIngredients(totalIngredients)
+                .missingCount(missing.size())
                 .missing(missing)
                 .build();
     }
