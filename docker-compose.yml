@@ -44,6 +44,13 @@ services:
       - uploads:/app/uploads
       # Zaxira fayllari (tiklashdan oldingi xavfsizlik nusxasi shu yerda qoladi).
       - backups:/app/backups
+    networks:
+      default:
+        aliases:
+          # Frontend nginx shu nom orqali murojaat qiladi. Umumiy `backend` nomi
+          # ATAYLAB ishlatilmaydi: umumiy tarmoqda u boshqa loyihaga hal bo'lib
+          # ketishi mumkin (Coolify'da aynan shunday bo'lgan).
+          - crafttree-backend
 
   frontend:
     image: ghcr.io/shavkatbegmatov/crafting-recipe-tree-frontend:latest
