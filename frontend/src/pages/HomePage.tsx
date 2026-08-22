@@ -3,10 +3,14 @@ import { useTranslation } from 'react-i18next'
 import { useLocalizedField } from '../hooks/useLanguage'
 import { useContentWidth } from '../hooks/useContentWidth'
 import ItemList from '../components/items/ItemList'
-import { Package, Layers, Cpu, Box, Gem, Zap, Wrench, FlaskConical } from 'lucide-react'
+import {
+  Package, Layers, Cpu, Box, Gem, Zap, Wrench, FlaskConical, Hammer, Droplet, Atom, Cog, Pickaxe, Truck,
+} from 'lucide-react'
 
+// Kategoriya ikonkalari. Ro'yxat AdminCategoriesPage'dagi AVAILABLE_ICONS bilan
+// mos bo'lishi shart: u yerda tanlanadigan, bu yerda chiziladigan nomlar.
 const ICON_MAP: Record<string, React.ComponentType<any>> = {
-  Package, Layers, Cpu, Box, Gem, Zap, Wrench, FlaskConical,
+  Package, Layers, Cpu, Box, Gem, Zap, Wrench, FlaskConical, Hammer, Droplet, Atom, Cog, Pickaxe, Truck,
 }
 
 export default function HomePage() {

@@ -12,7 +12,12 @@ import { ArrowLeft, Plus, Pencil, Trash2, Save, X, Loader2, Check } from 'lucide
 import { useGoBack } from '../hooks/useGoBack'
 import { useContentWidth } from '../hooks/useContentWidth'
 
-const AVAILABLE_ICONS = ['Package', 'Layers', 'Box', 'Cpu', 'Gem', 'Zap', 'Wrench', 'FlaskConical']
+// HomePage'dagi ICON_MAP bilan mos bo'lishi shart — u yerda yo'q nom tanlansa,
+// bosh sahifada Package'ga tushib qoladi.
+const AVAILABLE_ICONS = [
+  'Package', 'Layers', 'Box', 'Cpu', 'Gem', 'Zap', 'Wrench', 'FlaskConical',
+  'Hammer', 'Droplet', 'Atom', 'Cog', 'Pickaxe', 'Truck',
+]
 
 export default function AdminCategoriesPage() {
   const { t } = useTranslation()
