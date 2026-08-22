@@ -135,6 +135,37 @@ Pushes to `main` trigger [`.github/workflows/ci.yml`](.github/workflows/ci.yml):
 
 Pull requests run the CI stage only (no build/deploy).
 
+The background-removal service has its own pipeline,
+[`.github/workflows/rembg.yml`](.github/workflows/rembg.yml), which runs **only when
+`services/rembg/**` changes** — its image is large (ML stack), so ordinary backend and
+frontend deploys must not depend on it.
+
+### Uploads volume ownership (one-time, per environment)
+
+The backend runs as non-root (`appuser`, uid **1001**) and writes uploaded item images to
+the `uploads` volume. A Docker named volume inherits ownership from the image **only on the
+first mount while it is still empty** — so a volume that was populated *before* the container
+switched to non-root stays owned by `root` and the `chown` in the Dockerfile never applies to
+it. Uploads then fail with:
+
+```
+java.nio.file.AccessDeniedException: uploads/<id>_original_<ts>.png
+```
+
+Note this surfaces on the *original file save*, before background removal — so the
+rembg service is not the cause even though the error appears when the "remove background"
+option is used. Fix once, on the host:
+
+```bash
+V=$(docker inspect <backend-container> \
+    --format '{{range .Mounts}}{{if eq .Destination "/app/uploads"}}{{.Source}}{{end}}{{end}}')
+chown -R 1001:999 "$V"
+docker exec <backend-container> sh -c 'touch /app/uploads/.w && rm /app/uploads/.w && echo OK'
+```
+
+Fresh environments are unaffected: an empty volume inherits the correct ownership on first
+mount.
+
 ## Environment Variables
 
 ### Backend
