@@ -1,12 +1,25 @@
-# HTTP qatlami
+# HTTP qatlami — bu yerda ABI/CPU xavfi yo'q, diapazon yetarli.
 fastapi>=0.115,<1.0
 uvicorn[standard]>=0.32,<1.0
 python-multipart>=0.0.9
 
-# Rasmni qayta ishlash. Chegaralar lokal dev muhitida sinalgan versiyalarni
-# qamrab oladi (rembg 2.0.74, Pillow 12.2, numpy 2.3.5, scipy 1.17, onnxruntime 1.24).
-rembg>=2.0.60,<3.0
-Pillow>=10,<13
-numpy>=1.24,<3.0
-onnxruntime>=1.19,<2.0
-scipy>=1.11,<2.0
+# ML steki — versiyalar ATAYLAB aniq qadab qo'yilgan.
+#
+# SABAB: production serverimizning protsessori x86-64-v2 ko'rsatmalar to'plamini
+# qo'llab-quvvatlamaydi. NumPy 2.x g'ildiraklari aynan shu bazaviy darajaga
+# qurilgan va konteyner ishga tushishda darhol yiqiladi:
+#   RuntimeError: NumPy was built with baseline optimizations (X86_V2) but your
+#   machine doesn't support (X86_V2)
+# numpy<2.0 bo'lsa rembg ham unga mos eski versiyaga tushishi kerak (rembg 2.0.81
+# numpy>=2.3 talab qiladi), aks holda o'rnatish "incompatible" ogohlantirishi bilan
+# ichdan nomuvofiq bo'lib qoladi.
+#
+# Quyidagi to'plamni pip resolver'ning o'zi tanlagan va u serverda sinab ko'rilgan
+# (model muvaffaqiyatli yuklandi). Yangilashdan oldin serverda tekshiring:
+#   docker run --rm python:3.11-slim sh -c 'pip install --dry-run rembg "numpy<2.0" ...'
+# Lokal mashinada ishlashi bu yerda ham ishlashini KAFOLATLAMAYDI.
+rembg==2.0.69
+numpy==1.26.4
+scipy==1.13.1
+onnxruntime==1.29.0
+Pillow==11.3.0

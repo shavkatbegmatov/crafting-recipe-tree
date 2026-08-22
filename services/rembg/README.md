@@ -38,6 +38,30 @@ Chegara qiymatlari (`ALPHA_BLOB_THRESHOLD=30`, `ALPHA_CROP_THRESHOLD=10`,
 `CROP_PADDING=6`) eski skriptdan o'zgarishsiz ko'chirilgan — ko'chirish
 bayt darajasida bir xil natija berishi tekshirilgan.
 
+## Bog'liqliklar — diqqat
+
+`requirements.txt` dagi ML paketlari **ataylab aniq versiyaga qadab qo'yilgan**.
+
+Production serverimizning protsessori **x86-64-v2** ko'rsatmalar to'plamini qo'llab-quvvatlamaydi,
+NumPy 2.x g'ildiraklari esa aynan shunga qurilgan — natijada konteyner ishga tushishda darhol
+yiqiladi:
+
+```
+RuntimeError: NumPy was built with baseline optimizations (X86_V2)
+but your machine doesn't support (X86_V2)
+```
+
+`numpy<2.0` bo'lganda `rembg` ham unga mos eski versiyada bo'lishi shart (yangi rembg
+`numpy>=2.3` talab qiladi), aks holda o'rnatma ichdan nomuvofiq bo'lib qoladi.
+
+Versiyalarni yangilashdan oldin **serverda** tekshiring:
+
+```bash
+docker run --rm python:3.11-slim sh -c 'pip install --dry-run rembg "numpy<2.0" "scipy<1.14" onnxruntime "Pillow<12" 2>&1 | tail -4'
+```
+
+Lokal mashinada ishlashi bu serverda ham ishlashini kafolatlamaydi.
+
 ## Sozlamalar
 
 | Env | Default | Tavsif |
