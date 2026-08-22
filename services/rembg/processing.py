@@ -9,6 +9,7 @@ Bosqichlar (backend ichidagi eski `scripts/remove_bg.py` bilan bir xil):
 
 import io
 import os
+import threading
 
 import numpy as np
 from PIL import Image
@@ -23,13 +24,21 @@ ALPHA_CROP_THRESHOLD = 10
 CROP_PADDING = 6
 
 _session = None
+_session_lock = threading.Lock()
 
 
 def get_session():
-    """Model bir marta yuklanadi, har so'rovda emas."""
+    """Model bir marta yuklanadi, har so'rovda emas.
+
+    Chaqirilgunicha xotira egallanmaydi — servis bo'sh turganda model RAM'da
+    yotmaydi (server xotirasi tor). Bir vaqtda kelgan bir necha so'rov modelni
+    ikki marta yuklab yubormasligi uchun qulf ishlatiladi.
+    """
     global _session
     if _session is None:
-        _session = new_session(MODEL_NAME)
+        with _session_lock:
+            if _session is None:
+                _session = new_session(MODEL_NAME)
     return _session
 
 

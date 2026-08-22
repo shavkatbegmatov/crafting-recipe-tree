@@ -69,9 +69,21 @@ Lokal mashinada ishlashi bu serverda ham ishlashini kafolatlamaydi.
 | `REMBG_MODEL` | `u2net` | rembg modeli |
 | `MAX_UPLOAD_BYTES` | `15728640` (15 MB) | maksimal fayl hajmi |
 | `U2NET_HOME` | `/opt/models` | model katalogi (image ichiga oldindan yuklangan) |
+| `REMBG_PRELOAD` | `0` | `1` bo'lsa model ishga tushishda yuklanadi |
+| `NUMBA_CACHE_DIR` | `/opt/numba-cache` | numba JIT keshi (non-root uchun yoziladigan joy) |
 
-Model **build vaqtida** image ichiga joylanadi, shuning uchun birinchi so'rov sekin
-bo'lmaydi va konteyner ishga tushishi tashqi tarmoqqa bog'liq emas.
+Model fayli **build vaqtida** image ichiga joylanadi — shuning uchun konteyner ishga
+tushishi tashqi tarmoqqa bog'liq emas.
+
+**Xotiraga yuklash esa kechiktirilgan (lazy):** model sukut bo'yicha *birinchi
+so'rovda* RAM'ga yuklanadi. Sababi — server xotirasi tor (~8 GB, ko'p loyiha birga),
+fon o'chirish esa kuniga bir necha marta kerak bo'ladi; bo'sh turgan servis ~0.5 GB
+egallab yotishi mantiqsiz. Evaziga birinchi so'rov bir marta sekinroq ishlanadi.
+Tez javob muhimroq bo'lsa `REMBG_PRELOAD=1` qo'ying.
+
+`/health` ataylab modelga tegmaydi — healthcheck og'ir ishga bog'liq bo'lmasligi kerak.
+`/remove-bg` esa sinxron endpoint: FastAPI uni threadpool'da bajaradi, shuning uchun
+uzoq CPU ishi event loop'ni (va healthcheck javobini) bloklamaydi.
 
 ## Backend bilan bog'lanish
 
