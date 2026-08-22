@@ -18,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminStatsService {
 
+    private final GameVersionService gameVersionService;
     private final CraftItemRepository craftItemRepository;
     private final CategoryRepository categoryRepository;
     private final RecipeRepository recipeRepository;
@@ -29,14 +30,18 @@ public class AdminStatsService {
 
     @Transactional(readOnly = true)
     public AdminStatsDto stats() {
-        List<AdminStatsDto.CategoryCount> byCategory = craftItemRepository.countByCategory().stream()
+        // Itemlar ham, retseptlar ham versiyaga bog'langan. Global sanoq bir xil itemning
+        // turli versiyadagi nusxalarini qo'shib yuborardi — shuning uchun joriy versiya bo'yicha.
+        Long versionId = gameVersionService.getCurrent().getId();
+        List<AdminStatsDto.CategoryCount> byCategory = craftItemRepository
+                .countByCategoryAndVersion(versionId).stream()
                 .map(r -> new AdminStatsDto.CategoryCount((String) r[0], (Long) r[1]))
                 .toList();
 
         return AdminStatsDto.builder()
-                .totalItems(craftItemRepository.count())
+                .totalItems(craftItemRepository.countByGameVersionId(versionId))
                 .totalCategories(categoryRepository.count())
-                .totalRecipes(recipeRepository.count())
+                .totalRecipes(recipeRepository.countByGameVersionId(versionId))
                 .totalTags(tagRepository.count())
                 .totalUsers(userRepository.count())
                 .admins(userRepository.countByRole(Role.ADMIN))

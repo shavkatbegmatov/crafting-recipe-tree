@@ -2,6 +2,7 @@ package com.crafttree.service;
 
 import com.crafttree.dto.InventoryEntryDto;
 import com.crafttree.entity.CraftItem;
+import com.crafttree.entity.GameVersion;
 import com.crafttree.entity.InventoryItem;
 import com.crafttree.entity.User;
 import com.crafttree.repository.CraftItemRepository;
@@ -24,10 +25,12 @@ public class InventoryService {
 
     private final InventoryRepository inventoryRepository;
     private final CraftItemRepository craftItemRepository;
+    private final GameVersionService gameVersionService;
 
     @Transactional(readOnly = true)
-    public List<InventoryEntryDto> list(User user) {
-        return inventoryRepository.findEntriesByUser(user);
+    public List<InventoryEntryDto> list(User user, String version) {
+        GameVersion gv = gameVersionService.resolveOrCurrent(version);
+        return inventoryRepository.findEntriesByUserAndVersion(user, gv.getId());
     }
 
     /**
@@ -35,8 +38,9 @@ public class InventoryService {
      * bo'lmagan item) o'tkazib yuboriladi; bir xil item bir necha marta kelса — miqdorlar qo'shiladi.
      */
     @Transactional
-    public List<InventoryEntryDto> replace(User user, List<InventoryEntryDto> entries) {
-        inventoryRepository.deleteByUser(user);
+    public List<InventoryEntryDto> replace(User user, List<InventoryEntryDto> entries, String version) {
+        GameVersion gv = gameVersionService.resolveOrCurrent(version);
+        inventoryRepository.deleteByUserAndVersion(user, gv.getId());
 
         if (entries != null && !entries.isEmpty()) {
             Map<Long, Integer> merged = new LinkedHashMap<>();
@@ -48,13 +52,13 @@ public class InventoryService {
             }
             for (Map.Entry<Long, Integer> e : merged.entrySet()) {
                 CraftItem item = craftItemRepository.findById(e.getKey()).orElse(null);
-                if (item == null) {
-                    continue; // mavjud bo'lmagan itemni jimgina o'tkazib yuboramiz
+                if (item == null || !item.getGameVersion().getId().equals(gv.getId())) {
+                    continue; // mavjud bo'lmagan yoki boshqa versiyaga tegishli itemni o'tkazib yuboramiz
                 }
                 inventoryRepository.save(InventoryItem.builder()
                         .user(user).item(item).quantity(e.getValue()).build());
             }
         }
-        return inventoryRepository.findEntriesByUser(user);
+        return inventoryRepository.findEntriesByUserAndVersion(user, gv.getId());
     }
 }

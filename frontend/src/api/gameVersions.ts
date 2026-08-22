@@ -42,3 +42,38 @@ export async function setCurrentGameVersion(id: number): Promise<GameVersion> {
 export async function deleteGameVersion(id: number): Promise<void> {
   await client.delete(`/game-versions/${id}`)
 }
+
+export interface VersionStats {
+  versionId: number
+  version: string
+  isCurrent: boolean
+  itemCount: number
+  recipeCount: number
+}
+
+export async function fetchGameVersionStats(): Promise<VersionStats[]> {
+  const { data } = await client.get('/game-versions/stats')
+  return data
+}
+
+export interface CopyFromVersionData {
+  sourceVersionId: number
+  /** Bo'sh bo'lsa — manba versiyaning hamma itemi. */
+  itemIds?: number[]
+  withRecipes?: boolean
+}
+
+export interface VersionCopyResult {
+  sourceVersion: string
+  targetVersion: string
+  itemsCopied: number
+  itemsSkipped: number
+  recipesCopied: number
+  recipesSkipped: number
+  warnings: string[]
+}
+
+export async function copyFromVersion(targetId: number, data: CopyFromVersionData): Promise<VersionCopyResult> {
+  const { data: res } = await client.post(`/game-versions/${targetId}/copy-from`, data)
+  return res
+}

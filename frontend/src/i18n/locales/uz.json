@@ -692,5 +692,25 @@
     "restoreDone": "Baza tiklandi",
     "safetyBackup": "Oldingi holat nusxasi:",
     "restartNeeded": "Ilovani qayta ishga tushiring: sxema o'zgargan bo'lishi mumkin, ishlab turgan jarayon esa hali eskisi bilan ishlayapti."
+  },
+  "versionCopy": {
+    "title": "Boshqa versiyadan nusxa olish",
+    "source": "Manba versiya",
+    "withRecipes": "Retseptlar bilan",
+    "withRecipesHint": "Ingredientlar avtomatik qo'shiladi — aks holda retsept chala bo'lardi.",
+    "scope": "Nima ko'chiriladi",
+    "scopeAll": "Hamma predmetlar ({{count}})",
+    "scopeSelected": "Tanlangan predmetlar",
+    "confirm": "Nusxa olish ({{count}})",
+    "done": "Nusxa olindi: {{from}} → {{to}}",
+    "itemsCopied": "Predmet qo'shildi",
+    "itemsSkipped": "Allaqachon bor edi",
+    "recipesCopied": "Retsept qo'shildi",
+    "recipesSkipped": "Retsept o'tkazib yuborildi",
+    "warnings": "Ogohlantirishlar ({{count}})",
+    "loading": "Yuklanmoqda...",
+    "close": "Yopish",
+    "items": "Predmetlar",
+    "recipes": "Retseptlar"
   }
 }

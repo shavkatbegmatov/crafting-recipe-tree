@@ -26,6 +26,8 @@ import static org.mockito.Mockito.when;
 
 /**
  * {@link FavoriteService} biznes-mantiqi uchun unit testlar (Mockito).
+ * <p>
+ * Itemlar versiyaga bog'langan: sevimlilar ro'yxati ham tanlangan versiya bo'yicha filtrlanadi.
  */
 @ExtendWith(MockitoExtension.class)
 class FavoriteServiceTest {
@@ -36,6 +38,8 @@ class FavoriteServiceTest {
     CraftItemRepository craftItemRepository;
     @Mock
     CraftItemService craftItemService;
+    @Mock
+    com.crafttree.service.GameVersionService gameVersionService;
     @InjectMocks
     FavoriteService service;
 
@@ -85,12 +89,15 @@ class FavoriteServiceTest {
     @Test
     @DisplayName("list — sevimlilarni item DTO'ga aylantiradi")
     void listMapsToDto() {
-        CraftItem item = CraftItem.builder().id(5L).name("Iron").build();
+        com.crafttree.entity.GameVersion gv =
+                com.crafttree.entity.GameVersion.builder().id(3L).version("1.0.0").build();
+        CraftItem item = CraftItem.builder().id(5L).name("Iron").gameVersion(gv).build();
         Favorite fav = Favorite.builder().id(1L).user(user).item(item).build();
-        when(favoriteRepository.findByUserOrderByCreatedAtDesc(user)).thenReturn(List.of(fav));
+        when(gameVersionService.resolveOrCurrent(null)).thenReturn(gv);
+        when(favoriteRepository.findByUserAndVersion(user, 3L)).thenReturn(List.of(fav));
         when(craftItemService.toDto(item)).thenReturn(CraftItemDto.builder().id(5L).name("Iron").build());
 
-        List<CraftItemDto> result = service.list(user);
+        List<CraftItemDto> result = service.list(user, null);
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getId()).isEqualTo(5L);

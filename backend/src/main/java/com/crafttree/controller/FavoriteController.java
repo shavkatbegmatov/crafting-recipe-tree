@@ -26,14 +26,16 @@ public class FavoriteController {
 
     @GetMapping
     @Operation(summary = "Mening sevimlilarim (item ma'lumotlari bilan, so'nggidan eskisiga)")
-    public List<CraftItemDto> list(@AuthenticationPrincipal User user) {
-        return favoriteService.list(user);
+    public List<CraftItemDto> list(@AuthenticationPrincipal User user,
+                                   @RequestParam(required = false) String version) {
+        return favoriteService.list(user, version);
     }
 
     @GetMapping("/ids")
     @Operation(summary = "Sevimli item id'lari (yulduzcha holatini belgilash uchun)")
-    public List<Long> ids(@AuthenticationPrincipal User user) {
-        return favoriteService.favoriteItemIds(user);
+    public List<Long> ids(@AuthenticationPrincipal User user,
+                          @RequestParam(required = false) String version) {
+        return favoriteService.favoriteItemIds(user, version);
     }
 
     @PostMapping("/{itemId}")

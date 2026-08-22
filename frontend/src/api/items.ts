@@ -31,8 +31,11 @@ export async function deleteCategory(id: number): Promise<void> {
   await client.delete(`/categories/${id}`)
 }
 
-export async function fetchItems(category?: string): Promise<CraftItem[]> {
-  const params = category ? { category } : {}
+export async function fetchItems(category?: string, version?: string): Promise<CraftItem[]> {
+  // Itemlar versiyaga bog'langan: versiya berilmasa backend joriy versiyani oladi.
+  const params: Record<string, string> = {}
+  if (category) params.category = category
+  if (version) params.version = version
   const { data } = await client.get('/items', { params })
   return data
 }
@@ -43,8 +46,10 @@ export async function fetchItem(id: number, version?: string): Promise<CraftItem
   return data
 }
 
-export async function searchItems(query: string): Promise<CraftItem[]> {
-  const { data } = await client.get('/items/search', { params: { q: query } })
+export async function searchItems(query: string, version?: string): Promise<CraftItem[]> {
+  const params: Record<string, string> = { q: query }
+  if (version) params.version = version
+  const { data } = await client.get('/items/search', { params })
   return data
 }
 
