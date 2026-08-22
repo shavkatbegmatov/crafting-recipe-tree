@@ -173,9 +173,10 @@ A **SUPER_ADMIN** can take a full backup of the database and restore from one at
 archive — schema, every table, sequences and the Flyway history — not a content export
 (for items/recipes only, see *Portage* instead).
 
-The backend image ships `postgresql-client-17`; `pg_dump` must not be **older** than the
-server, and 17 covers both production (PostgreSQL 16) and local dev. The status card on the
-page shows both versions, so a mismatch is visible before you rely on a backup.
+The backend image installs `postgresql-client` from its own base-image repository (currently
+PostgreSQL 18). `pg_dump` must not be **older** than the server — newer is fine — so this
+covers production (PostgreSQL 16) and local dev (17.x). The status card on the page shows
+both versions, so a mismatch is visible before you rely on a backup.
 
 Two things worth knowing:
 

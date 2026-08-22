@@ -111,14 +111,30 @@ public class DatabaseBackupService {
     }
 
     /**
+     * Yuklab olish uchun zaxira. Fayl {@code tmp} ichida yaratiladi va uzatilgach o'chiriladi.
+     * <p>
+     * Uzatish uzilib qolsa fayl qolib ketadi, shuning uchun har chaqiruvda bir kundan eski
+     * qoldiqlar tozalanadi — aks holda volume asta-sekin to'lib borardi. Xavfsizlik
+     * zaxiralari BOSHQA katalogda yotadi va bu tozalashga tushmaydi.
+     */
+    public Path dumpForDownload() throws IOException, InterruptedException {
+        Path tmp = backupDir.resolve("tmp");
+        Files.createDirectories(tmp);
+        pruneStale(tmp);
+        return dumpTo(tmp.resolve("crafttree-" + LocalDateTime.now().format(TS) + ".dump"));
+    }
+
+    /**
      * Butun bazani siqilgan "custom" formatda zaxiralaydi.
      *
-     * @return vaqtinchalik fayl — chaqiruvchi uzatib bo'lgach o'chirishi shart
+     * @return saqlanadigan zaxira fayli
      */
     public Path dump() throws IOException, InterruptedException {
         Files.createDirectories(backupDir);
-        Path out = backupDir.resolve("crafttree-" + LocalDateTime.now().format(TS) + ".dump");
+        return dumpTo(backupDir.resolve("crafttree-" + LocalDateTime.now().format(TS) + ".dump"));
+    }
 
+    private Path dumpTo(Path out) throws IOException, InterruptedException {
         // -Fc: pg_restore uchun custom format (tanlab tiklash imkonini beradi), -Z 6: siqish.
         // --no-owner/--no-privileges: boshqa muhitga ham tiklana olsin (rol nomlari farq qiladi).
         ProcessResult r = run(List.of(
@@ -175,6 +191,26 @@ public class DatabaseBackupService {
     }
 
     // -- Ichki yordamchi qism ------------------------------------------------
+
+    /** Uzilib qolgan yuklab olishlardan qolgan eski fayllarni tozalaydi. */
+    private void pruneStale(Path dir) {
+        long cutoff = System.currentTimeMillis() - java.time.Duration.ofDays(1).toMillis();
+        try (var files = Files.list(dir)) {
+            files.filter(Files::isRegularFile).forEach(f -> {
+                try {
+                    if (Files.getLastModifiedTime(f).toMillis() < cutoff) {
+                        Files.deleteIfExists(f);
+                        log.info("Eski zaxira qoldig'i o'chirildi: {}", f.getFileName());
+                    }
+                } catch (IOException e) {
+                    log.warn("Qoldiqni o'chirib bo'lmadi {}: {}", f.getFileName(), e.getMessage());
+                }
+            });
+        } catch (IOException e) {
+            // Tozalash amalga ta'sir qilmaydi — zaxira olish davom etadi.
+            log.warn("Zaxira katalogini tozalab bo'lmadi: {}", e.getMessage());
+        }
+    }
 
     private String tool(String name) {
         return pgBinDir == null || pgBinDir.isBlank() ? name : Paths.get(pgBinDir, name).toString();

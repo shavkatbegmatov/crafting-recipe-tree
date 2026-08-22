@@ -55,7 +55,7 @@ public class AdminBackupController {
     public ResponseEntity<Resource> download() {
         final Path file;
         try {
-            file = backupService.dump();
+            file = backupService.dumpForDownload();
         } catch (Exception e) {
             log.error("Zaxira olishda xato", e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());

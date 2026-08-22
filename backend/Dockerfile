@@ -12,19 +12,17 @@ WORKDIR /app
 # scipy, numpy) image'ni ~1.5 GB ga shishirardi va har bir deploy'ni sekinlashtirardi.
 #
 # postgresql-client — admin panelidan baza zaxirasini olish/tiklash uchun
-# (pg_dump / pg_restore). Debian bookworm repozitoriysida 15-versiya bor, lekin
-# pg_dump serverdan ESKI bo'lmasligi shart, shuning uchun PGDG dan 17 o'rnatiladi
-# (production PostgreSQL 16, lokal dev 17.x — ikkalasini ham qamraydi).
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates gnupg && \
-    install -d /usr/share/postgresql-common/pgdg && \
-    curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc \
-        -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc && \
-    echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] http://apt.postgresql.org/pub/repos/apt bookworm-pgdg main" \
-        > /etc/apt/sources.list.d/pgdg.list && \
-    apt-get update && apt-get install -y --no-install-recommends postgresql-client-17 && \
-    apt-get purge -y --auto-remove gnupg && \
+# (pg_dump / pg_restore). Bazaviy image'ning O'Z repozitoriysidan olinadi: u
+# PostgreSQL 18 mijozini beradi, bu esa production'dagi 16 va lokal dev 17.x uchun
+# yetarli — pg_dump serverdan ESKI bo'lmasligi shart, yangi bo'lishi mumkin.
+#
+# PGDG repozitoriysi ATAYLAB ishlatilmaydi: bu image Ubuntu'ga asoslangan, PGDG'ning
+# Debian paketlari esa u yerda yo'q kutubxonalarni talab qiladi (libldap-2.5-0) va
+# qurilish yiqiladi. Quyidagi versiya tekshiruvi mijoz haqiqatan mavjudligini
+# qurilish vaqtidayoq tasdiqlaydi.
+RUN apt-get update && apt-get install -y --no-install-recommends curl postgresql-client && \
     apt-get clean && rm -rf /var/lib/apt/lists/* && \
-    pg_dump --version
+    pg_dump --version && pg_restore --version
 
 ENV SPRING_PROFILES_ACTIVE=prod
 
