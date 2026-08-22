@@ -55,3 +55,8 @@ uploads_to_upload/
 
 # Claude Code session state
 .claude/
+
+# Python (services/rembg)
+__pycache__/
+*.pyc
+.venv/

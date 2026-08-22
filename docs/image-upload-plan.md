@@ -1,5 +1,12 @@
 # Screenshot Upload + Avtomatik Icon Ajratish
 
+> **Eslatma (arxitektura o'zgardi).** Quyidagi reja dastlabki holatni tasvirlaydi:
+> rembg backend konteyneri ichida Python skript sifatida ishlagan. Keyinchalik u
+> **alohida servisga ajratildi** — ML steki backend image'ini ~1.5 GB ga shishirib,
+> har bir deploy'ni sekinlashtirgani uchun. Hozirgi holat: [`services/rembg`](../services/rembg/README.md).
+> Backend endi `app.rembg.url` orqali HTTP bilan murojaat qiladi, `backend/scripts/`
+> katalogi va Dockerfile'dagi Python o'rnatish qismi olib tashlangan.
+
 ## Context
 Hozir rasmlar qo'lda terminal orqali background olib tashlanadi. Foydalanuvchi app ichida screenshot yuklaydi, app rembg yordamida fonni olib tashlab, transparent PNG ikonka yaratadi. Upload formda fon rangi ko'rsatiladi (default `#1a1610`).
 

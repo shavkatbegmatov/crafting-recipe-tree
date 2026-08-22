@@ -7,17 +7,15 @@ RUN mvn package -DskipTests -B
 FROM eclipse-temurin:17-jre
 WORKDIR /app
 
-# Python + rembg for background removal
-RUN apt-get update && apt-get install -y python3 python3-pip python3-venv curl && \
-    python3 -m venv /opt/venv && \
-    /opt/venv/bin/pip install rembg Pillow "numpy<2.0" onnxruntime scipy && \
+# Faqat HEALTHCHECK uchun curl. Rasm fonini o'chirish endi alohida servisda
+# (services/rembg) — ilgari shu yerda o'rnatilgan Python ML steki (onnxruntime,
+# scipy, numpy) image'ni ~1.5 GB ga shishirardi va har bir deploy'ni sekinlashtirardi.
+RUN apt-get update && apt-get install -y --no-install-recommends curl && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-ENV PATH="/opt/venv/bin:$PATH"
 ENV SPRING_PROFILES_ACTIVE=prod
 
 COPY --from=build /app/target/*.jar app.jar
-COPY scripts/ ./scripts/
 
 # Non-root foydalanuvchi (xavfsizlik) + uploads katalogi egaligi.
 # Named volume birinchi mount'da shu egalik/ruxsatni meros qiladi, shuning uchun appuser yoza oladi.

@@ -14,14 +14,25 @@ services:
       timeout: 5s
       retries: 5
 
+  # Fon o'chirish (rembg) — alohida servis, chunki ML steki og'ir (~1.5 GB).
+  # Backend uni faqat admin rasm yuklaganda chaqiradi; javob bermasa rasm asl
+  # holida saqlanadi, ya'ni bu servis ishlamasa ham ilova ishlayveradi.
+  rembg:
+    image: ghcr.io/shavkatbegmatov/crafting-recipe-tree-rembg:latest
+    container_name: crafting-recipe-tree-rembg
+    restart: unless-stopped
+
   backend:
     image: ghcr.io/shavkatbegmatov/crafting-recipe-tree-backend:latest
     container_name: crafting-recipe-tree-backend
     depends_on:
       postgres:
         condition: service_healthy
+      rembg:
+        condition: service_started
     environment:
       SPRING_PROFILES_ACTIVE: prod
+      REMBG_URL: http://rembg:8000
       DB_HOST: postgres
       DB_PORT: 5432
       DB_NAME: ${DB_NAME:-crafttree}
