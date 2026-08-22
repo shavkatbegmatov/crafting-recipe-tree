@@ -76,6 +76,66 @@ export async function fetchUsedIn(id: number, version?: string): Promise<UsedIn[
   return data
 }
 
+export interface CreateItemData {
+  categoryId?: number
+  categoryCode?: string
+  name: string
+  nameUz?: string
+  nameEn?: string
+  nameUzCyr?: string
+  description?: string
+  descriptionUz?: string
+  descriptionEn?: string
+  descriptionUzCyr?: string
+  craftTimeSeconds?: number
+  tagIds?: number[]
+}
+
+/** Yangi item — joriy (yoki berilgan) versiyada yaratiladi. */
+export async function createItem(data: CreateItemData, version?: string): Promise<CraftItem> {
+  const { data: res } = await client.post('/items', data, {
+    params: version ? { version } : undefined,
+  })
+  return res
+}
+
+export interface BulkCreateResultRow {
+  line: number
+  name: string
+  categoryCode: string | null
+  /** NEW | DUPLICATE | INVALID — kod, tayyor matn emas: tarjimani UI qiladi. */
+  status: string
+  /** Sabab kodi (status NEW bo'lsa null). */
+  reason: string | null
+  /** Sababga tegishli qiymat, masalan noma'lum kategoriya kodi. */
+  detail: string | null
+}
+
+export interface BulkCreateResult {
+  dryRun: boolean
+  version: string
+  willCreate: number
+  duplicates: number
+  invalid: number
+  rows: BulkCreateResultRow[]
+}
+
+/**
+ * Ommaviy qo'shish. `dryRun` bilan bazaga hech narsa yozilmaydi —
+ * avval natijani ko'rish uchun.
+ */
+export async function createItemsBulk(
+  items: CreateItemData[],
+  defaultCategoryCode: string | undefined,
+  dryRun: boolean,
+  version?: string
+): Promise<BulkCreateResult> {
+  const params: Record<string, string> = { dryRun: String(dryRun) }
+  if (version) params.version = version
+  const { data } = await client.post('/items/bulk', { items, defaultCategoryCode }, { params })
+  return data
+}
+
 export interface UpdateItemData {
   categoryId?: number
   name?: string

@@ -1,12 +1,17 @@
 package com.crafttree.controller;
 
+import com.crafttree.dto.BulkCreateItemsRequest;
+import com.crafttree.dto.BulkCreateResultDto;
 import com.crafttree.dto.CraftItemDto;
+import com.crafttree.dto.CreateItemRequest;
 import com.crafttree.dto.UpdateItemRequest;
 import com.crafttree.dto.UsedInDto;
 import com.crafttree.service.CraftItemService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -55,5 +60,28 @@ public class CraftItemController {
     @Operation(summary = "Update item names and descriptions (admin only)")
     public CraftItemDto updateItem(@PathVariable Long id, @RequestBody UpdateItemRequest request) {
         return craftItemService.updateItem(id, request);
+    }
+
+    @PostMapping("/items")
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Create a new item in the current (or requested) game version (admin only)")
+    public CraftItemDto createItem(@Valid @RequestBody CreateItemRequest request,
+                                   @RequestParam(value = "version", required = false) String version) {
+        return craftItemService.createItem(request, version);
+    }
+
+    /**
+     * Ommaviy qo'shish.
+     * <p>
+     * {@code dryRun=true} bilan avval natijani ko'rish mumkin — bazaga hech narsa yozilmaydi.
+     * UI aynan shu tartibda ishlaydi: avval ko'rib chiqish, keyin tasdiqlash.
+     */
+    @PostMapping("/items/bulk")
+    @Operation(summary = "Create several items at once; dryRun previews without writing (admin only)")
+    public BulkCreateResultDto createItemsBulk(
+            @RequestBody BulkCreateItemsRequest request,
+            @RequestParam(value = "dryRun", defaultValue = "false") boolean dryRun,
+            @RequestParam(value = "version", required = false) String version) {
+        return craftItemService.createItemsBulk(request, dryRun, version);
     }
 }
