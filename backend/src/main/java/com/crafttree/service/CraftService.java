@@ -3,7 +3,6 @@ package com.crafttree.service;
 import com.crafttree.dto.CraftLogDto;
 import com.crafttree.dto.CraftResultDto;
 import com.crafttree.dto.InventoryEntryDto;
-import com.crafttree.dto.RawTotalDto;
 import com.crafttree.entity.CraftItem;
 import com.crafttree.entity.CraftLog;
 import com.crafttree.entity.GameVersion;
@@ -19,15 +18,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Bulk craft va kraft tarixi. Yasash inventardan xomashyo ayiradi, natija itemni qo'shadi
- * va tarixga yozuv yozadi (atomar — bitta tranzaksiya).
+ * Bulk craft va kraft tarixi. Yasash inventardan kerakli materiallarni (oraliq itemlar ham,
+ * xomashyo ham) ayiradi, natija itemni qo'shadi va tarixga yozuv yozadi
+ * (atomar — bitta tranzaksiya).
  */
 @Service
 @RequiredArgsConstructor
@@ -41,9 +40,10 @@ public class CraftService {
     private final GameVersionService gameVersionService;
 
     /**
-     * Itemni {@code quantity} dona yasaydi. Kerakli xomashyo (raw × qty, yuqoriga yaxlitlanadi)
-     * inventardan ayiriladi, natija inventarga qo'shiladi, tarixga yozuv yoziladi.
-     * Xomashyo yetmasa — {@code success=false} va yetishmaydiganlar; inventar o'zgarmaydi.
+     * Itemni {@code quantity} dona yasaydi. Inventardagi <b>oraliq itemlar ham ishlatiladi</b> —
+     * qo'lda tayyor oraliq item bo'lsa, uning xomashyosi qaytadan talab qilinmaydi. Sarflangani
+     * inventardan ayiriladi, natija qo'shiladi, tarixga yozuv yoziladi.
+     * Yetmasa — {@code success=false} va yetishmaydiganlar; inventar o'zgarmaydi.
      */
     @Transactional
     public CraftResultDto craftBulk(User user, Long itemId, int quantity, String version) {
@@ -51,31 +51,30 @@ public class CraftService {
         CraftItem result = craftItemRepository.findById(itemId)
                 .orElseThrow(() -> new ItemNotFoundException(itemId));
         GameVersion gv = gameVersionService.resolveOrCurrent(version);
-        RawTotalDto raw = recipeTreeService.getRawTotals(itemId, version);
 
         Map<Long, Integer> inv = new LinkedHashMap<>();
         inventoryRepository.findEntriesByUser(user).forEach(e -> inv.put(e.itemId(), e.quantity()));
 
-        // Kerakli xomashyo (raw × qty, yuqoriga yaxlitlanadi) + yetishmaydiganlarni aniqlaymiz.
-        Map<Long, Integer> needed = new LinkedHashMap<>();
-        List<CraftResultDto.MissingEntry> missing = new ArrayList<>();
-        for (RawTotalDto.RawMaterialEntry rm : raw.getRawMaterials()) {
-            int need = rm.getTotalQuantity().multiply(BigDecimal.valueOf(qty))
-                    .setScale(0, RoundingMode.CEILING).intValue();
-            needed.put(rm.getId(), need);
-            int have = inv.getOrDefault(rm.getId(), 0);
-            if (have < need) {
-                missing.add(new CraftResultDto.MissingEntry(rm.getId(), rm.getName(),
-                        rm.getNameUz(), rm.getNameEn(), rm.getNameUzCyr(), need, have));
-            }
-        }
-        if (!missing.isEmpty()) {
+        Map<Long, BigDecimal> available = new LinkedHashMap<>();
+        inv.forEach((id, q) -> available.put(id, BigDecimal.valueOf(q)));
+
+        RecipeTreeService.CraftResolution res =
+                recipeTreeService.resolveCraft(result, gv, BigDecimal.valueOf(qty), available);
+
+        if (!res.shortfall.isEmpty()) {
+            List<CraftResultDto.MissingEntry> missing = new ArrayList<>();
+            res.shortfall.forEach((id, miss) -> {
+                CraftItem it = res.lookup.get(id);
+                missing.add(new CraftResultDto.MissingEntry(id, it.getName(),
+                        it.getNameUz(), it.getNameEn(), it.getNameUzCyr(),
+                        res.required.getOrDefault(id, miss), inv.getOrDefault(id, 0)));
+            });
             return CraftResultDto.builder().success(false).missing(missing).build();
         }
 
-        // Xomashyoni ayirib, natijani qo'shamiz; 0 ga tushgan yozuvlar tashlanadi.
+        // Sarflanganini ayirib, natijani qo'shamiz; 0 ga tushgan yozuvlar tashlanadi.
         Map<Long, Integer> newInv = new LinkedHashMap<>(inv);
-        needed.forEach((id, need) -> newInv.merge(id, -need, Integer::sum));
+        res.consumed.forEach((id, used) -> newInv.merge(id, -used, Integer::sum));
         newInv.merge(itemId, qty, Integer::sum);
         List<InventoryEntryDto> newList = newInv.entrySet().stream()
                 .filter(e -> e.getValue() != null && e.getValue() > 0)
