@@ -34,7 +34,8 @@
 
 ## Architecture
 
-A two-app monorepo: a stateless Spring Boot REST + WebSocket API and a React single-page app.
+A monorepo: a stateless Spring Boot REST + WebSocket API, a React single-page app, and a small
+Python side-service that strips backgrounds from uploaded screenshots.
 
 ```
 crafting-recipe-tree/
@@ -54,12 +55,16 @@ crafting-recipe-tree/
 │   └── src/
 │       ├── pages/  components/  hooks/  api/  utils/  contexts/
 │       └── i18n/                    # uz, uz-cyr, ru, en
+├── services/rembg/                  # Background-removal service (FastAPI + rembg)
 ├── scripts/                         # Image/upload sync utilities
-└── .github/workflows/ci.yml         # CI + Docker build + deploy
+└── .github/workflows/
+    ├── ci.yml                       # CI + Docker build + deploy (backend, frontend)
+    └── rembg.yml                    # Built only when services/rembg/** changes
 ```
 
 - **Auth:** JWT bearer tokens. The token carries the username; authorities are loaded from the DB on every request, so role changes take effect immediately.
 - **Persistence:** schema is owned by Flyway; Hibernate runs with `ddl-auto=validate`.
+- **Image processing:** background removal runs in its own container ([`services/rembg`](services/rembg/README.md)) rather than inside the API. The ML stack (onnxruntime, scipy, numpy) is ~1.5 GB and would otherwise be pulled on every API deploy, for a feature only used when an admin uploads an item image. The API degrades gracefully: if the service is down or unset, the original image is kept and the upload still succeeds.
 
 ## Getting Started
 
@@ -141,6 +146,8 @@ Pull requests run the CI stage only (no build/deploy).
 | `JWT_SECRET` | Base64-encoded JWT signing key | dev fallback present |
 | `APP_CORS_ALLOWED_ORIGINS` | Comma-separated allowed origins | `http://localhost:5173,http://localhost:3000` |
 | `SERVER_PORT` | HTTP port | `8080` |
+| `REMBG_URL` | Background-removal service URL ([`services/rembg`](services/rembg/README.md)). Empty disables the feature — uploads then keep the original image. | empty (dev), `http://rembg:8000` (prod) |
+| `REMBG_TIMEOUT_SECONDS` | Read timeout for that service | `120` |
 
 ### Frontend (build-time)
 

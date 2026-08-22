@@ -1,0 +1,85 @@
+name: rembg service
+
+# Alohida workflow: bu servis kamdan-kam o'zgaradi, lekin image'i og'ir
+# (ML steki ~1.5 GB). Shuning uchun uni faqat o'z fayllari o'zgarganda quramiz —
+# backend/frontend deploylari bunga bog'liq bo'lmaydi.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'services/rembg/**'
+      - '.github/workflows/rembg.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'services/rembg/**'
+      - '.github/workflows/rembg.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE: ghcr.io/shavkatbegmatov/crafting-recipe-tree-rembg
+
+jobs:
+  build-and-push:
+    name: Build & Push rembg
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/setup-buildx-action@v3
+
+      # PR'da faqat build (Dockerfile buzilmaganini tekshirish), main'da push ham.
+      - name: Build & push
+        uses: docker/build-push-action@v6
+        with:
+          context: ./services/rembg
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          tags: |
+            ${{ env.IMAGE }}:latest
+            ${{ env.IMAGE }}:${{ github.sha }}
+          cache-from: type=gha,scope=rembg
+          cache-to: type=gha,mode=max,scope=rembg
+
+  deploy:
+    name: Deploy rembg
+    runs-on: ubuntu-latest
+    needs: [build-and-push]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Trigger Coolify
+        env:
+          WEBHOOK: ${{ secrets.COOLIFY_REMBG_WEBHOOK_URL }}
+          API_TOKEN: ${{ secrets.COOLIFY_API_TOKEN }}
+        run: |
+          if [ -z "$WEBHOOK" ]; then
+            echo "COOLIFY_REMBG_WEBHOOK_URL sozlanmagan - deploy o'tkazib yuborildi."
+            echo "Coolify'da rembg resursi yaratilgach shu secret'ni qo'shing."
+            exit 0
+          fi
+          # Coolify versiyaga qarab POST yoki GET kutadi - ikkalasini sinaymiz.
+          for method in POST GET; do
+            code=$(curl -s -o /tmp/rembg.out -w '%{http_code}' \
+              -X "$method" "$WEBHOOK" \
+              -H "Authorization: Bearer $API_TOKEN" \
+              --max-time 30 || echo 000)
+            echo "rembg: $method -> HTTP $code"
+            if [ "$code" -ge 200 ] && [ "$code" -lt 300 ]; then
+              exit 0
+            fi
+          done
+          echo "rembg: deploy webhook javob bermadi. Oxirgi javob tanasi:"
+          cat /tmp/rembg.out 2>/dev/null || true
+          exit 1

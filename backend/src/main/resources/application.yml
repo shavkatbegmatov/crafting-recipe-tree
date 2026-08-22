@@ -37,8 +37,11 @@ spring:
 app:
   uploads:
     path: uploads
-  scripts:
-    python: python
+  rembg:
+    # Fon o'chirish servisi (services/rembg). Bo'sh bo'lsa funksiya o'chiriladi va
+    # rasmlar asl holida saqlanadi — lokal dev uchun servisni ko'tarish shart emas.
+    url: ${REMBG_URL:}
+    timeout-seconds: 120
   jwt:
     # FAQAT lokal/dev fallback. Production JWT_SECRET ni MAJBURIY beradi
     # (application-prod.yml'da default yo'q — env bo'lmasa ilova ishga tushmaydi).

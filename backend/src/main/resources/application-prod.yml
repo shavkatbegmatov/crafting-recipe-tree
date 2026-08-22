@@ -38,8 +38,10 @@ spring:
 app:
   uploads:
     path: uploads
-  scripts:
-    python: python
+  rembg:
+    # Fon o'chirish servisi (services/rembg) — compose/Coolify tarmog'idagi nomi.
+    url: ${REMBG_URL:http://rembg:8000}
+    timeout-seconds: ${REMBG_TIMEOUT_SECONDS:120}
   jwt:
     # MAJBURIY: default yo'q. JWT_SECRET o'rnatilmasa ilova ishga tushmaydi (soxta token xavfi).
     secret: ${JWT_SECRET}
