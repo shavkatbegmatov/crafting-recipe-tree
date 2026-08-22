@@ -70,16 +70,33 @@ Lokal mashinada ishlashi bu serverda ham ishlashini kafolatlamaydi.
 | `MAX_UPLOAD_BYTES` | `15728640` (15 MB) | maksimal fayl hajmi |
 | `U2NET_HOME` | `/opt/models` | model katalogi (image ichiga oldindan yuklangan) |
 | `REMBG_PRELOAD` | `0` | `1` bo'lsa model ishga tushishda yuklanadi |
+| `REMBG_IDLE_TIMEOUT_SECONDS` | `900` | shuncha ishlatilmasa model xotiradan bo'shatiladi (`0` — bo'shatmaslik) |
 | `NUMBA_CACHE_DIR` | `/opt/numba-cache` | numba JIT keshi (non-root uchun yoziladigan joy) |
 
 Model fayli **build vaqtida** image ichiga joylanadi — shuning uchun konteyner ishga
 tushishi tashqi tarmoqqa bog'liq emas.
 
-**Xotiraga yuklash esa kechiktirilgan (lazy):** model sukut bo'yicha *birinchi
-so'rovda* RAM'ga yuklanadi. Sababi — server xotirasi tor (~8 GB, ko'p loyiha birga),
-fon o'chirish esa kuniga bir necha marta kerak bo'ladi; bo'sh turgan servis ~0.5 GB
-egallab yotishi mantiqsiz. Evaziga birinchi so'rov bir marta sekinroq ishlanadi.
-Tez javob muhimroq bo'lsa `REMBG_PRELOAD=1` qo'ying.
+**Xotira boshqaruvi.** Server xotirasi tor (~8 GB, ko'p loyiha birga), fon o'chirish
+esa kuniga bir necha marta kerak bo'ladigan funksiya. Shuning uchun model:
+
+1. *birinchi so'rovda* RAM'ga yuklanadi (ishga tushishda emas);
+2. `REMBG_IDLE_TIMEOUT_SECONDS` davomida ishlatilmasa **xotiradan bo'shatiladi**;
+3. keyingi so'rovda qayta yuklanadi.
+
+O'lchangan sarf: bo'sh turganda **~540 MB**, model yuklangach **~1.17 GB**.
+
+Evaziga tanaffusdan keyingi birinchi rasm bir oz sekinroq ishlanadi. Javob tezligi
+muhimroq bo'lsa: `REMBG_PRELOAD=1` (ishga tushishda yuklash) va/yoki
+`REMBG_IDLE_TIMEOUT_SECONDS=0` (hech qachon bo'shatmaslik).
+
+Bo'shatish ayni paytda bajarilayotgan so'rovni buzmaydi: u modelga o'z havolasini
+ushlab turadi, obyekt esa ish tugagach yo'q qilinadi.
+
+`GET /health` xotira holatini ham ko'rsatadi:
+
+```json
+{"status":"UP","model":"u2net","model_loaded":false,"idle_seconds":0.0,"idle_timeout":900}
+```
 
 `/health` ataylab modelga tegmaydi — healthcheck og'ir ishga bog'liq bo'lmasligi kerak.
 `/remove-bg` esa sinxron endpoint: FastAPI uni threadpool'da bajaradi, shuning uchun

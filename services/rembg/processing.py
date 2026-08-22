@@ -5,11 +5,16 @@ Bosqichlar (backend ichidagi eski `scripts/remove_bg.py` bilan bir xil):
   2. eng katta bog'langan shaffof bo'lmagan soha topiladi — bu ikonka
      (skrinshotdagi matn parchalari shu bosqichda tashlab yuboriladi);
   3. qolgan tasvir bounding box bo'yicha kesiladi (biroz padding bilan).
+
+Model xotirada faqat kerak bo'lganda turadi: birinchi so'rovda yuklanadi va uzoq
+vaqt ishlatilmasa bo'shatiladi (server xotirasi tor).
 """
 
+import gc
 import io
 import os
 import threading
+import time
 
 import numpy as np
 from PIL import Image
@@ -18,6 +23,10 @@ from scipy import ndimage
 
 MODEL_NAME = os.getenv("REMBG_MODEL", "u2net")
 
+# Shuncha soniya ishlatilmasa model xotiradan bo'shatiladi.
+# 0 — hech qachon bo'shatmaslik (javob tezligi xotiradan muhimroq bo'lsa).
+IDLE_TIMEOUT_SECONDS = int(os.getenv("REMBG_IDLE_TIMEOUT_SECONDS", "900"))
+
 # Alpha chegaralari — eski skriptdagi qiymatlar o'zgarishsiz saqlangan.
 ALPHA_BLOB_THRESHOLD = 30
 ALPHA_CROP_THRESHOLD = 10
@@ -25,21 +34,52 @@ CROP_PADDING = 6
 
 _session = None
 _session_lock = threading.Lock()
+_last_used = 0.0
 
 
 def get_session():
-    """Model bir marta yuklanadi, har so'rovda emas.
+    """Modelni qaytaradi, kerak bo'lsa yuklaydi, oxirgi ishlatilish vaqtini belgilaydi.
 
-    Chaqirilgunicha xotira egallanmaydi — servis bo'sh turganda model RAM'da
-    yotmaydi (server xotirasi tor). Bir vaqtda kelgan bir necha so'rov modelni
-    ikki marta yuklab yubormasligi uchun qulf ishlatiladi.
+    Chaqirilgunicha xotira egallanmaydi. Qulf tufayli bir vaqtda kelgan so'rovlar
+    modelni ikki marta yuklamaydi va bo'shatuvchi oqim bilan to'qnashmaydi.
+    """
+    global _session, _last_used
+    with _session_lock:
+        if _session is None:
+            _session = new_session(MODEL_NAME)
+        _last_used = time.monotonic()
+        return _session
+
+
+def is_loaded() -> bool:
+    return _session is not None
+
+
+def idle_seconds() -> float:
+    """Model oxirgi marta ishlatilganidan beri o'tgan vaqt (yuklanmagan bo'lsa 0)."""
+    if _session is None:
+        return 0.0
+    return time.monotonic() - _last_used
+
+
+def release_if_idle() -> bool:
+    """Model uzoq ishlatilmagan bo'lsa uni bo'shatadi. Bo'shatilgan bo'lsa True.
+
+    Ayni paytda bajarilayotgan so'rov xavfsiz: u `get_session()` dan olgan
+    obyektni o'z lokal o'zgaruvchisida ushlab turadi, shuning uchun bu yerda
+    havolani tashlash o'sha so'rovni buzmaydi — obyekt ish tugagach yo'q qilinadi.
     """
     global _session
-    if _session is None:
-        with _session_lock:
-            if _session is None:
-                _session = new_session(MODEL_NAME)
-    return _session
+    if IDLE_TIMEOUT_SECONDS <= 0:
+        return False
+    with _session_lock:
+        if _session is None:
+            return False
+        if (time.monotonic() - _last_used) < IDLE_TIMEOUT_SECONDS:
+            return False
+        _session = None
+    gc.collect()
+    return True
 
 
 def largest_blob(alpha: np.ndarray, threshold: int = ALPHA_BLOB_THRESHOLD):
@@ -70,7 +110,8 @@ def crop_to_content(img: Image.Image) -> Image.Image:
 
 def process_image(data: bytes) -> bytes:
     """Rasm baytlarini qabul qilib, tayyor shaffof PNG baytlarini qaytaradi."""
-    img = Image.open(io.BytesIO(remove(data, session=get_session()))).convert("RGBA")
+    session = get_session()
+    img = Image.open(io.BytesIO(remove(data, session=session))).convert("RGBA")
     arr = np.array(img)
 
     mask = largest_blob(arr[:, :, 3])
