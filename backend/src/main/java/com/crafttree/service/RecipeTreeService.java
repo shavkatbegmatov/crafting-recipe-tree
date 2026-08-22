@@ -337,6 +337,101 @@ public class RecipeTreeService {
         return ownTime + maxChild;
     }
 
+    // -------------------------------------------------------------------------
+    // Kraft yechimi — inventardagi oraliq itemlarni ham hisobga oladi
+    // -------------------------------------------------------------------------
+
+    /** Kraft yechimi: inventardan nima sarflanadi, qancha kerak va nima yetmaydi. */
+    public static final class CraftResolution {
+        /** itemId → inventardan ayiriladigan butun dona (oraliq itemlar ham, xomashyo ham). */
+        public final Map<Long, Integer> consumed = new LinkedHashMap<>();
+        /** itemId → xomashyodan jami kerak bo'lgan miqdor (yuqoriga yaxlitlangan). */
+        public final Map<Long, Integer> required = new LinkedHashMap<>();
+        /** itemId → yetishmayotgan miqdor (bo'sh bo'lsa — hammasi yetarli). */
+        public final Map<Long, Integer> shortfall = new LinkedHashMap<>();
+        /** Xabarlar uchun item ma'lumotlari. */
+        public final Map<Long, CraftItem> lookup = new HashMap<>();
+    }
+
+    /**
+     * {@code quantity} dona {@code target} yasash uchun nima sarflanishini hisoblaydi.
+     * <p>
+     * Inventardagi <b>oraliq itemlar</b> ham ishlatiladi: kerakli oraliq item qo'lda bo'lsa, u butun
+     * donalab olinadi va uning xomashyosi qaytadan talab qilinmaydi — faqat qolgan qismi yasaladi.
+     * Xomashyo talabi esa butun daraxt bo'ylab kasr holida yig'iladi va faqat <b>oxirida bir marta</b>
+     * yuqoriga yaxlitlanadi (har tugunda emas), aks holda bir xil xomashyo bir necha tarmoqda
+     * takror yaxlitlanib ortiqcha sarflanardi.
+     * <p>
+     * Maqsad itemning o'zi inventardan olinmaydi — u yasaladi.
+     */
+    public CraftResolution resolveCraft(CraftItem target, GameVersion gv, BigDecimal quantity,
+                                        Map<Long, Integer> inventory) {
+        Map<Long, BigDecimal> available = new HashMap<>();
+        if (inventory != null) {
+            inventory.forEach((id, q) -> available.put(id, BigDecimal.valueOf(q)));
+        }
+        CraftResolution res = new CraftResolution();
+        Map<Long, BigDecimal> rawNeed = new LinkedHashMap<>();
+        resolveNode(target, gv, quantity, true, available, rawNeed, res, new HashSet<>(), 0);
+
+        for (Map.Entry<Long, BigDecimal> e : rawNeed.entrySet()) {
+            BigDecimal need = e.getValue().setScale(0, RoundingMode.CEILING);
+            BigDecimal have = available.getOrDefault(e.getKey(), BigDecimal.ZERO);
+            BigDecimal take = need.min(have);
+            res.required.merge(e.getKey(), need.intValue(), Integer::sum);
+            if (take.signum() > 0) {
+                res.consumed.merge(e.getKey(), take.intValue(), Integer::sum);
+            }
+            BigDecimal miss = need.subtract(take);
+            if (miss.signum() > 0) {
+                res.shortfall.merge(e.getKey(), miss.intValue(), Integer::sum);
+            }
+        }
+        return res;
+    }
+
+    private void resolveNode(CraftItem item, GameVersion gv, BigDecimal needed, boolean isRoot,
+                             Map<Long, BigDecimal> available, Map<Long, BigDecimal> rawNeed,
+                             CraftResolution res, Set<Long> visited, int depth) {
+        if (needed.signum() <= 0) {
+            return;
+        }
+        res.lookup.putIfAbsent(item.getId(), item);
+
+        boolean leaf = depth > MAX_DEPTH
+                || RAW_CATEGORY.equals(item.getCategory().getCode())
+                || visited.contains(item.getId());
+        Optional<Recipe> recipeOpt = leaf
+                ? Optional.empty()
+                : recipeRepository.findByResultItemIdAndGameVersionId(item.getId(), gv.getId());
+
+        if (recipeOpt.isEmpty() || recipeOpt.get().getIngredients().isEmpty()) {
+            // Yasab bo'lmaydi — xomashyo sifatida yig'amiz (yaxlitlash oxirida bir marta).
+            rawNeed.merge(item.getId(), needed, BigDecimal::add);
+            return;
+        }
+
+        // Oraliq item: inventarda bori butun donalab ishlatiladi, qolgani yasaladi.
+        if (!isRoot) {
+            BigDecimal have = available.getOrDefault(item.getId(), BigDecimal.ZERO);
+            if (have.signum() > 0) {
+                BigDecimal take = have.min(needed.setScale(0, RoundingMode.CEILING));
+                available.put(item.getId(), have.subtract(take));
+                res.consumed.merge(item.getId(), take.intValue(), Integer::sum);
+                needed = needed.subtract(take);
+                if (needed.signum() <= 0) {
+                    return;
+                }
+            }
+        }
+
+        visited.add(item.getId());
+        for (RecipeIngredient ri : recipeOpt.get().getIngredients()) {
+            resolveNode(ri.getIngredientItem(), gv, ri.getQuantity().multiply(needed), false,
+                    available, rawNeed, res, new HashSet<>(visited), depth + 1);
+        }
+    }
+
     /** Reja yig'ish uchun ichki yordamchi: oraliq itemning jami miqdori, eng chuqur darajasi, vaqti. */
     private static final class PlanNode {
         final CraftItem item;
