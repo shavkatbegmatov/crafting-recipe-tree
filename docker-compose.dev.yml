@@ -30,6 +30,12 @@ services:
       SPRING_DATASOURCE_PASSWORD: postgres
     volumes:
       - uploads:/app/uploads
+    networks:
+      default:
+        aliases:
+          # Frontend nginx shu nom orqali murojaat qiladi (umumiy `backend` emas —
+          # sabab: frontend/nginx.conf.template izohiga qarang).
+          - crafttree-backend
 
   frontend:
     build: ./frontend

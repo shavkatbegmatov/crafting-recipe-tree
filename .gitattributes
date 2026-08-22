@@ -1,0 +1,7 @@
+# Konteyner ichida ishlaydigan fayllar HAR DOIM LF bo'lishi shart.
+# Windows'da checkout qilinganda CRLF bo'lsa, `#!/bin/sh\r` shebang'i konteynerda
+# "no such file or directory" xatosini beradi — buni faqat lokal build'da uchratasiz.
+*.sh            text eol=lf
+Dockerfile      text eol=lf
+*.template      text eol=lf
+mvnw            text eol=lf

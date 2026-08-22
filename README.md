@@ -166,6 +166,27 @@ docker exec <backend-container> sh -c 'touch /app/uploads/.w && rm /app/uploads/
 Fresh environments are unaffected: an empty volume inherits the correct ownership on first
 mount.
 
+### Frontend → backend routing (`BACKEND_ORIGIN`)
+
+The frontend container proxies `/api`, `/ws`, `/uploads`, `/swagger-ui` and `/api-docs` to
+the backend. The target comes from **`BACKEND_ORIGIN`** at container start and defaults to
+`http://crafttree-backend:8080` — the alias both compose files give the backend service.
+
+The generic name `backend` is **deliberately not used**. Coolify puts every application on
+one flat shared Docker network, where a generic alias is global: on 2026-08-22 `backend`
+resolved to an unrelated project's container (`online-jurnal-api`), so these locations
+returned `502 Bad Gateway`. A project-specific name cannot collide, and when it does not
+resolve nginx simply fails — which is far better than silently forwarding requests, auth
+headers included, into someone else's service.
+
+In production this proxy is not on the request path at all: the SPA is built with
+`VITE_API_BASE_URL=https://api.erz-online.uz` and calls the backend directly. So
+**`https://erz-online.uz/api/...` returning 502 is not an outage** — check
+`https://api.erz-online.uz/api/...` when verifying production health. To make the proxy path
+work too, set `BACKEND_ORIGIN` to a reachable address for that environment (an internal
+service name, or the backend's public URL — `Host` is rewritten to the upstream, so both
+work).
+
 ### Database backup & restore
 
 A **SUPER_ADMIN** can take a full backup of the database and restore from one at
@@ -212,6 +233,12 @@ pre-restore safety copy is kept.
 |----------|-------------|
 | `VITE_API_BASE_URL` | Public backend URL in production (also used to derive the WebSocket URL). When unset, same-origin is used. |
 | `VITE_API_URL` | Backend target for the dev-server proxy. |
+
+### Frontend (runtime)
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `BACKEND_ORIGIN` | Where the nginx container proxies `/api`, `/ws`, `/uploads`, `/swagger-ui`, `/api-docs`. Must include the scheme. | `http://crafttree-backend:8080` |
 
 > **Note:** never commit real secrets. Production values are provided as deploy-time environment variables / CI secrets.
 
