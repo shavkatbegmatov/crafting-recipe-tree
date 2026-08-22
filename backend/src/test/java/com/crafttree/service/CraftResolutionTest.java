@@ -18,6 +18,7 @@ import org.mockito.quality.Strictness;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -69,13 +70,27 @@ class CraftResolutionTest {
         return RecipeIngredient.builder().ingredientItem(item).quantity(new BigDecimal(qty)).build();
     }
 
-    private void stubRecipe(CraftItem result, RecipeIngredient... ingredients) {
+    /** Inventar xaritasi: {@code inv(A, 2, B, 1)} → {A=2, B=1}. */
+    private static Map<Long, BigDecimal> inv(Object... pairs) {
+        Map<Long, BigDecimal> m = new LinkedHashMap<>();
+        for (int i = 0; i + 1 < pairs.length; i += 2) {
+            m.put(((Number) pairs[i]).longValue(),
+                    BigDecimal.valueOf(((Number) pairs[i + 1]).longValue()));
+        }
+        return m;
+    }
+
+    private void stubRecipeTimed(CraftItem result, int craftSeconds, RecipeIngredient... ingredients) {
         Recipe r = Recipe.builder()
-                .resultItem(result).gameVersion(gv).craftTimeSeconds(0)
+                .resultItem(result).gameVersion(gv).craftTimeSeconds(craftSeconds)
                 .ingredients(List.of(ingredients))
                 .build();
         when(recipeRepository.findByResultItemIdAndGameVersionId(result.getId(), gv.getId()))
                 .thenReturn(Optional.of(r));
+    }
+
+    private void stubRecipe(CraftItem result, RecipeIngredient... ingredients) {
+        stubRecipeTimed(result, 0, ingredients);
     }
 
     /** T = 2×A + 1×B, A = 3×R */
@@ -90,7 +105,7 @@ class CraftResolutionTest {
         stubStandardTree();
 
         RecipeTreeService.CraftResolution res =
-                service.resolveCraft(itemT, gv, BigDecimal.ONE, Map.of(A, 2, B, 1));
+                service.resolveCraft(itemT, gv, BigDecimal.ONE, inv(A, 2, B, 1));
 
         assertThat(res.shortfall).isEmpty();
         assertThat(res.consumed).containsEntry(A, 2).containsEntry(B, 1);
@@ -106,7 +121,7 @@ class CraftResolutionTest {
 
         // 2 ta A kerak, 1 tasi bor -> 1 tasi yasaladi -> 3 ta R kerak
         RecipeTreeService.CraftResolution res =
-                service.resolveCraft(itemT, gv, BigDecimal.ONE, Map.of(A, 1, B, 1, R, 5));
+                service.resolveCraft(itemT, gv, BigDecimal.ONE, inv(A, 1, B, 1, R, 5));
 
         assertThat(res.shortfall).isEmpty();
         assertThat(res.consumed).containsEntry(A, 1).containsEntry(B, 1).containsEntry(R, 3);
@@ -118,7 +133,7 @@ class CraftResolutionTest {
         stubStandardTree();
 
         RecipeTreeService.CraftResolution res =
-                service.resolveCraft(itemT, gv, BigDecimal.ONE, Map.of(B, 1, R, 6));
+                service.resolveCraft(itemT, gv, BigDecimal.ONE, inv(B, 1, R, 6));
 
         assertThat(res.shortfall).isEmpty();
         assertThat(res.consumed).containsEntry(R, 6).containsEntry(B, 1);
@@ -131,7 +146,7 @@ class CraftResolutionTest {
         stubStandardTree();
 
         RecipeTreeService.CraftResolution res =
-                service.resolveCraft(itemT, gv, BigDecimal.ONE, Map.of());
+                service.resolveCraft(itemT, gv, BigDecimal.ONE, inv());
 
         assertThat(res.shortfall).containsEntry(R, 6).containsEntry(B, 1);
         assertThat(res.required).containsEntry(R, 6).containsEntry(B, 1);
@@ -146,7 +161,7 @@ class CraftResolutionTest {
         stubRecipe(itemC, ing(itemR, "0.5"));
 
         RecipeTreeService.CraftResolution res =
-                service.resolveCraft(itemT, gv, BigDecimal.ONE, Map.of(R, 1));
+                service.resolveCraft(itemT, gv, BigDecimal.ONE, inv(R, 1));
 
         assertThat(res.required).containsEntry(R, 1);
         assertThat(res.consumed).containsEntry(R, 1);
@@ -160,9 +175,53 @@ class CraftResolutionTest {
 
         // Inventarda 5 ta T bor, lekin baribir yangisini yasashi kerak
         RecipeTreeService.CraftResolution res =
-                service.resolveCraft(itemT, gv, BigDecimal.ONE, Map.of(T, 5, B, 1, R, 6));
+                service.resolveCraft(itemT, gv, BigDecimal.ONE, inv(T, 5, B, 1, R, 6));
 
         assertThat(res.consumed).doesNotContainKey(T);
         assertThat(res.consumed).containsEntry(R, 6).containsEntry(B, 1);
+    }
+
+    // --- Reja (craft-plan) uchun ---
+
+    @Test
+    @DisplayName("Reja: inventarda tayyor oraliq item qadamlar ro'yxatiga tushmaydi")
+    void planSkipsReadyIntermediates() {
+        stubStandardTree();
+
+        RecipeTreeService.CraftResolution res =
+                service.resolveCraft(itemT, gv, BigDecimal.ONE, inv(A, 2, B, 1));
+
+        // A tayyor bo'lgani uchun faqat T yasaladi
+        assertThat(res.toCraft.keySet()).containsExactly(T);
+    }
+
+    @Test
+    @DisplayName("Reja: oraliq item yo'q bo'lsa qadamlarda ham T, ham A bo'ladi")
+    void planIncludesIntermediateWhenMissing() {
+        stubStandardTree();
+
+        RecipeTreeService.CraftResolution res =
+                service.resolveCraft(itemT, gv, BigDecimal.ONE, inv(B, 1, R, 6));
+
+        assertThat(res.toCraft.keySet()).containsExactlyInAnyOrder(T, A);
+        assertThat(res.toCraft.get(A).quantity).isEqualByComparingTo("2");
+    }
+
+    @Test
+    @DisplayName("Reja vaqti: tayyor oraliq item tarmog'i kritik yo'lga qo'shilmaydi")
+    void parallelTimeSkipsReadyBranches() {
+        // T (10s) = 2×A + 1×B,  A (30s) = 3×R
+        stubRecipeTimed(itemT, 10, ing(itemA, "2"), ing(itemB, "1"));
+        stubRecipeTimed(itemA, 30, ing(itemR, "3"));
+
+        // A yo'q -> kritik yo'l = T(10) + A(30×2=60) = 70
+        RecipeTreeService.CraftResolution without =
+                service.resolveCraft(itemT, gv, BigDecimal.ONE, inv(B, 1, R, 6));
+        assertThat(without.parallelSeconds).isEqualTo(70);
+
+        // A tayyor -> faqat T(10)
+        RecipeTreeService.CraftResolution ready =
+                service.resolveCraft(itemT, gv, BigDecimal.ONE, inv(A, 2, B, 1));
+        assertThat(ready.parallelSeconds).isEqualTo(10);
     }
 }

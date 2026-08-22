@@ -55,8 +55,11 @@ public class CraftService {
         Map<Long, Integer> inv = new LinkedHashMap<>();
         inventoryRepository.findEntriesByUser(user).forEach(e -> inv.put(e.itemId(), e.quantity()));
 
+        Map<Long, BigDecimal> available = new LinkedHashMap<>();
+        inv.forEach((id, q) -> available.put(id, BigDecimal.valueOf(q)));
+
         RecipeTreeService.CraftResolution res =
-                recipeTreeService.resolveCraft(result, gv, BigDecimal.valueOf(qty), inv);
+                recipeTreeService.resolveCraft(result, gv, BigDecimal.valueOf(qty), available);
 
         if (!res.shortfall.isEmpty()) {
             List<CraftResultDto.MissingEntry> missing = new ArrayList<>();
