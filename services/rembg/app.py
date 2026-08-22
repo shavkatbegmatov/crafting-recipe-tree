@@ -11,24 +11,44 @@ image yengil, bu servis esa kamdan-kam yangilanadi.
 
 import logging
 import os
+import threading
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.responses import Response
 
-from processing import MODEL_NAME, get_session, process_image
+import processing
+from processing import IDLE_TIMEOUT_SECONDS, MODEL_NAME, get_session, process_image
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger("rembg-service")
 
 MAX_UPLOAD_BYTES = int(os.getenv("MAX_UPLOAD_BYTES", 15 * 1024 * 1024))
 
-# Model sukut bo'yicha BIRINCHI SO'ROVDA yuklanadi. Sababi: server xotirasi tor
-# (~8 GB, ko'p loyiha birga), fon o'chirish esa kuniga bir necha marta kerak
-# bo'ladi — bo'sh turgan servis ~0.5 GB RAM egallab yotishi mantiqsiz.
-# Evaziga birinchi so'rov bir marta sekinroq ishlanadi.
-# Tez javob muhimroq bo'lsa: REMBG_PRELOAD=1 bilan oldindan yuklash mumkin.
+# Model sukut bo'yicha BIRINCHI SO'ROVDA yuklanadi va uzoq ishlatilmasa
+# xotiradan bo'shatiladi. Sababi: server xotirasi tor (~8 GB, ko'p loyiha birga),
+# fon o'chirish esa kuniga bir necha marta kerak bo'ladi.
+# REMBG_PRELOAD=1 — ishga tushishda yuklash (birinchi so'rov tez bo'lsin).
 PRELOAD_MODEL = os.getenv("REMBG_PRELOAD", "0") == "1"
+
+# Bo'shatish uchun tekshiruv oralig'i: tez-tez tekshirish ma'nosiz, kech
+# tekshirish esa xotirani ortiqcha ushlab turadi.
+_CHECK_INTERVAL = max(5, min(60, (IDLE_TIMEOUT_SECONDS // 3) or 60))
+
+_stop = threading.Event()
+
+
+def _idle_reaper():
+    """Fon oqimi: model bo'sh tursa uni xotiradan bo'shatadi."""
+    while not _stop.wait(_CHECK_INTERVAL):
+        try:
+            if processing.release_if_idle():
+                log.info(
+                    "Model xotiradan bo'shatildi (%ds ishlatilmadi). Keyingi so'rovda qayta yuklanadi.",
+                    IDLE_TIMEOUT_SECONDS,
+                )
+        except Exception:  # noqa: BLE001 — fon oqimi hech qachon yiqilmasin
+            log.exception("Bo'shatishda kutilmagan xato")
 
 
 @asynccontextmanager
@@ -38,19 +58,43 @@ async def lifespan(_: FastAPI):
         log.info("Model oldindan yuklandi: %s", MODEL_NAME)
     else:
         log.info("Model birinchi so'rovda yuklanadi (oldindan yuklash: REMBG_PRELOAD=1)")
+
+    reaper = None
+    if IDLE_TIMEOUT_SECONDS > 0:
+        reaper = threading.Thread(target=_idle_reaper, daemon=True, name="rembg-idle-reaper")
+        reaper.start()
+        log.info(
+            "Bo'sh turish chegarasi: %ds (tekshiruv har %ds)",
+            IDLE_TIMEOUT_SECONDS,
+            _CHECK_INTERVAL,
+        )
+    else:
+        log.info("Bo'shatish o'chirilgan (REMBG_IDLE_TIMEOUT_SECONDS=0)")
+
     yield
 
+    _stop.set()
+    if reaper is not None:
+        reaper.join(timeout=5)
 
-app = FastAPI(title="Craft Tree — background removal", version="1.1.0", lifespan=lifespan)
+
+app = FastAPI(title="Craft Tree — background removal", version="1.2.0", lifespan=lifespan)
 
 
 @app.get("/health")
 def health():
     """Konteyner sog'ligi (Docker/Coolify healthcheck shu yerga uradi).
 
-    Ataylab modelga tegmaydi: healthcheck og'ir ishga bog'liq bo'lmasligi kerak.
+    Ataylab modelni YUKLAMAYDI — healthcheck og'ir ishga bog'liq bo'lmasligi kerak.
+    `model_loaded` orqali xotira holatini kuzatish mumkin.
     """
-    return {"status": "UP", "model": MODEL_NAME, "preload": PRELOAD_MODEL}
+    return {
+        "status": "UP",
+        "model": MODEL_NAME,
+        "model_loaded": processing.is_loaded(),
+        "idle_seconds": round(processing.idle_seconds(), 1),
+        "idle_timeout": IDLE_TIMEOUT_SECONDS,
+    }
 
 
 # DIQQAT: bu `def`, `async def` EMAS. Rasm qayta ishlash — bir necha soniyalik
