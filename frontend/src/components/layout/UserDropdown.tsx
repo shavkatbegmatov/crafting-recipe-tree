@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, type KeyboardEvent } from 'react'
 import { createPortal } from 'react-dom'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import {
   ChevronDown,
   Copy,
@@ -231,14 +231,14 @@ export default function UserDropdown() {
         />
       </button>
 
-      {/* Dropdown panel */}
-      <AnimatePresence>
-        {open && (
+      {/* Dropdown panel.
+          Ochilish animatsiyali, YOPILISH esa darhol: `exit` + AnimatePresence bo'lsa,
+          animatsiya to'xtaganda panel DOM'da qolib ketardi (backdrop bilan bir xil sabab). */}
+      {open && (
           <motion.div
             key="user-dropdown-panel"
             initial={{ opacity: 0, y: -4, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -4, scale: 0.97 }}
             transition={{ duration: 0.15 }}
             className="absolute right-0 top-full mt-2 w-72 sm:w-80
               bg-dark-card border border-dark-gold/25 rounded-xl
@@ -573,28 +573,28 @@ export default function UserDropdown() {
             </div>
           </motion.div>
         )}
-      </AnimatePresence>
     </div>
 
-      {/* Backdrop — body'ga PORTAL: chat drawer (transform → stacking context) va boshqa
-          qatlamlardan ustun, butun ekranni qoplaydi. Tashqi-klik (mousedown) + onClick yopadi. */}
+      {/* Backdrop — body'ga PORTAL: chat drawer (transform -> stacking context) va boshqa
+          qatlamlardan ustun, butun ekranni qoplaydi.
+
+          MUHIM: bu qatlam ATAYLAB framer-motion'siz va DOIM mount qilingan. Ilgari u
+          AnimatePresence ichida edi va faqat chiqish animatsiyasi tugagach o'chirilardi.
+          Boshqa tabga o'tilganda brauzer requestAnimationFrame'ni to'xtatadi, animatsiya
+          tugamaydi, element esa DOM'da qolib ketardi — opacity 0 bo'lsa ham u bosishlarni
+          yutaverardi va butun ilova "o'lik" bo'lib qolardi. Endi ko'rinish ham,
+          pointer-events ham faqat React holatiga bog'liq. */}
       {createPortal(
-        <AnimatePresence>
-          {open && (
-            <motion.div
-              key="user-dropdown-backdrop"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.15 }}
-              onClick={() => {
-                setOpen(false)
-                resetEdit()
-              }}
-              className="fixed inset-x-0 bottom-0 top-14 z-[80] bg-black/40"
-            />
-          )}
-        </AnimatePresence>,
+        <div
+          aria-hidden
+          onClick={() => {
+            setOpen(false)
+            resetEdit()
+          }}
+          className={`fixed inset-x-0 bottom-0 top-14 z-[80] bg-black/40
+            transition-opacity duration-150
+            ${open ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+        />,
         document.body,
       )}
     </>
