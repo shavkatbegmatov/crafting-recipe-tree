@@ -2,7 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useItems, useCategories } from '../../hooks/useItems'
 import { useLocalizedField } from '../../hooks/useLanguage'
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect, useMemo } from 'react'
 import SearchBar from '../items/SearchBar'
 import { DEFAULT_CATEGORY_COLOR } from '../../utils/constants'
 import ItemImageIcon from '../ui/ItemImageIcon'
@@ -20,13 +20,38 @@ export default function Sidebar({ isOpen, onClose }: Props) {
   const [filter, setFilter] = useState('')
   const { id } = useParams()
   const navigate = useNavigate()
-  const { data: items, isLoading } = useItems(filter || undefined)
+  // Itemlar filtrsiz olinadi va kategoriya bo'yicha shu yerda ajratiladi.
+  // Boshqa sahifalar ham aynan shu so'rovni ishlatadi, ya'ni kesh baham ko'riladi
+  // va kategoriya bosilganda yangi so'rov ketmaydi.
+  const { data: items, isLoading } = useItems()
   const { data: categories } = useCategories()
 
   const handleSearch = useCallback((val: string) => setSearch(val), [])
 
+  // Kategoriyalar versiyaga bog'lanmagan (global), itemlar esa bog'langan.
+  // Shuning uchun filtrlarda faqat JORIY VERSIYADA itemi bor kategoriyalar ko'rsatiladi —
+  // aks holda har versiyada begona va bo'sh kategoriyalar osilib turardi.
+  const presentCodes = useMemo(
+    () => new Set((items ?? []).map((i) => i.categoryCode)),
+    [items],
+  )
+  const visibleCategories = useMemo(
+    () => (categories ?? []).filter((c) => presentCodes.has(c.code)),
+    [categories, presentCodes],
+  )
+
+  // Versiya almashganda tanlangan kategoriya yo'q bo'lib qolishi mumkin —
+  // u holda ro'yxat bo'sh ko'rinib, qaytish tugmasi ham yo'qolardi.
+  useEffect(() => {
+    if (filter && items && !presentCodes.has(filter)) {
+      setFilter('')
+    }
+  }, [filter, items, presentCodes])
+
   const filteredItems = items?.filter(
-    (item) => !search || getField(item, 'name').toLowerCase().includes(search.toLowerCase())
+    (item) =>
+      (!filter || item.categoryCode === filter) &&
+      (!search || getField(item, 'name').toLowerCase().includes(search.toLowerCase())),
   )
 
   return (
@@ -58,7 +83,7 @@ export default function Sidebar({ isOpen, onClose }: Props) {
             >
               {t('sidebar.all')}
             </button>
-            {categories?.map((cat) => (
+            {visibleCategories.map((cat) => (
               <button
                 key={cat.code}
                 onClick={() => setFilter(cat.code)}
