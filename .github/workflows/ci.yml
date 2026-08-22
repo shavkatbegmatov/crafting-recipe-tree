@@ -3,8 +3,10 @@ name: Build & Deploy
 on:
   push:
     branches: [main]
+  # Har qanday bazaga qaratilgan PR tekshiriladi. Ilgari faqat `main` edi, shuning
+  # uchun bir PR ustiga qurilgan ikkinchi PR (stacked) umuman tekshirilmasdan qolardi.
+  # Image'ni GHCR'ga push va deploy baribir faqat `main`da bo'ladi (quyidagi PUSH sharti).
   pull_request:
-    branches: [main]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
