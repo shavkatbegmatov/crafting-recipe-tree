@@ -36,6 +36,7 @@ public class CraftService {
     private final InventoryService inventoryService;
     private final InventoryRepository inventoryRepository;
     private final CraftItemRepository craftItemRepository;
+    private final CraftItemService craftItemService;
     private final CraftLogRepository craftLogRepository;
     private final GameVersionService gameVersionService;
 
@@ -48,12 +49,13 @@ public class CraftService {
     @Transactional
     public CraftResultDto craftBulk(User user, Long itemId, int quantity, String version) {
         int qty = Math.max(1, quantity);
-        CraftItem result = craftItemRepository.findById(itemId)
-                .orElseThrow(() -> new ItemNotFoundException(itemId));
         GameVersion gv = gameVersionService.resolveOrCurrent(version);
+        // Item ham, inventar ham AYNAN shu versiyaga tegishli bo'lishi shart.
+        CraftItem result = craftItemService.resolveInVersion(itemId, gv);
 
         Map<Long, Integer> inv = new LinkedHashMap<>();
-        inventoryRepository.findEntriesByUser(user).forEach(e -> inv.put(e.itemId(), e.quantity()));
+        inventoryRepository.findEntriesByUserAndVersion(user, gv.getId())
+                .forEach(e -> inv.put(e.itemId(), e.quantity()));
 
         Map<Long, BigDecimal> available = new LinkedHashMap<>();
         inv.forEach((id, q) -> available.put(id, BigDecimal.valueOf(q)));
@@ -75,19 +77,19 @@ public class CraftService {
         // Sarflanganini ayirib, natijani qo'shamiz; 0 ga tushgan yozuvlar tashlanadi.
         Map<Long, Integer> newInv = new LinkedHashMap<>(inv);
         res.consumed.forEach((id, used) -> newInv.merge(id, -used, Integer::sum));
-        newInv.merge(itemId, qty, Integer::sum);
+        newInv.merge(result.getId(), qty, Integer::sum);
         List<InventoryEntryDto> newList = newInv.entrySet().stream()
                 .filter(e -> e.getValue() != null && e.getValue() > 0)
                 .map(e -> new InventoryEntryDto(e.getKey(), e.getValue()))
                 .toList();
-        inventoryService.replace(user, newList);
+        inventoryService.replace(user, newList, version);
 
         CraftLog log = craftLogRepository.save(CraftLog.builder()
                 .user(user).resultItem(result).resultQuantity(qty).gameVersion(gv).build());
 
         return CraftResultDto.builder()
                 .success(true)
-                .newInventory(inventoryRepository.findEntriesByUser(user))
+                .newInventory(inventoryRepository.findEntriesByUserAndVersion(user, gv.getId()))
                 .log(CraftLogDto.from(log))
                 .build();
     }

@@ -187,17 +187,20 @@ public class ExportService {
     }
 
     private List<CraftItem> resolveRoots(ExportSelection s) {
+        // Itemlar endi versiyaga bog'langan — eksport joriy versiya doirasida ishlaydi
+        // (retseptlar uchun ham yuqorida shu versiya ishlatiladi).
+        Long versionId = gameVersionService.getCurrent().getId();
         if (s.all()) {
-            return craftItemRepository.findAllByOrderByCategoryIdAscNameAsc();
+            return craftItemRepository.findAllByVersion(versionId);
         }
         if (s.itemIds() != null && !s.itemIds().isEmpty()) {
             return craftItemRepository.findAllById(s.itemIds());
         }
         if (s.categoryCode() != null && !s.categoryCode().isBlank()) {
-            return craftItemRepository.findByCategoryCode(s.categoryCode());
+            return craftItemRepository.findByCategoryCodeAndVersion(s.categoryCode(), versionId);
         }
         if (s.tagCode() != null && !s.tagCode().isBlank()) {
-            return craftItemRepository.findAll().stream()
+            return craftItemRepository.findAllByVersion(versionId).stream()
                     .filter(it -> it.getTags() != null
                             && it.getTags().stream().anyMatch(t -> s.tagCode().equals(t.getCode())))
                     .toList();

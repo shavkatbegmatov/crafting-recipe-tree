@@ -692,5 +692,25 @@
     "restoreDone": "Database restored",
     "safetyBackup": "Copy of the previous state:",
     "restartNeeded": "Restart the application: the schema may have changed while the running process still holds the old one."
+  },
+  "versionCopy": {
+    "title": "Copy from another version",
+    "source": "Source version",
+    "withRecipes": "Copy recipes",
+    "withRecipesHint": "Ingredients are pulled in automatically — otherwise the recipe would be incomplete.",
+    "scope": "What to copy",
+    "scopeAll": "All items ({{count}})",
+    "scopeSelected": "Selected items",
+    "confirm": "Copy ({{count}})",
+    "done": "Copied: {{from}} → {{to}}",
+    "itemsCopied": "Items added",
+    "itemsSkipped": "Already present",
+    "recipesCopied": "Recipes added",
+    "recipesSkipped": "Recipes skipped",
+    "warnings": "Warnings ({{count}})",
+    "loading": "Loading...",
+    "close": "Close",
+    "items": "Items",
+    "recipes": "Recipes"
   }
 }

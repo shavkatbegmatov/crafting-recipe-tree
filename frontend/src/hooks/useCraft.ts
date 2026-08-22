@@ -14,7 +14,7 @@ export function useCraftBulk() {
       craftBulk(vars.itemId, vars.quantity, effectiveVersion ?? undefined),
     onSuccess: (res: CraftResult) => {
       if (res.success) {
-        if (res.newInventory) qc.setQueryData(['inventory'], res.newInventory)
+        if (res.newInventory) qc.setQueryData(['inventory', effectiveVersion], res.newInventory)
         qc.invalidateQueries({ queryKey: ['craftHistory'] })
         qc.invalidateQueries({ queryKey: ['craftable'] })
         qc.invalidateQueries({ queryKey: ['craftPlan'] })

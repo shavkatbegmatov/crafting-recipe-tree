@@ -29,6 +29,24 @@ public class RecipeIngredient {
     @JoinColumn(name = "ingredient_item_id", nullable = false)
     private CraftItem ingredientItem;
 
+    /**
+     * Retsept versiyasining nusxasi. Ataylab saqlanadi: DB'da kompozit tashqi
+     * kalitlar shu ustun orqali ingredient ham, retsept ham, item ham AYNAN bir
+     * versiyada ekanini kafolatlaydi. Qiymat {@link #syncGameVersion()} da
+     * retseptdan olinadi — chaqiruvchi uni qo'lda berishi shart emas.
+     */
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "game_version_id", nullable = false)
+    private GameVersion gameVersion;
+
     @Column(nullable = false, precision = 10, scale = 4)
     private BigDecimal quantity;
+
+    @PrePersist
+    @PreUpdate
+    void syncGameVersion() {
+        if (recipe != null) {
+            gameVersion = recipe.getGameVersion();
+        }
+    }
 }

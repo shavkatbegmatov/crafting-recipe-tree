@@ -1,6 +1,7 @@
 package com.crafttree.service;
 
 import com.crafttree.dto.AdminStatsDto;
+import com.crafttree.entity.GameVersion;
 import com.crafttree.entity.Role;
 import com.crafttree.repository.*;
 import org.junit.jupiter.api.DisplayName;
@@ -30,16 +31,18 @@ class AdminStatsServiceTest {
     @Mock ChatMessageRepository chatMessageRepository;
     @Mock FavoriteRepository favoriteRepository;
     @Mock InventoryRepository inventoryRepository;
+    @Mock GameVersionService gameVersionService;
     @InjectMocks AdminStatsService service;
 
     @Test
     @DisplayName("stats — ko'rsatkichlarni yig'adi va kategoriya taqsimotini map qiladi")
     void aggregatesAndMapsByCategory() {
-        when(craftItemRepository.count()).thenReturn(54L);
+        when(gameVersionService.getCurrent()).thenReturn(GameVersion.builder().id(7L).version("1.0.0").build());
+        when(craftItemRepository.countByGameVersionId(7L)).thenReturn(54L);
         when(userRepository.count()).thenReturn(12L);
         when(userRepository.countByRole(Role.ADMIN)).thenReturn(3L);
         when(userRepository.countByRole(Role.SUPER_ADMIN)).thenReturn(1L);
-        when(craftItemRepository.countByCategory()).thenReturn(List.of(
+        when(craftItemRepository.countByCategoryAndVersion(7L)).thenReturn(List.of(
                 new Object[]{"RAW", 20L},
                 new Object[]{"MATERIAL", 15L}));
 

@@ -1,8 +1,11 @@
 package com.crafttree.controller;
 
 import com.crafttree.dto.GameVersionDto;
+import com.crafttree.dto.VersionCopyResultDto;
+import com.crafttree.dto.VersionStatsDto;
 import com.crafttree.entity.GameVersion;
 import com.crafttree.service.GameVersionService;
+import com.crafttree.service.VersionCopyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +23,7 @@ import java.util.Map;
 public class GameVersionController {
 
     private final GameVersionService gameVersionService;
+    private final VersionCopyService versionCopyService;
 
     @GetMapping
     @Operation(summary = "List all game versions, newest first")
@@ -31,6 +35,12 @@ public class GameVersionController {
     @Operation(summary = "Return the currently active game version")
     public GameVersionDto current() {
         return GameVersionDto.from(gameVersionService.getCurrent());
+    }
+
+    @GetMapping("/stats")
+    @Operation(summary = "Item and recipe counts per version (admin overview)")
+    public List<VersionStatsDto> stats() {
+        return gameVersionService.stats();
     }
 
     @PostMapping
@@ -65,6 +75,22 @@ public class GameVersionController {
         gameVersionService.delete(id);
         return Map.of("ok", true, "id", id);
     }
+
+    @PostMapping("/{id}/copy-from")
+    @Operation(summary = "Copy items (and optionally recipes) from another game version into this one")
+    public VersionCopyResultDto copyFrom(@PathVariable Long id, @RequestBody CopyFromRequest request) {
+        return versionCopyService.copy(
+                request.sourceVersionId(),
+                id,
+                request.itemIds(),
+                request.withRecipes() == null || request.withRecipes());
+    }
+
+    /**
+     * @param itemIds     nusxalanadigan itemlar; bo'sh bo'lsa manbaning hammasi
+     * @param withRecipes retseptlar ham ko'chirilsinmi (default: ha)
+     */
+    public record CopyFromRequest(Long sourceVersionId, List<Long> itemIds, Boolean withRecipes) {}
 
     public record CreateRequest(String version, LocalDateTime releasedAt, String notes, Boolean makeCurrent) {}
     public record UpdateRequest(String version, LocalDateTime releasedAt, String notes) {}

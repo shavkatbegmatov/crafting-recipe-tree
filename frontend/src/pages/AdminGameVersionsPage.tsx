@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Navigate } from 'react-router-dom'
-import { ArrowLeft, Plus, Pencil, Trash2, Save, X, Loader2, Check, Star, Tag as TagIcon } from 'lucide-react'
+import { ArrowLeft, Plus, Pencil, Trash2, Save, X, Loader2, Check, Star, Copy, Tag as TagIcon } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { useGoBack } from '../hooks/useGoBack'
 import {
@@ -10,7 +10,9 @@ import {
   useUpdateGameVersion,
   useDeleteGameVersion,
   useSetCurrentGameVersion,
+  useGameVersionStats,
 } from '../hooks/useGameVersions'
+import VersionCopyDialog from '../components/admin/VersionCopyDialog'
 import type { GameVersion } from '../api/types'
 import Spinner from '../components/ui/Spinner'
 import { useContentWidth } from '../hooks/useContentWidth'
@@ -35,6 +37,7 @@ export default function AdminGameVersionsPage() {
   const goBack = useGoBack('/')
   const contentWidth = useContentWidth('max-w-5xl')
   const { data: versions, isLoading } = useGameVersions()
+  const { data: stats } = useGameVersionStats()
 
   const createMutation = useCreateGameVersion()
   const updateMutation = useUpdateGameVersion()
@@ -45,6 +48,7 @@ export default function AdminGameVersionsPage() {
   const [creating, setCreating] = useState(false)
   const [form, setForm] = useState<FormState>(emptyForm)
   const [savedFlash, setSavedFlash] = useState(false)
+  const [copyTarget, setCopyTarget] = useState<GameVersion | null>(null)
 
   if (!isAdmin) return <Navigate to="/" />
 
@@ -214,6 +218,8 @@ export default function AdminGameVersionsPage() {
               <tr className="border-b border-dark-border bg-dark-bg/30">
                 <th className="text-left py-2 px-3 text-skin-muted font-medium">{t('gameVersion.version')}</th>
                 <th className="text-left py-2 px-3 text-skin-muted font-medium">{t('gameVersion.releasedAt')}</th>
+                <th className="text-right py-2 px-3 text-skin-muted font-medium">{t('versionCopy.items')}</th>
+                <th className="text-right py-2 px-3 text-skin-muted font-medium">{t('versionCopy.recipes')}</th>
                 <th className="text-left py-2 px-3 text-skin-muted font-medium">{t('gameVersion.notes')}</th>
                 <th className="text-right py-2 px-3 text-skin-muted font-medium">{t('admin.actions')}</th>
               </tr>
@@ -234,6 +240,7 @@ export default function AdminGameVersionsPage() {
                   <td className="py-2 px-3 text-xs text-skin-muted font-mono">
                     {gv.releasedAt?.replace('T', ' ').slice(0, 16) ?? '—'}
                   </td>
+                  <VersionCountCells stats={stats} versionId={gv.id} />
                   <td className="py-2 px-3 text-xs text-skin-muted truncate max-w-[24rem]">{gv.notes ?? ''}</td>
                   <td className="py-2 px-3 text-right">
                     <div className="inline-flex items-center gap-1.5">
@@ -248,6 +255,14 @@ export default function AdminGameVersionsPage() {
                           {t('gameVersion.setCurrent')}
                         </button>
                       )}
+                      <button
+                        onClick={() => setCopyTarget(gv)}
+                        className="text-xs px-2 py-1 rounded border border-dark-border text-skin-muted hover:text-dark-gold hover:border-dark-gold/40 transition-colors flex items-center gap-1"
+                        title={t('versionCopy.title')}
+                      >
+                        <Copy size={11} />
+                        {t('gameVersion.copyFrom')}
+                      </button>
                       <button
                         onClick={() => startEdit(gv)}
                         className="text-xs px-2 py-1 rounded border border-dark-border text-skin-muted hover:text-dark-gold hover:border-dark-gold/40 transition-colors"
@@ -270,7 +285,7 @@ export default function AdminGameVersionsPage() {
               ))}
               {versions && versions.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="py-8 text-center text-sm text-skin-dark">
+                  <td colSpan={6} className="py-8 text-center text-sm text-skin-dark">
                     {t('gameVersion.noHistory')}
                   </td>
                 </tr>
@@ -279,6 +294,42 @@ export default function AdminGameVersionsPage() {
           </table>
         </div>
       )}
+
+      {copyTarget && versions && (
+        <VersionCopyDialog
+          target={copyTarget}
+          versions={versions}
+          onClose={() => setCopyTarget(null)}
+        />
+      )}
     </div>
+  )
+}
+
+/** Versiyadagi item/retsept soni. Bo'sh versiya ataylab ajratib ko'rsatiladi. */
+function VersionCountCells({
+  stats,
+  versionId,
+}: {
+  stats: { versionId: number; itemCount: number; recipeCount: number }[] | undefined
+  versionId: number
+}) {
+  const row = stats?.find((s) => s.versionId === versionId)
+  const cell = (n: number | undefined) => (
+    <td className="py-2 px-3 text-right font-mono text-xs">
+      {n === undefined ? (
+        <span className="text-skin-dark">…</span>
+      ) : n === 0 ? (
+        <span className="text-amber-400/80">0</span>
+      ) : (
+        <span className="text-skin-base">{n}</span>
+      )}
+    </td>
+  )
+  return (
+    <>
+      {cell(row?.itemCount)}
+      {cell(row?.recipeCount)}
+    </>
   )
 }

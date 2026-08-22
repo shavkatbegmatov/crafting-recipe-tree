@@ -32,16 +32,18 @@ public class InventoryController {
 
     @GetMapping
     @Operation(summary = "Mening inventarim (item id + miqdor)")
-    public List<InventoryEntryDto> list(@AuthenticationPrincipal User user) {
-        return inventoryService.list(user);
+    public List<InventoryEntryDto> list(@AuthenticationPrincipal User user,
+                                        @RequestParam(required = false) String version) {
+        return inventoryService.list(user, version);
     }
 
     @PutMapping
     @Operation(summary = "Inventarni to'liq almashtirish (butun ro'yxat)")
     public List<InventoryEntryDto> replace(
             @AuthenticationPrincipal User user,
-            @RequestBody List<InventoryEntryDto> entries) {
-        return inventoryService.replace(user, entries);
+            @RequestBody List<InventoryEntryDto> entries,
+            @RequestParam(required = false) String version) {
+        return inventoryService.replace(user, entries, version);
     }
 
     @PostMapping("/craft")

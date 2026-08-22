@@ -30,5 +30,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
     boolean existsByGameVersionId(Long gameVersionId);
 
+    long countByGameVersionId(Long gameVersionId);
+
     void deleteByResultItemIdAndGameVersionId(Long resultItemId, Long gameVersionId);
 }

@@ -1,11 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { addFavorite, fetchFavoriteIds, fetchFavorites, removeFavorite } from '../api/favorites'
+import { useGameVersion } from '../contexts/GameVersionContext'
 
 /** Sevimlilar ro'yxati (item ma'lumotlari bilan) — Sevimlilar sahifasi ishlatadi. */
 export function useFavorites(enabled = true) {
+  const { effectiveVersion } = useGameVersion()
   return useQuery({
-    queryKey: ['favorites'],
-    queryFn: fetchFavorites,
+    queryKey: ['favorites', effectiveVersion],
+    queryFn: () => fetchFavorites(effectiveVersion ?? undefined),
     enabled,
     staleTime: 15_000,
   })
@@ -13,9 +15,10 @@ export function useFavorites(enabled = true) {
 
 /** Sevimli id'lar Set ko'rinishida — yulduzcha holatini O(1) tekshirish uchun. */
 export function useFavoriteIds(enabled = true) {
+  const { effectiveVersion } = useGameVersion()
   return useQuery({
-    queryKey: ['favoriteIds'],
-    queryFn: fetchFavoriteIds,
+    queryKey: ['favoriteIds', effectiveVersion],
+    queryFn: () => fetchFavoriteIds(effectiveVersion ?? undefined),
     enabled,
     staleTime: 30_000,
     select: (ids: number[]) => new Set(ids),

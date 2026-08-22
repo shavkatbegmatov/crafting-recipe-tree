@@ -1,8 +1,10 @@
 package com.crafttree.service;
 
+import com.crafttree.dto.VersionStatsDto;
 import com.crafttree.entity.AuditAction;
 import com.crafttree.entity.GameVersion;
 import com.crafttree.exception.ItemNotFoundException;
+import com.crafttree.repository.CraftItemRepository;
 import com.crafttree.repository.GameVersionRepository;
 import com.crafttree.repository.RecipeRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,11 +20,28 @@ public class GameVersionService {
 
     private final GameVersionRepository gameVersionRepository;
     private final RecipeRepository recipeRepository;
+    private final CraftItemRepository craftItemRepository;
     private final AuditService auditService;
 
     @Transactional(readOnly = true)
     public List<GameVersion> findAll() {
         return gameVersionRepository.findAllByOrderByReleasedAtDesc();
+    }
+
+    /**
+     * Har bir versiyada nechta item va retsept borligi.
+     * Yangi versiya bo'sh boshlangani uchun admin buni ko'rib nusxa olish kerakligini biladi.
+     */
+    @Transactional(readOnly = true)
+    public List<VersionStatsDto> stats() {
+        return findAll().stream()
+                .map(gv -> new VersionStatsDto(
+                        gv.getId(),
+                        gv.getVersion(),
+                        Boolean.TRUE.equals(gv.getIsCurrent()),
+                        craftItemRepository.countByGameVersionId(gv.getId()),
+                        recipeRepository.countByGameVersionId(gv.getId())))
+                .toList();
     }
 
     @Transactional(readOnly = true)
@@ -103,6 +122,12 @@ public class GameVersionService {
         }
         if (recipeRepository.existsByGameVersionId(id)) {
             throw new IllegalStateException("Cannot delete game version with existing recipes. Remove recipes first.");
+        }
+        // Itemlar ham versiyaga bog'langan — ular qolsa tashqi kalit uzilib qolardi.
+        long items = craftItemRepository.countByGameVersionId(id);
+        if (items > 0) {
+            throw new IllegalStateException(
+                    "Cannot delete game version with " + items + " item(s). Remove them first.");
         }
         auditService.log(AuditAction.DELETE, "GAME_VERSION", gv.getId(), gv.getVersion() + " o'chirildi");
         gameVersionRepository.delete(gv);

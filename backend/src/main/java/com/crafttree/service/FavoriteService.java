@@ -3,6 +3,7 @@ package com.crafttree.service;
 import com.crafttree.dto.CraftItemDto;
 import com.crafttree.entity.CraftItem;
 import com.crafttree.entity.Favorite;
+import com.crafttree.entity.GameVersion;
 import com.crafttree.entity.User;
 import com.crafttree.exception.ItemNotFoundException;
 import com.crafttree.repository.CraftItemRepository;
@@ -24,17 +25,20 @@ public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final CraftItemRepository craftItemRepository;
     private final CraftItemService craftItemService;
+    private final GameVersionService gameVersionService;
 
     @Transactional(readOnly = true)
-    public List<CraftItemDto> list(User user) {
-        return favoriteRepository.findByUserOrderByCreatedAtDesc(user).stream()
+    public List<CraftItemDto> list(User user, String version) {
+        GameVersion gv = gameVersionService.resolveOrCurrent(version);
+        return favoriteRepository.findByUserAndVersion(user, gv.getId()).stream()
                 .map(f -> craftItemService.toDto(f.getItem()))
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<Long> favoriteItemIds(User user) {
-        return favoriteRepository.findItemIdsByUser(user);
+    public List<Long> favoriteItemIds(User user, String version) {
+        GameVersion gv = gameVersionService.resolveOrCurrent(version);
+        return favoriteRepository.findItemIdsByUserAndVersion(user, gv.getId());
     }
 
     /** Itemni sevimlilarga qo'shadi (idempotent — allaqachon bor bo'lsa hech narsa qilmaydi). */

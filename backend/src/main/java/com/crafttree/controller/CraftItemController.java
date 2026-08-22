@@ -20,9 +20,11 @@ public class CraftItemController {
     private final CraftItemService craftItemService;
 
     @GetMapping("/items")
-    @Operation(summary = "Get all items, optionally filtered by category")
-    public List<CraftItemDto> getItems(@RequestParam(required = false) String category) {
-        return craftItemService.getAllItems(category);
+    @Operation(summary = "Get items of a game version (default: current), optionally filtered by category")
+    public List<CraftItemDto> getItems(
+            @RequestParam(required = false) String category,
+            @RequestParam(value = "version", required = false) String version) {
+        return craftItemService.getAllItems(category, version);
     }
 
     @GetMapping("/items/{id}")
@@ -34,9 +36,11 @@ public class CraftItemController {
     }
 
     @GetMapping("/items/search")
-    @Operation(summary = "Search items by name")
-    public List<CraftItemDto> searchItems(@RequestParam String q) {
-        return craftItemService.searchItems(q);
+    @Operation(summary = "Search items by name within a game version (default: current)")
+    public List<CraftItemDto> searchItems(
+            @RequestParam String q,
+            @RequestParam(value = "version", required = false) String version) {
+        return craftItemService.searchItems(q, version);
     }
 
     @GetMapping("/items/{id}/used-in")

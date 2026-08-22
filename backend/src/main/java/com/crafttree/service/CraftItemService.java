@@ -49,13 +49,11 @@ public class CraftItemService {
                 .collect(Collectors.toList());
     }
 
-    public List<CraftItemDto> getAllItems(String categoryCode) {
-        List<CraftItem> items;
-        if (categoryCode != null && !categoryCode.isBlank()) {
-            items = craftItemRepository.findByCategoryCode(categoryCode.toUpperCase());
-        } else {
-            items = craftItemRepository.findAllByOrderByCategoryIdAscNameAsc();
-        }
+    public List<CraftItemDto> getAllItems(String categoryCode, String version) {
+        GameVersion gv = gameVersionService.resolveOrCurrent(version);
+        List<CraftItem> items = (categoryCode != null && !categoryCode.isBlank())
+                ? craftItemRepository.findByCategoryCodeAndVersion(categoryCode.toUpperCase(), gv.getId())
+                : craftItemRepository.findAllByVersion(gv.getId());
         return items.stream().map(this::toDto).collect(Collectors.toList());
     }
 
@@ -64,16 +62,38 @@ public class CraftItemService {
     }
 
     public CraftItemDto getItemById(Long id, String version) {
-        CraftItem item = craftItemRepository.findById(id)
-                .orElseThrow(() -> new ItemNotFoundException(id));
         GameVersion gv = gameVersionService.resolveOrCurrent(version);
-        return toDtoWithIngredients(item, gv);
+        return toDtoWithIngredients(resolveInVersion(id, gv), gv);
     }
 
-    public List<CraftItemDto> searchItems(String query) {
-        return craftItemRepository.searchByName(query).stream()
+    public List<CraftItemDto> searchItems(String query, String version) {
+        GameVersion gv = gameVersionService.resolveOrCurrent(version);
+        return craftItemRepository.searchByNameAndVersion(query, gv.getId()).stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Itemni so'ralgan versiyada topadi.
+     * <p>
+     * Berilgan {@code id} boshqa versiyaga tegishli bo'lsa, o'sha itemning shu
+     * versiyadagi nusxasi {@code item_key} orqali qidiriladi — shu tufayli
+     * foydalanuvchi versiyani almashtirganda havola buzilmaydi. Item bu versiyada
+     * umuman mavjud bo'lmasa (masalan, hali nusxa olinmagan) — 404.
+     */
+    /**
+     * Berilgan id'dagi itemning <b>so'ralgan versiyadagi</b> nusxasini qaytaradi.
+     * Id boshqa versiyaga tegishli bo'lsa, {@code itemKey} orqali mos nusxa topiladi —
+     * shu tufayli foydalanuvchi versiyani almashtirganda havolalar buzilmaydi.
+     */
+    public CraftItem resolveInVersion(Long id, GameVersion gv) {
+        CraftItem item = craftItemRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException(id));
+        if (item.getGameVersion().getId().equals(gv.getId())) {
+            return item;
+        }
+        return craftItemRepository.findByItemKeyAndGameVersionId(item.getItemKey(), gv.getId())
+                .orElseThrow(() -> new ItemNotFoundException(id));
     }
 
     @Transactional

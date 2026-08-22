@@ -22,6 +22,7 @@ import com.crafttree.repository.RecipeIngredientRepository;
 import com.crafttree.repository.RecipeRepository;
 import com.crafttree.repository.TagRepository;
 import com.crafttree.service.GameVersionService;
+import com.crafttree.util.ItemKeys;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,8 +87,12 @@ public class ImportService {
         for (Category c : categoryRepository.findAll()) existingCats.put(c.getCode(), c);
         Map<String, Tag> existingTags = new HashMap<>();
         for (Tag t : tagRepository.findAll()) existingTags.put(t.getCode(), t);
+        // Itemlar versiyaga bog'langan: "mavjud" deb faqat SHU versiyadagilar hisoblanadi,
+        // aks holda boshqa versiyadagi bir xil nomli item yangilanib ketardi.
         Map<String, CraftItem> existingItems = new HashMap<>();
-        for (CraftItem i : craftItemRepository.findAll()) existingItems.put(i.getName(), i);
+        for (CraftItem i : craftItemRepository.findAllByVersion(gameVersionService.getCurrent().getId())) {
+            existingItems.put(i.getName(), i);
+        }
 
         report.setCategories(new SectionSummaryDto());
         report.setTags(new SectionSummaryDto());
@@ -285,6 +290,14 @@ public class ImportService {
         ImportOptionsDto.ConflictMode mode = options.getConflictMode();
 
         if (existing == null) {
+            GameVersion targetVersion = gameVersionService.getCurrent();
+            // Kalit inglizcha nomdan hosil qilinadi (kirill bo'lsa asl nomdan) — shu tufayli
+            // xuddi shu item boshqa versiyaga import qilinganda ham bir xil kalit chiqadi.
+            String keySource = (dto.getNameEn() != null && !dto.getNameEn().isBlank())
+                    ? dto.getNameEn() : dto.getName();
+            String itemKey = ItemKeys.unique(keySource,
+                    k -> craftItemRepository.existsByItemKeyAndGameVersionId(k, targetVersion.getId()));
+
             CraftItem c = CraftItem.builder()
                     .name(dto.getName())
                     .nameUz(dto.getNameUz())
@@ -295,6 +308,8 @@ public class ImportService {
                     .descriptionEn(dto.getDescriptionEn())
                     .descriptionUzCyr(dto.getDescriptionUzCyr())
                     .category(category)
+                    .gameVersion(targetVersion)
+                    .itemKey(itemKey)
                     .craftTimeSeconds(dto.getCraftTimeSeconds())
                     .tags(tagSet)
                     .createdAt(LocalDateTime.now())

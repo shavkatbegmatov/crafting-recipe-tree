@@ -5,14 +5,14 @@ export interface InventoryEntry {
   quantity: number
 }
 
-/** Mening inventarim (item id + miqdor). */
-export async function fetchInventory(): Promise<InventoryEntry[]> {
-  const { data } = await client.get('/inventory')
+/** Mening inventarim (item id + miqdor). Har versiyaning o'z inventari bor. */
+export async function fetchInventory(version?: string): Promise<InventoryEntry[]> {
+  const { data } = await client.get('/inventory', { params: version ? { version } : undefined })
   return data
 }
 
-/** Inventarni to'liq almashtiradi (butun ro'yxat) va yangilangan holatni qaytaradi. */
-export async function saveInventory(entries: InventoryEntry[]): Promise<InventoryEntry[]> {
-  const { data } = await client.put('/inventory', entries)
+/** Inventarni to'liq almashtiradi (faqat shu versiya yozuvlari) va yangilangan holatni qaytaradi. */
+export async function saveInventory(entries: InventoryEntry[], version?: string): Promise<InventoryEntry[]> {
+  const { data } = await client.put('/inventory', entries, { params: version ? { version } : undefined })
   return data
 }

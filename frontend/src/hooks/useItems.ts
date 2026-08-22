@@ -10,9 +10,10 @@ export function useCategories() {
 }
 
 export function useItems(category?: string) {
+  const { effectiveVersion } = useGameVersion()
   return useQuery({
-    queryKey: ['items', category],
-    queryFn: () => fetchItems(category),
+    queryKey: ['items', category, effectiveVersion],
+    queryFn: () => fetchItems(category, effectiveVersion ?? undefined),
   })
 }
 
@@ -26,9 +27,10 @@ export function useItem(id: number) {
 }
 
 export function useSearchItems(query: string) {
+  const { effectiveVersion } = useGameVersion()
   return useQuery({
-    queryKey: ['search', query],
-    queryFn: () => searchItems(query),
+    queryKey: ['search', query, effectiveVersion],
+    queryFn: () => searchItems(query, effectiveVersion ?? undefined),
     enabled: query.length >= 1,
   })
 }

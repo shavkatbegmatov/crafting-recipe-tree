@@ -6,8 +6,11 @@ import {
   updateGameVersion,
   setCurrentGameVersion,
   deleteGameVersion,
+  fetchGameVersionStats,
+  copyFromVersion,
   type CreateGameVersionData,
   type UpdateGameVersionData,
+  type CopyFromVersionData,
 } from '../api/gameVersions'
 
 export function useGameVersions() {
@@ -26,6 +29,13 @@ export function useCurrentGameVersion() {
   })
 }
 
+export function useGameVersionStats() {
+  return useQuery({
+    queryKey: ['gameVersions', 'stats'],
+    queryFn: fetchGameVersionStats,
+  })
+}
+
 function invalidateAll(queryClient: ReturnType<typeof useQueryClient>) {
   queryClient.invalidateQueries({ queryKey: ['gameVersions'] })
   // Recipe data depends on selected version, so invalidate everything that uses it.
@@ -33,6 +43,9 @@ function invalidateAll(queryClient: ReturnType<typeof useQueryClient>) {
   queryClient.invalidateQueries({ queryKey: ['rawTotals'] })
   queryClient.invalidateQueries({ queryKey: ['usedIn'] })
   queryClient.invalidateQueries({ queryKey: ['item'] })
+  // Itemlar ham versiyaga bog'langan — ro'yxat va qidiruv ham eskiradi.
+  queryClient.invalidateQueries({ queryKey: ['items'] })
+  queryClient.invalidateQueries({ queryKey: ['search'] })
 }
 
 export function useCreateGameVersion() {
@@ -63,6 +76,15 @@ export function useDeleteGameVersion() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (id: number) => deleteGameVersion(id),
+    onSuccess: () => invalidateAll(qc),
+  })
+}
+
+export function useCopyFromVersion() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ targetId, data }: { targetId: number; data: CopyFromVersionData }) =>
+      copyFromVersion(targetId, data),
     onSuccess: () => invalidateAll(qc),
   })
 }
