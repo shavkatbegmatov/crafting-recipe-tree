@@ -23,27 +23,43 @@ log = logging.getLogger("rembg-service")
 
 MAX_UPLOAD_BYTES = int(os.getenv("MAX_UPLOAD_BYTES", 15 * 1024 * 1024))
 
+# Model sukut bo'yicha BIRINCHI SO'ROVDA yuklanadi. Sababi: server xotirasi tor
+# (~8 GB, ko'p loyiha birga), fon o'chirish esa kuniga bir necha marta kerak
+# bo'ladi — bo'sh turgan servis ~0.5 GB RAM egallab yotishi mantiqsiz.
+# Evaziga birinchi so'rov bir marta sekinroq ishlanadi.
+# Tez javob muhimroq bo'lsa: REMBG_PRELOAD=1 bilan oldindan yuklash mumkin.
+PRELOAD_MODEL = os.getenv("REMBG_PRELOAD", "0") == "1"
+
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    """Modelni ishga tushishda yuklaymiz — birinchi so'rov sekin bo'lmasin."""
-    get_session()
-    log.info("Model tayyor: %s", MODEL_NAME)
+    if PRELOAD_MODEL:
+        get_session()
+        log.info("Model oldindan yuklandi: %s", MODEL_NAME)
+    else:
+        log.info("Model birinchi so'rovda yuklanadi (oldindan yuklash: REMBG_PRELOAD=1)")
     yield
 
 
-app = FastAPI(title="Craft Tree — background removal", version="1.0.0", lifespan=lifespan)
+app = FastAPI(title="Craft Tree — background removal", version="1.1.0", lifespan=lifespan)
 
 
 @app.get("/health")
 def health():
-    """Konteyner sog'ligi (Docker/Coolify healthcheck shu yerga uradi)."""
-    return {"status": "UP", "model": MODEL_NAME}
+    """Konteyner sog'ligi (Docker/Coolify healthcheck shu yerga uradi).
+
+    Ataylab modelga tegmaydi: healthcheck og'ir ishga bog'liq bo'lmasligi kerak.
+    """
+    return {"status": "UP", "model": MODEL_NAME, "preload": PRELOAD_MODEL}
 
 
+# DIQQAT: bu `def`, `async def` EMAS. Rasm qayta ishlash — bir necha soniyalik
+# CPU ishi; `async def` bo'lsa u event loop'ni bloklab, shu vaqt ichida
+# /health ga ham javob bermay qolardi va healthcheck konteynerni "unhealthy"
+# deb belgilardi. Sinxron endpoint'ni FastAPI threadpool'da bajaradi.
 @app.post("/remove-bg")
-async def remove_bg(file: UploadFile = File(...)):
-    data = await file.read()
+def remove_bg(file: UploadFile = File(...)):
+    data = file.file.read()
     if not data:
         raise HTTPException(status_code=400, detail="Bo'sh fayl")
     if len(data) > MAX_UPLOAD_BYTES:
