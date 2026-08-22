@@ -712,5 +712,46 @@
     "close": "Close",
     "items": "Items",
     "recipes": "Recipes"
+  },
+  "itemCreate": {
+    "menuLink": "New item",
+    "pageTitle": "Create items",
+    "pageHint": "Items are created in version {{version}} — it currently holds {{count}}.",
+    "tabSingle": "One by one",
+    "tabBulk": "From a list",
+    "category": "Category",
+    "craftTime": "Craft time (sec)",
+    "toggleDescriptions": "Descriptions",
+    "translationHint": "Empty translations are not stored — the UI falls back to the Russian name.",
+    "submit": "Create",
+    "created": "Created: {{name}}",
+    "defaultCategory": "Default category",
+    "listLabel": "List — one item per line",
+    "formatHint": "Format: Name ; Category ; Name UZ ; Name EN ; Name UZ-CYR ; Craft time\nOnly the name is required. When a line omits the category, the one selected above is used. Lines starting with # are skipped.",
+    "parsedCount": "Lines parsed: {{count}}",
+    "preview": "Preview",
+    "previewFirst": "Preview the result first",
+    "confirm": "Add ({{count}})",
+    "previewResult": "Preview for version {{version}} — nothing was written",
+    "bulkDone": "Added {{count}} to version {{version}}",
+    "statNew": "Will create",
+    "statDuplicate": "Duplicates",
+    "statInvalid": "Errors",
+    "colName": "Name",
+    "colCategory": "Category",
+    "colStatus": "Status",
+    "status": {
+      "NEW": "NEW",
+      "DUPLICATE": "EXISTS",
+      "INVALID": "ERROR"
+    },
+    "reason": {
+      "EXISTS": "already in this version",
+      "DUP_IN_LIST": "repeated in the list",
+      "NAME_EMPTY": "empty name",
+      "NAME_TOO_LONG": "name longer than 100 characters",
+      "CATEGORY_UNKNOWN": "unknown category: {{detail}}",
+      "CATEGORY_MISSING": "no category given"
+    }
   }
 }

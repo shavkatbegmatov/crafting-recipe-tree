@@ -712,5 +712,46 @@
     "close": "Yopish",
     "items": "Predmetlar",
     "recipes": "Retseptlar"
+  },
+  "itemCreate": {
+    "menuLink": "Yangi predmet",
+    "pageTitle": "Predmet yaratish",
+    "pageHint": "Predmetlar {{version}} versiyasida yaratiladi — hozir unda {{count}} ta.",
+    "tabSingle": "Bittalab",
+    "tabBulk": "Ro'yxatdan",
+    "category": "Kategoriya",
+    "craftTime": "Kraft vaqti (sek)",
+    "toggleDescriptions": "Tavsiflar",
+    "translationHint": "Bo'sh tarjimalar saqlanmaydi — interfeys ruscha nomni ko'rsatadi.",
+    "submit": "Yaratish",
+    "created": "Yaratildi: {{name}}",
+    "defaultCategory": "Sukut bo'yicha kategoriya",
+    "listLabel": "Ro'yxat — har qator bitta predmet",
+    "formatHint": "Format: Nomi ; Kategoriya ; Nomi UZ ; Nomi EN ; Nomi UZ-CYR ; Kraft vaqti\nFaqat nom majburiy. Qatorda kategoriya ko'rsatilmasa yuqorida tanlangani olinadi. # bilan boshlangan qatorlar o'tkazib yuboriladi.",
+    "parsedCount": "Ajratilgan qator: {{count}}",
+    "preview": "Ko'rib chiqish",
+    "previewFirst": "Avval natijani ko'rib chiqing",
+    "confirm": "Qo'shish ({{count}})",
+    "previewResult": "{{version}} versiyasi uchun ko'rib chiqish — bazaga hech narsa yozilmadi",
+    "bulkDone": "{{version}} versiyasiga {{count}} ta qo'shildi",
+    "statNew": "Yaratiladi",
+    "statDuplicate": "Takrorlar",
+    "statInvalid": "Xatolar",
+    "colName": "Nomi",
+    "colCategory": "Kategoriya",
+    "colStatus": "Holat",
+    "status": {
+      "NEW": "YANGI",
+      "DUPLICATE": "MAVJUD",
+      "INVALID": "XATO"
+    },
+    "reason": {
+      "EXISTS": "bu versiyada allaqachon bor",
+      "DUP_IN_LIST": "ro'yxatda takrorlangan",
+      "NAME_EMPTY": "nom bo'sh",
+      "NAME_TOO_LONG": "nom 100 belgidan uzun",
+      "CATEGORY_UNKNOWN": "noma'lum kategoriya: {{detail}}",
+      "CATEGORY_MISSING": "kategoriya ko'rsatilmagan"
+    }
   }
 }

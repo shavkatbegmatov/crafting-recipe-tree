@@ -47,6 +47,9 @@ public interface CraftItemRepository extends JpaRepository<CraftItem, Long> {
 
     boolean existsByItemKeyAndGameVersionId(String itemKey, Long versionId);
 
+    /** Nom versiya ichida noyob (uq_craft_items_name_version) — yaratishdan oldin tekshiriladi. */
+    boolean existsByNameIgnoreCaseAndGameVersionId(String name, Long versionId);
+
     /** Nusxa olishda manba versiyaning butun to'plami. */
     List<CraftItem> findAllByGameVersionId(Long versionId);
 

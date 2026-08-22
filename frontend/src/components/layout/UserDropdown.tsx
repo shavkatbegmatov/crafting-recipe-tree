@@ -29,6 +29,7 @@ import {
   AlignCenter,
   StretchHorizontal,
   Database,
+  Plus,
 } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 import type { LayoutWidth } from '../../api/auth'
@@ -509,6 +510,15 @@ export default function UserDropdown() {
                       {t('chatAdmin.menuLink')}
                     </Link>
                   )}
+                  <Link
+                    to="/admin/items"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-skin-base
+                      hover:bg-dark-hover transition-colors"
+                  >
+                    <Plus className="w-3.5 h-3.5 text-dark-gold" />
+                    {t('itemCreate.menuLink')}
+                  </Link>
                   <Link
                     to="/admin/categories"
                     onClick={() => setOpen(false)}

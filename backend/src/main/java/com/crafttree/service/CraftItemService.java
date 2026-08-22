@@ -2,6 +2,7 @@ package com.crafttree.service;
 
 import com.crafttree.dto.*;
 import com.crafttree.entity.AuditAction;
+import com.crafttree.entity.Category;
 import com.crafttree.entity.CraftItem;
 import com.crafttree.entity.GameVersion;
 import com.crafttree.entity.Recipe;
@@ -11,13 +12,19 @@ import com.crafttree.repository.CategoryRepository;
 import com.crafttree.repository.CraftItemRepository;
 import com.crafttree.repository.RecipeIngredientRepository;
 import com.crafttree.repository.RecipeRepository;
+import com.crafttree.repository.TagRepository;
+import com.crafttree.util.ItemKeys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +37,7 @@ public class CraftItemService {
     private final RecipeIngredientRepository recipeIngredientRepository;
     private final RecipeRepository recipeRepository;
     private final GameVersionService gameVersionService;
+    private final TagRepository tagRepository;
     private final AuditService auditService;
 
     @Cacheable("categories")
@@ -94,6 +102,170 @@ public class CraftItemService {
         }
         return craftItemRepository.findByItemKeyAndGameVersionId(item.getItemKey(), gv.getId())
                 .orElseThrow(() -> new ItemNotFoundException(id));
+    }
+
+    // -- Yaratish ------------------------------------------------------------
+
+    /**
+     * Yangi item yaratadi. Item DOIM bitta versiyaga tegishli, shuning uchun joriy
+     * (yoki so'ralgan) versiyada yaratiladi va {@code item_key} nomdan hosil qilinadi.
+     */
+    @Transactional
+    public CraftItemDto createItem(CreateItemRequest request, String version) {
+        GameVersion gv = gameVersionService.resolveOrCurrent(version);
+        Category category = resolveCategory(request.getCategoryId(), request.getCategoryCode());
+
+        String name = request.getName() == null ? "" : request.getName().trim();
+        if (name.isEmpty()) {
+            throw new IllegalArgumentException("Nom bo'sh bo'lishi mumkin emas");
+        }
+        if (craftItemRepository.existsByNameIgnoreCaseAndGameVersionId(name, gv.getId())) {
+            throw new IllegalArgumentException(
+                    name + " nomli item " + gv.getVersion() + " versiyasida allaqachon bor");
+        }
+
+        CraftItem item = buildItem(request, name, category, gv);
+        applyTags(item, request.getTagIds());
+        craftItemRepository.save(item);
+        auditService.log(AuditAction.CREATE, "ITEM", item.getId(),
+                item.getName() + " (" + gv.getVersion() + ")");
+        return toDtoWithIngredients(item, gv);
+    }
+
+    /**
+     * Bir necha itemni birdaniga yaratadi.
+     * <p>
+     * {@code dryRun} rejimida hech narsa yozilmaydi — foydalanuvchi avval natijani ko'radi.
+     * Xato qatorlar butun amalni to'xtatmaydi: ular sababi bilan belgilanadi, qolganlari
+     * qo'shiladi. 50 qatorli ro'yxatda bitta xato tufayli hammasini rad etish foydasiz.
+     */
+    @Transactional
+    public BulkCreateResultDto createItemsBulk(BulkCreateItemsRequest request,
+                                               boolean dryRun, String version) {
+        GameVersion gv = gameVersionService.resolveOrCurrent(version);
+        List<CreateItemRequest> rows = request.getItems() == null ? List.of() : request.getItems();
+
+        // Shu chaqiruv ichidagi takrorlarni ham ushlaymiz (dryRun'da bazaga yozilmaydi).
+        Set<String> seenNames = new HashSet<>();
+        List<BulkCreateResultDto.Row> report = new ArrayList<>();
+        int willCreate = 0;
+        int duplicates = 0;
+        int invalid = 0;
+
+        for (int i = 0; i < rows.size(); i++) {
+            CreateItemRequest row = rows.get(i);
+            int line = i + 1;
+            String name = row.getName() == null ? "" : row.getName().trim();
+            String code = row.getCategoryCode() != null && !row.getCategoryCode().isBlank()
+                    ? row.getCategoryCode().trim()
+                    : request.getDefaultCategoryCode();
+
+            if (name.isEmpty()) {
+                report.add(new BulkCreateResultDto.Row(line, name, code,
+                        BulkCreateResultDto.Row.INVALID,
+                        BulkCreateResultDto.Row.NAME_EMPTY, null));
+                invalid++;
+                continue;
+            }
+            if (name.length() > 100) {
+                report.add(new BulkCreateResultDto.Row(line, name, code,
+                        BulkCreateResultDto.Row.INVALID,
+                        BulkCreateResultDto.Row.NAME_TOO_LONG, null));
+                invalid++;
+                continue;
+            }
+
+            Category category;
+            if (row.getCategoryId() == null && (code == null || code.isBlank())) {
+                report.add(new BulkCreateResultDto.Row(line, name, code,
+                        BulkCreateResultDto.Row.INVALID,
+                        BulkCreateResultDto.Row.CATEGORY_MISSING, null));
+                invalid++;
+                continue;
+            }
+            try {
+                category = resolveCategory(row.getCategoryId(), code);
+            } catch (IllegalArgumentException e) {
+                report.add(new BulkCreateResultDto.Row(line, name, code,
+                        BulkCreateResultDto.Row.INVALID,
+                        BulkCreateResultDto.Row.CATEGORY_UNKNOWN, code));
+                invalid++;
+                continue;
+            }
+
+            String dedupKey = name.toLowerCase(Locale.ROOT);
+            boolean existsInDb =
+                    craftItemRepository.existsByNameIgnoreCaseAndGameVersionId(name, gv.getId());
+            if (existsInDb || !seenNames.add(dedupKey)) {
+                report.add(new BulkCreateResultDto.Row(line, name, code,
+                        BulkCreateResultDto.Row.DUPLICATE,
+                        existsInDb ? BulkCreateResultDto.Row.EXISTS
+                                   : BulkCreateResultDto.Row.DUP_IN_LIST, null));
+                duplicates++;
+                continue;
+            }
+
+            if (!dryRun) {
+                CraftItem item = buildItem(row, name, category, gv);
+                applyTags(item, row.getTagIds());
+                craftItemRepository.save(item);
+            }
+            report.add(new BulkCreateResultDto.Row(line, name, category.getCode(),
+                    BulkCreateResultDto.Row.NEW, null, null));
+            willCreate++;
+        }
+
+        if (!dryRun && willCreate > 0) {
+            auditService.log(AuditAction.CREATE, "ITEM", null,
+                    willCreate + " ta item ommaviy qoshildi (" + gv.getVersion() + ")");
+        }
+        return new BulkCreateResultDto(dryRun, gv.getVersion(), willCreate, duplicates, invalid, report);
+    }
+
+    private CraftItem buildItem(CreateItemRequest src, String name, Category category, GameVersion gv) {
+        // Tarjima bo'sh bo'lsa null qoldiriladi — UI o'zi asosiy nomga qaytadi.
+        // Bo'sh satrni yozib qo'yish "tarjima bor" degan yolg'on taassurot berardi.
+        return CraftItem.builder()
+                .name(name)
+                .nameUz(blankToNull(src.getNameUz()))
+                .nameEn(blankToNull(src.getNameEn()))
+                .nameUzCyr(blankToNull(src.getNameUzCyr()))
+                .description(blankToNull(src.getDescription()))
+                .descriptionUz(blankToNull(src.getDescriptionUz()))
+                .descriptionEn(blankToNull(src.getDescriptionEn()))
+                .descriptionUzCyr(blankToNull(src.getDescriptionUzCyr()))
+                .category(category)
+                .gameVersion(gv)
+                .craftTimeSeconds(src.getCraftTimeSeconds() == null ? 0 : src.getCraftTimeSeconds())
+                // Kalit lotin harflardan tuziladi; ruscha nomdan slug chiqmasa inglizcha
+                // nomga tayanamiz, u ham bo'lmasa ItemKeys "item" ga qaytadi.
+                .itemKey(ItemKeys.unique(
+                        blankToNull(src.getNameEn()) != null ? src.getNameEn() : name,
+                        k -> craftItemRepository.existsByItemKeyAndGameVersionId(k, gv.getId())))
+                .build();
+    }
+
+    private void applyTags(CraftItem item, List<Long> tagIds) {
+        if (tagIds == null || tagIds.isEmpty()) {
+            return;
+        }
+        item.setTags(new HashSet<>(tagRepository.findAllById(tagIds)));
+    }
+
+    private Category resolveCategory(Long id, String code) {
+        if (id != null) {
+            return categoryRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Kategoriya topilmadi: " + id));
+        }
+        if (code != null && !code.isBlank()) {
+            return categoryRepository.findByCode(code.trim().toUpperCase(Locale.ROOT))
+                    .orElseThrow(() -> new IllegalArgumentException("Kategoriya kodi nomalum: " + code));
+        }
+        throw new IllegalArgumentException("Kategoriya korsatilmagan");
+    }
+
+    private static String blankToNull(String s) {
+        return s == null || s.isBlank() ? null : s.trim();
     }
 
     @Transactional
