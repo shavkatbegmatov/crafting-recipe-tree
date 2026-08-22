@@ -15,6 +15,7 @@ const RegisterPage = lazy(() => import('./pages/RegisterPage'))
 const AdminCategoriesPage = lazy(() => import('./pages/AdminCategoriesPage'))
 const AdminPortagePage = lazy(() => import('./pages/AdminPortagePage'))
 const AdminGameVersionsPage = lazy(() => import('./pages/AdminGameVersionsPage'))
+const AdminBackupPage = lazy(() => import('./pages/AdminBackupPage'))
 const AdminUsersPage = lazy(() => import('./pages/AdminUsersPage'))
 const AdminAccessRequestsPage = lazy(() => import('./pages/AdminAccessRequestsPage'))
 const AdminAuditPage = lazy(() => import('./pages/AdminAuditPage'))
@@ -40,6 +41,7 @@ export default function App() {
               <Route path="admin/categories" element={<AdminCategoriesPage />} />
               <Route path="admin/portage" element={<AdminPortagePage />} />
               <Route path="admin/game-versions" element={<AdminGameVersionsPage />} />
+              <Route path="admin/backup" element={<AdminBackupPage />} />
               <Route path="admin/users" element={<AdminUsersPage />} />
               <Route path="admin/access-requests" element={<AdminAccessRequestsPage />} />
               <Route path="admin/audit" element={<AdminAuditPage />} />

@@ -15,6 +15,8 @@ public final class AuditAction {
     public static final String APPROVE = "APPROVE";
     public static final String REJECT = "REJECT";
     public static final String SET_CURRENT = "SET_CURRENT";
+    public static final String BACKUP_DOWNLOAD = "BACKUP_DOWNLOAD";
+    public static final String DATABASE_RESTORE = "DATABASE_RESTORE";
 
     private AuditAction() {
     }

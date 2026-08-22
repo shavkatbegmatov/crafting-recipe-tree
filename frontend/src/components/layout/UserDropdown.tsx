@@ -28,6 +28,7 @@ import {
   LayoutGrid,
   AlignCenter,
   StretchHorizontal,
+  Database,
 } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 import type { LayoutWidth } from '../../api/auth'
@@ -535,6 +536,17 @@ export default function UserDropdown() {
                     <TagIcon className="w-3.5 h-3.5 text-dark-gold" />
                     {t('gameVersion.manage')}
                   </Link>
+                  {isSuperAdmin && (
+                    <Link
+                      to="/admin/backup"
+                      onClick={() => setOpen(false)}
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-skin-base
+                        hover:bg-dark-hover transition-colors"
+                    >
+                      <Database className="w-3.5 h-3.5 text-dark-gold" />
+                      {t('backup.menuLink')}
+                    </Link>
+                  )}
                   <Link
                     to="/admin/audit"
                     onClick={() => setOpen(false)}

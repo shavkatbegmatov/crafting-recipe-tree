@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.LocalDateTime;
@@ -67,6 +68,24 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<Map<String, Object>> handleMaxUpload(MaxUploadSizeExceededException ex) {
         return body(HttpStatus.PAYLOAD_TOO_LARGE, "Payload Too Large", "File too large");
+    }
+
+    /**
+     * Controller ataylab tanlagan status va xabar.
+     * <p>
+     * Quyidagi umumiy {@code Exception} tutqichidan OLDIN turishi shart — aks holda
+     * u ham 500 "Unexpected error"ga aylanib, chaqiruvchi sababni bilmay qolardi.
+     */
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<Map<String, Object>> handleResponseStatus(ResponseStatusException ex) {
+        HttpStatus status = HttpStatus.resolve(ex.getStatusCode().value());
+        if (status == null) {
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        if (status.is5xxServerError()) {
+            log.error("Server xatosi: {}", ex.getReason(), ex);
+        }
+        return body(status, status.getReasonPhrase(), ex.getReason());
     }
 
     @ExceptionHandler(Exception.class)

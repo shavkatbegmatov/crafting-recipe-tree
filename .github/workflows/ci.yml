@@ -73,19 +73,25 @@ jobs:
           path: frontend/playwright-report/
           retention-days: 7
 
-  # ── CD: Build Docker images + push to GHCR ──
+  # ── CI/CD: Build Docker images (PR: faqat qurish, main: qurish + GHCR'ga push) ──
+  #
+  # PR'da ham quriladi: Dockerfile buzilsa merge'dan KEYIN emas, PR'da bilinsin.
+  # Ilgari bu qadam faqat main'da ishlardi va buzuq Dockerfile to'g'ridan-to'g'ri
+  # deployni to'xtatib qo'yardi.
   build-and-push:
     name: Build & Push Images
     runs-on: ubuntu-latest
     needs: [frontend-ci, backend-ci, e2e]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
       contents: read
       packages: write
+    env:
+      PUSH: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     steps:
       - uses: actions/checkout@v4
 
       - uses: docker/login-action@v3
+        if: env.PUSH == 'true'
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -97,7 +103,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./backend
-          push: true
+          push: ${{ env.PUSH == 'true' }}
           tags: |
             ${{ env.IMAGE_PREFIX }}-backend:latest
             ${{ env.IMAGE_PREFIX }}-backend:${{ github.sha }}
@@ -108,7 +114,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./frontend
-          push: true
+          push: ${{ env.PUSH == 'true' }}
           tags: |
             ${{ env.IMAGE_PREFIX }}-frontend:latest
             ${{ env.IMAGE_PREFIX }}-frontend:${{ github.sha }}

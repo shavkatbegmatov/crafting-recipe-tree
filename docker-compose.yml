@@ -42,6 +42,8 @@ services:
       JWT_SECRET: ${JWT_SECRET:?JWT_SECRET majburiy}
     volumes:
       - uploads:/app/uploads
+      # Zaxira fayllari (tiklashdan oldingi xavfsizlik nusxasi shu yerda qoladi).
+      - backups:/app/backups
 
   frontend:
     image: ghcr.io/shavkatbegmatov/crafting-recipe-tree-frontend:latest
@@ -54,3 +56,4 @@ services:
 volumes:
   pgdata:
   uploads:
+  backups:
