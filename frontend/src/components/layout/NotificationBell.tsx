@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { Bell, ShieldQuestion, ShieldCheck, XCircle, Check, AtSign } from 'lucide-react'
 import {
   useNotifications,
@@ -83,13 +83,12 @@ export default function NotificationBell() {
         )}
       </button>
 
-      <AnimatePresence>
-        {open && (
+      {/* Ochilish animatsiyali, yopilish darhol — backdrop bilan bir xil sabab. */}
+      {open && (
           <motion.div
             key="notif-panel"
             initial={{ opacity: 0, y: -4, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -4, scale: 0.97 }}
             transition={{ duration: 0.15 }}
             className="absolute right-0 top-full mt-2 w-80 bg-dark-card border border-dark-gold/25
               rounded-xl shadow-[0_18px_50px_rgba(0,0,0,0.6),0_0_30px_rgba(200,160,80,0.10)] z-[90] overflow-hidden"
@@ -139,25 +138,23 @@ export default function NotificationBell() {
             </div>
           </motion.div>
         )}
-      </AnimatePresence>
     </div>
 
-      {/* Backdrop — body'ga PORTAL: chat drawer (transform → stacking context) va boshqa
-          qatlamlardan ustun, butun ekranni qoplaydi. Tashqi-klik (mousedown) + onClick yopadi. */}
+      {/* Backdrop — body'ga PORTAL: chat drawer (transform -> stacking context) va boshqa
+          qatlamlardan ustun, butun ekranni qoplaydi.
+
+          MUHIM: ATAYLAB framer-motion'siz va DOIM mount qilingan — sababi
+          UserDropdown'dagi bilan bir xil: chiqish animatsiyasi tugamasa (boshqa tabga
+          o'tilganda requestAnimationFrame to'xtaydi) element DOM'da qolib ketardi va
+          opacity 0 bo'lsa ham bosishlarni yutaverardi. */}
       {createPortal(
-        <AnimatePresence>
-          {open && (
-            <motion.div
-              key="notif-backdrop"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.15 }}
-              onClick={() => setOpen(false)}
-              className="fixed inset-x-0 bottom-0 top-14 z-[80] bg-black/40"
-            />
-          )}
-        </AnimatePresence>,
+        <div
+          aria-hidden
+          onClick={() => setOpen(false)}
+          className={`fixed inset-x-0 bottom-0 top-14 z-[80] bg-black/40
+            transition-opacity duration-150
+            ${open ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+        />,
         document.body,
       )}
     </>
