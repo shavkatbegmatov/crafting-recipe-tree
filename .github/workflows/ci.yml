@@ -126,17 +126,65 @@ jobs:
             VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
 
   # ── CD: Trigger Coolify deploy (backend + frontend as separate apps) ──
+  #
+  # Faqat O'ZGARGAN ilova deploy qilinadi. Ilgari har push ikkalasini ham qayta ishga
+  # tushirardi: frontend'dagi kichik o'zgarish uchun ham backend qayta ko'tarilardi.
+  # Server xotirasi tor (7.8 GB, ~10 loyiha) va yangi JVM ko'tarilayotganda eskisi hali
+  # tirik bo'ladi — 2026-08-22 da aynan shu ortiqcha qayta ishga tushish OOM'ga olib keldi
+  # va backend o'ldirildi. Keraksiz deploy — bekorga olingan xavf.
   deploy:
     name: Deploy to Coolify
     runs-on: ubuntu-latest
     needs: [build-and-push]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
+      - uses: actions/checkout@v4
+        with:
+          # Oldingi commit bilan solishtirish uchun tarix kerak.
+          fetch-depth: 0
+
+      - name: Qaysi ilova o'zgarganini aniqlash
+        id: changed
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          # Shubha bo'lsa IKKALASINI ham deploy qilamiz: deploy qilmay qolishdan
+          # (eski kod ishlab turaveradi) ko'ra ortiqcha deploy xavfsizroq.
+          known=yes
+          case "$BEFORE" in
+            ""|0000000000000000000000000000000000000000) known=no ;;
+          esac
+          if [ "$known" = "yes" ] && ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            known=no
+          fi
+
+          if [ "$known" = "no" ]; then
+            echo "Oldingi commit aniqlanmadi (birinchi push yoki force-push) — ikkalasi ham deploy qilinadi"
+            echo "backend=true"  >> "$GITHUB_OUTPUT"
+            echo "frontend=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          files=$(git diff --name-only "$BEFORE" "${{ github.sha }}")
+          echo "O'zgargan fayllar:"
+          echo "$files" | sed 's/^/  /'
+
+          backend=false; frontend=false
+          echo "$files" | grep -q '^backend/'  && backend=true
+          echo "$files" | grep -q '^frontend/' && frontend=true
+
+          # Faqat hujjat/infra o'zgargan bo'lsa hech qaysi image o'zgarmaydi -> deploy shart emas.
+          echo "backend=$backend"   >> "$GITHUB_OUTPUT"
+          echo "frontend=$frontend" >> "$GITHUB_OUTPUT"
+          echo "Natija: backend=$backend frontend=$frontend"
+
       # Coolify webhook o'z versiyasiga qarab POST yoki GET kutadi (yangilanishdan keyin
       # GET 405 qaytara boshladi). Shuning uchun ikkalasini ham sinaymiz va har bir
       # urinishning HTTP kodini chop etamiz — kelgusida diagnostika oson bo'ladi.
       - name: Deploy backend and frontend
         env:
+          DEPLOY_BACKEND: ${{ steps.changed.outputs.backend }}
+          DEPLOY_FRONTEND: ${{ steps.changed.outputs.frontend }}
           BACKEND_WEBHOOK: ${{ secrets.COOLIFY_BACKEND_WEBHOOK_URL }}
           FRONTEND_WEBHOOK: ${{ secrets.COOLIFY_FRONTEND_WEBHOOK_URL }}
           API_TOKEN: ${{ secrets.COOLIFY_API_TOKEN }}
@@ -164,6 +212,14 @@ jobs:
           }
 
           rc=0
-          deploy backend "$BACKEND_WEBHOOK" || rc=1
-          deploy frontend "$FRONTEND_WEBHOOK" || rc=1
+          if [ "$DEPLOY_BACKEND" = "true" ]; then
+            deploy backend "$BACKEND_WEBHOOK" || rc=1
+          else
+            echo "backend: o'zgarmagan — deploy o'tkazib yuborildi"
+          fi
+          if [ "$DEPLOY_FRONTEND" = "true" ]; then
+            deploy frontend "$FRONTEND_WEBHOOK" || rc=1
+          else
+            echo "frontend: o'zgarmagan — deploy o'tkazib yuborildi"
+          fi
           exit $rc
