@@ -130,10 +130,20 @@ With the backend running:
 Pushes to `main` trigger [`.github/workflows/ci.yml`](.github/workflows/ci.yml):
 
 1. **CI** — frontend (`npm test` + `npm run build`) and backend (`mvn clean test`) must pass.
-2. **Build & push** — backend and frontend Docker images are built and pushed to GHCR.
-3. **Deploy** — Coolify deploy webhooks are triggered for both apps.
+2. **Build** — backend and frontend Docker images are built. On `main` they are also pushed
+   to GHCR; on pull requests they are built only, so a broken `Dockerfile` fails the PR
+   instead of the deploy.
+3. **Deploy** — a Coolify deploy webhook is triggered **only for the app whose files
+   changed** (`backend/**` → backend, `frontend/**` → frontend). A docs-only commit deploys
+   nothing. If the previous commit cannot be determined (first push or a force-push), both
+   are deployed — over-deploying is safer than silently keeping stale code.
 
-Pull requests run the CI stage only (no build/deploy).
+   Why the filter matters: the host has 7.8 GB of RAM shared by ~10 projects, and a rolling
+   restart briefly runs two JVMs at once. Restarting the backend for a frontend-only change
+   is a risk taken for nothing — on 2026-08-22 exactly that pushed the host out of memory
+   and the OOM killer terminated the backend.
+
+Pull requests run CI and the image build (no push, no deploy).
 
 The background-removal service has its own pipeline,
 [`.github/workflows/rembg.yml`](.github/workflows/rembg.yml), which runs **only when
