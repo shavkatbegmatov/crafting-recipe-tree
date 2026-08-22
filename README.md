@@ -166,6 +166,29 @@ docker exec <backend-container> sh -c 'touch /app/uploads/.w && rm /app/uploads/
 Fresh environments are unaffected: an empty volume inherits the correct ownership on first
 mount.
 
+### Database backup & restore
+
+A **SUPER_ADMIN** can take a full backup of the database and restore from one at
+**Admin → Database backup** (`/admin/backup`). This is a real `pg_dump` custom-format
+archive — schema, every table, sequences and the Flyway history — not a content export
+(for items/recipes only, see *Portage* instead).
+
+The backend image ships `postgresql-client-17`; `pg_dump` must not be **older** than the
+server, and 17 covers both production (PostgreSQL 16) and local dev. The status card on the
+page shows both versions, so a mismatch is visible before you rely on a backup.
+
+Two things worth knowing:
+
+- **Restore replaces the database.** A backup of the current state is taken automatically
+  first and its filename is reported — that is the point of return. The restore itself runs
+  in a single transaction, so a failure leaves the database untouched.
+- **Restart the app afterwards.** The running process may still hold the pre-restore schema.
+
+Backups are written to the `backups` volume, deliberately **outside** `uploads/` — the
+uploads path is served publicly and a dump contains password hashes and chat history.
+Downloaded files are removed from the server once the transfer finishes; only the
+pre-restore safety copy is kept.
+
 ## Environment Variables
 
 ### Backend
@@ -179,6 +202,8 @@ mount.
 | `SERVER_PORT` | HTTP port | `8080` |
 | `REMBG_URL` | Background-removal service URL ([`services/rembg`](services/rembg/README.md)). Empty disables the feature — uploads then keep the original image. | empty (dev), `http://rembg:8000` (prod) |
 | `REMBG_TIMEOUT_SECONDS` | Read timeout for that service | `120` |
+| `BACKUP_DIR` | Where database backups are written. Must stay outside `uploads/` — that path is publicly served. | `backups` |
+| `PG_BIN_DIR` | Directory holding `pg_dump`/`pg_restore` when they are not on `PATH` (e.g. local Windows dev). | empty (use `PATH`) |
 
 ### Frontend (build-time)
 

@@ -332,8 +332,16 @@
     },
     "pageTitle": "Export / Import",
     "pageHint": "Save items, recipes, categories, tags and images as a .craftpkg, or upload such a package and apply it to your database.",
-    "tab": { "export": "Export", "import": "Import" },
-    "mode": { "all": "Everything", "category": "Category", "tag": "Tag", "pick": "Pick" },
+    "tab": {
+      "export": "Export",
+      "import": "Import"
+    },
+    "mode": {
+      "all": "Everything",
+      "category": "Category",
+      "tag": "Tag",
+      "pick": "Pick"
+    },
     "export": {
       "scope": "Export scope",
       "scopeHint": "Choose what to export. With dependencies — the package becomes self-contained.",
@@ -660,5 +668,29 @@
     "minutes": "{{count}}m",
     "minutesSeconds": "{{minutes}}m {{seconds}}s",
     "zero": "0s"
+  },
+  "backup": {
+    "menuLink": "Database backup",
+    "pageTitle": "Database backup",
+    "pageHint": "A full copy of the database: schema, every table and sequence. Restoring replaces the database entirely.",
+    "status": "Environment",
+    "database": "Database",
+    "size": "Size",
+    "serverVersion": "PostgreSQL",
+    "tool": "pg_dump",
+    "toolMissing": "pg_dump is not available in this environment — backups are disabled.",
+    "downloadTitle": "Download a backup",
+    "downloadHint": "pg_dump custom format (compressed). The file contains password hashes and chat history — store it securely.",
+    "downloadButton": "Download backup",
+    "preparing": "Preparing backup...",
+    "restoreTitle": "Restore from a backup",
+    "restoreWarning": "All current data will be replaced by the file's contents. A copy of the current state is taken automatically first, as a point of return. The app may be unavailable during the operation.",
+    "confirmLabel": "Type the database name to confirm: {{database}}",
+    "restoreButton": "Restore database",
+    "uploading": "Uploading file...",
+    "restoring": "Restoring...",
+    "restoreDone": "Database restored",
+    "safetyBackup": "Copy of the previous state:",
+    "restartNeeded": "Restart the application: the schema may have changed while the running process still holds the old one."
   }
 }

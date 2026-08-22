@@ -37,6 +37,12 @@ spring:
 app:
   uploads:
     path: uploads
+  backup:
+    # Zaxira fayllari shu yerga yoziladi. uploads ICHIDA BO'LMASLIGI shart —
+    # /uploads/** ommaviy xizmat qilinadi, zaxirada esa parol xeshlari bor.
+    dir: ${BACKUP_DIR:backups}
+    # pg_dump/pg_restore PATH'da bo'lmasa — katalog yo'li.
+    pg-bin-dir: ${PG_BIN_DIR:}
   rembg:
     # Fon o'chirish servisi (services/rembg). Bo'sh bo'lsa funksiya o'chiriladi va
     # rasmlar asl holida saqlanadi — lokal dev uchun servisni ko'tarish shart emas.

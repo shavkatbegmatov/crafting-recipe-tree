@@ -668,5 +668,29 @@
     "minutes": "{{count}}m",
     "minutesSeconds": "{{minutes}}m {{seconds}}s",
     "zero": "0s"
+  },
+  "backup": {
+    "menuLink": "Baza zaxirasi",
+    "pageTitle": "Ma'lumotlar bazasi zaxirasi",
+    "pageHint": "Bazaning to'liq nusxasi: sxema, barcha jadvallar va ketma-ketliklar. Tiklash bazani butunlay almashtiradi.",
+    "status": "Muhit holati",
+    "database": "Baza",
+    "size": "Hajmi",
+    "serverVersion": "PostgreSQL",
+    "tool": "pg_dump",
+    "toolMissing": "Bu muhitda pg_dump mavjud emas — zaxira olish o'chirilgan.",
+    "downloadTitle": "Zaxirani yuklab olish",
+    "downloadHint": "pg_dump custom formati (siqilgan). Faylda parol xeshlari va yozishmalar bor — ishonchli joyda saqlang.",
+    "downloadButton": "Zaxirani yuklab olish",
+    "preparing": "Zaxira tayyorlanmoqda...",
+    "restoreTitle": "Zaxiradan tiklash",
+    "restoreWarning": "Hozirgi barcha ma'lumot fayl mazmuni bilan almashtiriladi. Tiklashdan oldin joriy holatning nusxasi avtomatik olinadi — bu qaytish nuqtasi. Amal davomida ilova vaqtincha ishlamasligi mumkin.",
+    "confirmLabel": "Tasdiqlash uchun baza nomini yozing: {{database}}",
+    "restoreButton": "Bazani tiklash",
+    "uploading": "Fayl yuklanmoqda...",
+    "restoring": "Tiklanmoqda...",
+    "restoreDone": "Baza tiklandi",
+    "safetyBackup": "Oldingi holat nusxasi:",
+    "restartNeeded": "Ilovani qayta ishga tushiring: sxema o'zgargan bo'lishi mumkin, ishlab turgan jarayon esa hali eskisi bilan ishlayapti."
   }
 }
