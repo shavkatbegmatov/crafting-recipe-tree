@@ -752,6 +752,19 @@
       "NAME_TOO_LONG": "название длиннее 100 символов",
       "CATEGORY_UNKNOWN": "неизвестная категория: {{detail}}",
       "CATEGORY_MISSING": "категория не указана"
-    }
+    },
+    "tabDelete": "Удаление",
+    "deleteWarning": "Удаление необратимо. Вместе с предметом исчезнут его рецепт, теги, записи в избранном, инвентаре и истории крафта. Предмет, который используется как ингредиент, удалён не будет.",
+    "deleteConfirm": "Удалить ({{count}})",
+    "deleteDone": "Удалено {{count}} шт. из версии {{version}}",
+    "selectedCount": "выбрано: {{count}}",
+    "statWillDelete": "Будет удалено",
+    "statDeleted": "Удалено",
+    "statBlocked": "Не удалить",
+    "blockedBy": "используется в рецептах: {{recipes}}",
+    "alsoRecipe": "+ свой рецепт",
+    "alsoFavorites": "+ избранное: {{count}}",
+    "alsoInventory": "+ инвентарь: {{count}}",
+    "alsoCraftLogs": "+ история крафта: {{count}}"
   }
 }

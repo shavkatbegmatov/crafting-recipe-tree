@@ -752,6 +752,19 @@
       "NAME_TOO_LONG": "name longer than 100 characters",
       "CATEGORY_UNKNOWN": "unknown category: {{detail}}",
       "CATEGORY_MISSING": "no category given"
-    }
+    },
+    "tabDelete": "Delete",
+    "deleteWarning": "Deletion cannot be undone. The item's own recipe, tags, favourites, inventory entries and craft history go with it. An item used as an ingredient will not be deleted.",
+    "deleteConfirm": "Delete ({{count}})",
+    "deleteDone": "Deleted {{count}} from version {{version}}",
+    "selectedCount": "selected: {{count}}",
+    "statWillDelete": "Will delete",
+    "statDeleted": "Deleted",
+    "statBlocked": "Cannot delete",
+    "blockedBy": "used in recipes: {{recipes}}",
+    "alsoRecipe": "+ its recipe",
+    "alsoFavorites": "+ favourites: {{count}}",
+    "alsoInventory": "+ inventory: {{count}}",
+    "alsoCraftLogs": "+ craft history: {{count}}"
   }
 }

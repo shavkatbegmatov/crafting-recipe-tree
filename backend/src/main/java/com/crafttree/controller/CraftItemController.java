@@ -4,6 +4,7 @@ import com.crafttree.dto.BulkCreateItemsRequest;
 import com.crafttree.dto.BulkCreateResultDto;
 import com.crafttree.dto.CraftItemDto;
 import com.crafttree.dto.CreateItemRequest;
+import com.crafttree.dto.DeleteItemsResultDto;
 import com.crafttree.dto.UpdateItemRequest;
 import com.crafttree.dto.UsedInDto;
 import com.crafttree.service.CraftItemService;
@@ -76,6 +77,23 @@ public class CraftItemController {
      * {@code dryRun=true} bilan avval natijani ko'rish mumkin — bazaga hech narsa yozilmaydi.
      * UI aynan shu tartibda ishlaydi: avval ko'rib chiqish, keyin tasdiqlash.
      */
+    /**
+     * Itemlarni o'chirish (bittasi ham, bir nechtasi ham).
+     * <p>
+     * {@code dryRun=true} bilan avval nima o'chishini ko'rish mumkin. Ingredient
+     * sifatida ishlatilayotgan item o'chirilmaydi — hisobotda sababi ko'rsatiladi.
+     */
+    @PostMapping("/items/delete")
+    @Operation(summary = "Delete items; blocked when used as an ingredient (admin only)")
+    public DeleteItemsResultDto deleteItems(
+            @RequestBody DeleteItemsRequest request,
+            @RequestParam(value = "dryRun", defaultValue = "false") boolean dryRun,
+            @RequestParam(value = "version", required = false) String version) {
+        return craftItemService.deleteItems(request.itemIds(), dryRun, version);
+    }
+
+    public record DeleteItemsRequest(java.util.List<Long> itemIds) {}
+
     @PostMapping("/items/bulk")
     @Operation(summary = "Create several items at once; dryRun previews without writing (admin only)")
     public BulkCreateResultDto createItemsBulk(

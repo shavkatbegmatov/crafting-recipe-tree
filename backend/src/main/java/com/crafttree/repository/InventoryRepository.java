@@ -32,4 +32,7 @@ public interface InventoryRepository extends JpaRepository<InventoryItem, Long> 
     @Query("DELETE FROM InventoryItem i WHERE i.user = :user AND i.item.id IN "
             + "(SELECT ci.id FROM CraftItem ci WHERE ci.gameVersion.id = :versionId)")
     void deleteByUserAndVersion(@Param("user") User user, @Param("versionId") Long versionId);
+
+    /** Item o'chirilganda nechta inventar yozuvi yo'qolishini oldindan ko'rsatish uchun. */
+    long countByItemId(Long itemId);
 }

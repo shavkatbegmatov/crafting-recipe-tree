@@ -752,6 +752,19 @@
       "NAME_TOO_LONG": "nom 100 belgidan uzun",
       "CATEGORY_UNKNOWN": "noma'lum kategoriya: {{detail}}",
       "CATEGORY_MISSING": "kategoriya ko'rsatilmagan"
-    }
+    },
+    "tabDelete": "O'chirish",
+    "deleteWarning": "O'chirish qaytarilmaydi. Predmet bilan birga uning retsepti, teglari, sevimlilardagi, inventardagi va kraft tarixidagi yozuvlari ham ketadi. Ingredient sifatida ishlatilayotgan predmet o'chirilmaydi.",
+    "deleteConfirm": "O'chirish ({{count}})",
+    "deleteDone": "{{version}} versiyasidan {{count}} ta o'chirildi",
+    "selectedCount": "tanlandi: {{count}}",
+    "statWillDelete": "O'chiriladi",
+    "statDeleted": "O'chirildi",
+    "statBlocked": "O'chirilmaydi",
+    "blockedBy": "retseptlarda ishlatilyapti: {{recipes}}",
+    "alsoRecipe": "+ o'z retsepti",
+    "alsoFavorites": "+ sevimlilar: {{count}}",
+    "alsoInventory": "+ inventar: {{count}}",
+    "alsoCraftLogs": "+ kraft tarixi: {{count}}"
   }
 }
