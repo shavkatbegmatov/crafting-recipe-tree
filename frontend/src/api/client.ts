@@ -20,6 +20,18 @@ client.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
+
+  // Fayl yuborilayotganda JSON sarlavhasini olib tashlaymiz.
+  //
+  // Yuqoridagi `application/json` standart sarlavha bilan axios v1 FormData'ni
+  // JSON'ga o'girib yuboradi (formDataToJSON) — backend'ga multipart yetib
+  // bormaydi va "Current request is not a multipart request" xatosi chiqadi.
+  // Sarlavhani olib tashlasak, brauzer o'zi `multipart/form-data` ni to'g'ri
+  // boundary bilan qo'yadi.
+  if (typeof FormData !== 'undefined' && config.data instanceof FormData) {
+    delete config.headers['Content-Type']
+  }
+
   return config
 })
 
