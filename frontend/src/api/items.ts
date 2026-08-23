@@ -1,8 +1,9 @@
 import client from './client'
 import type { Category, CraftItem, RecipeTreeNode, RawTotal, UsedIn, Tag } from './types'
 
-export async function fetchCategories(): Promise<Category[]> {
-  const { data } = await client.get('/categories')
+/** Kategoriyalar versiyaga bog'langan: versiya berilmasa backend joriysini oladi. */
+export async function fetchCategories(version?: string): Promise<Category[]> {
+  const { data } = await client.get('/categories', { params: version ? { version } : undefined })
   return data
 }
 
@@ -17,8 +18,10 @@ export interface UpdateCategoryData {
   sortOrder?: number
 }
 
-export async function createCategory(data: UpdateCategoryData): Promise<Category> {
-  const { data: res } = await client.post('/categories', data)
+export async function createCategory(data: UpdateCategoryData, version?: string): Promise<Category> {
+  const { data: res } = await client.post('/categories', data, {
+    params: version ? { version } : undefined,
+  })
   return res
 }
 

@@ -83,8 +83,13 @@ public class ImportService {
                 .manifest(summary(pkg.getManifest(), archiveImages.size()))
                 .build();
 
+        // Kategoriyalar versiyaga bog'langan: faqat MAQSAD versiyanikilarini olamiz,
+        // aks holda boshqa versiyaning kategoriyasiga ulanib qolardik.
+        GameVersion targetVersion = gameVersionService.getCurrent();
         Map<String, Category> existingCats = new HashMap<>();
-        for (Category c : categoryRepository.findAll()) existingCats.put(c.getCode(), c);
+        for (Category c : categoryRepository.findByGameVersionIdOrderBySortOrderAsc(targetVersion.getId())) {
+            existingCats.put(c.getCode(), c);
+        }
         Map<String, Tag> existingTags = new HashMap<>();
         for (Tag t : tagRepository.findAll()) existingTags.put(t.getCode(), t);
         // Itemlar versiyaga bog'langan: "mavjud" deb faqat SHU versiyadagilar hisoblanadi,
@@ -103,10 +108,14 @@ public class ImportService {
         for (ExportCategoryDto dto : pkg.getCategories()) {
             try {
                 Category existing = existingCats.get(dto.getCode());
-                Action action = upsertCategory(existing, dto, options.getConflictMode());
+                Action action = upsertCategory(existing, dto, options.getConflictMode(), targetVersion);
                 applyToSummary(report.getCategories(), action);
                 report.getCategoryRows().add(row(dto.getCode(), action, null));
-                if (existing == null) existingCats.put(dto.getCode(), categoryRepository.findByCode(dto.getCode()).orElse(null));
+                if (existing == null) {
+                    existingCats.put(dto.getCode(), categoryRepository
+                            .findByCodeAndGameVersionId(dto.getCode(), targetVersion.getId())
+                            .orElse(null));
+                }
             } catch (Exception ex) {
                 log.warn("Category import failed for {}: {}", dto.getCode(), ex.getMessage());
                 applyToSummary(report.getCategories(), Action.FAIL);
@@ -187,9 +196,11 @@ public class ImportService {
         return msg == null ? cur.getClass().getSimpleName() : msg.split("\\n")[0];
     }
 
-    private Action upsertCategory(Category existing, ExportCategoryDto dto, ImportOptionsDto.ConflictMode mode) {
+    private Action upsertCategory(Category existing, ExportCategoryDto dto,
+                                  ImportOptionsDto.ConflictMode mode, GameVersion targetVersion) {
         if (existing == null) {
             Category c = Category.builder()
+                    .gameVersion(targetVersion)
                     .code(dto.getCode())
                     .nameRu(orFallback(dto.getNameRu(), dto.getCode()))
                     .nameUz(orFallback(dto.getNameUz(), dto.getCode()))

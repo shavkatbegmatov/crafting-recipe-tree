@@ -188,7 +188,8 @@
     "icon": "Icon",
     "sortOrder": "Sort order",
     "actions": "Actions",
-    "confirmDelete": "Are you sure you want to delete?"
+    "confirmDelete": "Are you sure you want to delete?",
+    "categoriesVersionHint": "Categories belong to a version. These are the categories of {{version}} — ones created here will not appear in other versions."
   },
   "adminUsers": {
     "title": "Users",

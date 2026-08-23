@@ -4,7 +4,10 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "categories")
+@Table(name = "categories", uniqueConstraints = {
+        @UniqueConstraint(name = "uq_categories_code_version",
+                columnNames = {"code", "game_version_id"}),
+})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,8 +19,14 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false, length = 20)
+    // Kod endi faqat VERSIYA ICHIDA noyob: bir xil kategoriya turli versiyalarda
+    // mustaqil qator bo'lib yashaydi (uq_categories_code_version).
+    @Column(nullable = false, length = 20)
     private String code;
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "game_version_id", nullable = false)
+    private GameVersion gameVersion;
 
     @Column(name = "name_ru", nullable = false, length = 100)
     private String nameRu;

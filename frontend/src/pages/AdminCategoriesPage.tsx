@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../contexts/AuthContext'
+import { useGameVersion } from '../contexts/GameVersionContext'
 import { useCategories } from '../hooks/useItems'
 import { useLocalizedField } from '../hooks/useLanguage'
 import { createCategory, updateCategory, deleteCategory } from '../api/items'
@@ -26,6 +27,7 @@ export default function AdminCategoriesPage() {
   const { getField } = useLocalizedField()
   const goBack = useGoBack('/')
   const { data: categories, isLoading } = useCategories()
+  const { effectiveVersion } = useGameVersion()
   const queryClient = useQueryClient()
 
   const [editingId, setEditingId] = useState<number | null>(null)
@@ -66,7 +68,7 @@ export default function AdminCategoriesPage() {
     setSaving(true)
     try {
       if (creating) {
-        await createCategory(form)
+        await createCategory(form, effectiveVersion ?? undefined)
       } else if (editingId) {
         await updateCategory(editingId, form)
       }
@@ -108,6 +110,9 @@ export default function AdminCategoriesPage() {
             <ArrowLeft size={18} />
           </button>
           <h1 className="text-xl font-display tracking-wide text-skin-base">{t('admin.categories')}</h1>
+          <p className="text-xs text-skin-muted mt-1">
+            {t('admin.categoriesVersionHint', { version: effectiveVersion ?? '—' })}
+          </p>
         </div>
         {!isEditing && (
           <button

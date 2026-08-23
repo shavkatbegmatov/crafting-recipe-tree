@@ -19,9 +19,9 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
-    @Operation(summary = "Get all categories")
-    public List<CategoryDto> getAll() {
-        return categoryService.getAll();
+    @Operation(summary = "Categories of the given (or current) game version")
+    public List<CategoryDto> getAll(@RequestParam(required = false) String version) {
+        return categoryService.getAll(version);
     }
 
     @GetMapping("/{id}")
@@ -32,8 +32,9 @@ public class CategoryController {
 
     @PostMapping
     @Operation(summary = "Create new category (admin only)")
-    public CategoryDto create(@RequestBody UpdateCategoryRequest request) {
-        return categoryService.create(request);
+    public CategoryDto create(@RequestBody UpdateCategoryRequest request,
+                              @RequestParam(required = false) String version) {
+        return categoryService.create(request, version);
     }
 
     @PutMapping("/{id}")

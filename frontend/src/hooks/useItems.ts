@@ -2,10 +2,16 @@ import { useQuery } from '@tanstack/react-query'
 import { fetchCategories, fetchItems, fetchItem, searchItems, fetchUsedIn, fetchTags } from '../api/items'
 import { useGameVersion } from '../contexts/GameVersionContext'
 
+/**
+ * Joriy versiyaning kategoriyalari.
+ * Kategoriyalar ham itemlar kabi versiyaga bog'langan, shuning uchun kesh kaliti
+ * versiyani o'z ichiga oladi — aks holda versiya almashganda eski ro'yxat qolardi.
+ */
 export function useCategories() {
+  const { effectiveVersion } = useGameVersion()
   return useQuery({
-    queryKey: ['categories'],
-    queryFn: fetchCategories,
+    queryKey: ['categories', effectiveVersion],
+    queryFn: () => fetchCategories(effectiveVersion ?? undefined),
   })
 }
 
