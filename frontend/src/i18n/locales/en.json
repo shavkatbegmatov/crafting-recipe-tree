@@ -765,6 +765,11 @@
     "alsoRecipe": "+ its recipe",
     "alsoFavorites": "+ favourites: {{count}}",
     "alsoInventory": "+ inventory: {{count}}",
-    "alsoCraftLogs": "+ craft history: {{count}}"
+    "alsoCraftLogs": "+ craft history: {{count}}",
+    "deleteOneTitle": "Delete “{{name}}”?",
+    "deleteOneWarning": "Deletion cannot be undone. The item's own recipe, tags and its favourites, inventory and craft-history entries go with it.",
+    "deleteOneConfirm": "Delete",
+    "deleteChecking": "Checking...",
+    "alsoRemoved": "Along with it:"
   }
 }

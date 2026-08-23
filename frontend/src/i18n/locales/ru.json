@@ -765,6 +765,11 @@
     "alsoRecipe": "+ свой рецепт",
     "alsoFavorites": "+ избранное: {{count}}",
     "alsoInventory": "+ инвентарь: {{count}}",
-    "alsoCraftLogs": "+ история крафта: {{count}}"
+    "alsoCraftLogs": "+ история крафта: {{count}}",
+    "deleteOneTitle": "Удалить «{{name}}»?",
+    "deleteOneWarning": "Удаление необратимо. Вместе с предметом исчезнут его рецепт, теги и записи в избранном, инвентаре и истории крафта.",
+    "deleteOneConfirm": "Удалить",
+    "deleteChecking": "Проверка...",
+    "alsoRemoved": "Вместе с ним:"
   }
 }
