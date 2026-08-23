@@ -26,6 +26,9 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
 
     void deleteByUserAndItemId(User user, Long itemId);
 
+    /** Item o'chirilganda nechta foydalanuvchining sevimlisi yo'qolishini oldindan ko'rsatish uchun. */
+    long countByItemId(Long itemId);
+
     /** Faqat item id'lari — frontend yulduzcha holatini belgilash uchun (yengil). */
     @Query("SELECT f.item.id FROM Favorite f WHERE f.user = :user AND f.item.gameVersion.id = :versionId")
     List<Long> findItemIdsByUserAndVersion(@Param("user") User user, @Param("versionId") Long versionId);

@@ -10,6 +10,9 @@ import com.crafttree.entity.RecipeIngredient;
 import com.crafttree.exception.ItemNotFoundException;
 import com.crafttree.repository.CategoryRepository;
 import com.crafttree.repository.CraftItemRepository;
+import com.crafttree.repository.CraftLogRepository;
+import com.crafttree.repository.FavoriteRepository;
+import com.crafttree.repository.InventoryRepository;
 import com.crafttree.repository.RecipeIngredientRepository;
 import com.crafttree.repository.RecipeRepository;
 import com.crafttree.repository.TagRepository;
@@ -38,6 +41,9 @@ public class CraftItemService {
     private final RecipeRepository recipeRepository;
     private final GameVersionService gameVersionService;
     private final TagRepository tagRepository;
+    private final FavoriteRepository favoriteRepository;
+    private final InventoryRepository inventoryRepository;
+    private final CraftLogRepository craftLogRepository;
     private final AuditService auditService;
 
     @Cacheable("categories")
@@ -266,6 +272,78 @@ public class CraftItemService {
 
     private static String blankToNull(String s) {
         return s == null || s.isBlank() ? null : s.trim();
+    }
+
+
+    // -- O'chirish -----------------------------------------------------------
+
+    /**
+     * Itemlarni o'chiradi.
+     * <p>
+     * <b>Ingredient sifatida ishlatilayotgan item o'chirilmaydi</b> — u ketsa boshqa
+     * itemning retsepti chala qolardi. Bunday qatorlar sababi bilan belgilanadi,
+     * qolganlari o'chiriladi.
+     * <p>
+     * O'chirish bilan birga itemning o'z retsepti, teglari, sevimlilardagi va
+     * inventardagi yozuvlari, kraft tarixi ham ketadi (DB'da ON DELETE CASCADE).
+     * Shuning uchun {@code dryRun} hisobotida ularning soni ham ko'rsatiladi:
+     * qaytarib bo'lmaydigan amalning ko'lami oldindan ko'rinsin.
+     */
+    @Transactional
+    public DeleteItemsResultDto deleteItems(List<Long> itemIds, boolean dryRun, String version) {
+        GameVersion gv = gameVersionService.resolveOrCurrent(version);
+        List<Long> ids = itemIds == null ? List.of() : itemIds;
+
+        List<DeleteItemsResultDto.Row> rows = new ArrayList<>();
+        int deleted = 0;
+        int blocked = 0;
+
+        for (Long id : ids) {
+            CraftItem item = craftItemRepository.findById(id).orElse(null);
+            if (item == null) {
+                continue; // allaqachon yo'q — jimgina o'tkazamiz, takror so'rov xato bermasin
+            }
+
+            List<String> usedIn = recipeIngredientRepository
+                    .findByIngredientItemIdAndGameVersionId(id, item.getGameVersion().getId())
+                    .stream()
+                    .map(ri -> ri.getRecipe().getResultItem().getName())
+                    .distinct()
+                    .toList();
+
+            long favorites = favoriteRepository.countByItemId(id);
+            long inventory = inventoryRepository.countByItemId(id);
+            long craftLogs = craftLogRepository.countByResultItemId(id);
+            Optional<Recipe> ownRecipeOpt = recipeRepository
+                    .findByResultItemIdAndGameVersionId(id, item.getGameVersion().getId());
+            boolean ownRecipe = ownRecipeOpt.isPresent();
+
+            if (!usedIn.isEmpty()) {
+                rows.add(new DeleteItemsResultDto.Row(id, item.getName(),
+                        DeleteItemsResultDto.Row.BLOCKED, usedIn,
+                        favorites, inventory, craftLogs, ownRecipe));
+                blocked++;
+                continue;
+            }
+
+            if (!dryRun) {
+                // Retseptni ALOHIDA o'chiramiz. DB'da ON DELETE CASCADE bor, lekin Hibernate
+                // undan bexabar: sessiyada yuklangan retsept o'chirilgan itemga ishora qilib
+                // qolib, flush paytida TransientObjectException beradi.
+                ownRecipeOpt.ifPresent(recipeRepository::delete);
+                craftItemRepository.delete(item);
+            }
+            rows.add(new DeleteItemsResultDto.Row(id, item.getName(),
+                    DeleteItemsResultDto.Row.DELETABLE, List.of(),
+                    favorites, inventory, craftLogs, ownRecipe));
+            deleted++;
+        }
+
+        if (!dryRun && deleted > 0) {
+            auditService.log(AuditAction.DELETE, "ITEM", null,
+                    deleted + " ta item o'chirildi (" + gv.getVersion() + ")");
+        }
+        return new DeleteItemsResultDto(dryRun, gv.getVersion(), deleted, blocked, rows);
     }
 
     @Transactional

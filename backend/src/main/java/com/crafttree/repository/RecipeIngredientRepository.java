@@ -29,10 +29,23 @@ public interface RecipeIngredientRepository extends JpaRepository<RecipeIngredie
 
     Optional<RecipeIngredient> findByRecipeIdAndIngredientItemId(Long recipeId, Long ingredientItemId);
 
+    /**
+     * Ingredient qatorini qo'shadi yoki miqdorini yangilaydi.
+     * <p>
+     * {@code game_version_id} ATAYLAB parametr emas — u retseptning o'zidan olinadi.
+     * Bu ustun NOT NULL va kompozit tashqi kalitlar orqali "retsept, ingredient va item
+     * bir versiyada" qoidasini ushlab turadi; chaqiruvchidan so'ralsa noto'g'ri versiya
+     * uzatilishi mumkin edi.
+     * <p>
+     * Bu native so'rov JPA hodisalarini chetlab o'tadi, ya'ni
+     * {@code RecipeIngredient.syncGameVersion()} bu yerda ISHLAMAYDI — shuning uchun
+     * ustun shu yerda to'ldirilishi shart.
+     */
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(value = """
-            INSERT INTO recipe_ingredients (recipe_id, ingredient_item_id, quantity)
-            VALUES (:recipeId, :ingredientItemId, :quantity)
+            INSERT INTO recipe_ingredients (recipe_id, ingredient_item_id, quantity, game_version_id)
+            SELECT :recipeId, :ingredientItemId, :quantity, r.game_version_id
+              FROM recipes r WHERE r.id = :recipeId
             ON CONFLICT (recipe_id, ingredient_item_id)
             DO UPDATE SET quantity = EXCLUDED.quantity
             """, nativeQuery = true)

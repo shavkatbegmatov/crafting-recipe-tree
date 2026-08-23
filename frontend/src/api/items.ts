@@ -136,6 +136,42 @@ export async function createItemsBulk(
   return data
 }
 
+export interface DeleteItemsResultRow {
+  itemId: number
+  name: string
+  /** DELETABLE | BLOCKED */
+  status: string
+  /** BLOCKED sababi: item ingredient bo'lgan retseptlar */
+  usedIn: string[]
+  favorites: number
+  inventory: number
+  craftLogs: number
+  ownRecipe: boolean
+}
+
+export interface DeleteItemsResult {
+  dryRun: boolean
+  version: string
+  deleted: number
+  blocked: number
+  rows: DeleteItemsResultRow[]
+}
+
+/**
+ * Itemlarni o'chiradi. `dryRun` bilan avval nima o'chishini ko'rish mumkin —
+ * o'chirish qaytarilmaydi.
+ */
+export async function deleteItems(
+  itemIds: number[],
+  dryRun: boolean,
+  version?: string
+): Promise<DeleteItemsResult> {
+  const params: Record<string, string> = { dryRun: String(dryRun) }
+  if (version) params.version = version
+  const { data } = await client.post('/items/delete', { itemIds }, { params })
+  return data
+}
+
 export interface UpdateItemData {
   categoryId?: number
   name?: string

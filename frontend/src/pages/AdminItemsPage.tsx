@@ -1,16 +1,21 @@
 import { useMemo, useState } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { ArrowLeft, Plus, ListPlus, Loader2, Check, AlertTriangle, Eye } from 'lucide-react'
+import {
+  ArrowLeft, Plus, ListPlus, Loader2, Check, AlertTriangle, Eye,
+  Trash2, Search, CheckSquare, Square,
+} from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { useGoBack } from '../hooks/useGoBack'
 import { useContentWidth } from '../hooks/useContentWidth'
 import { useCategories, useItems } from '../hooks/useItems'
+import { useLocalizedField } from '../hooks/useLanguage'
 import { useGameVersion } from '../contexts/GameVersionContext'
-import { useCreateItem, useCreateItemsBulk } from '../hooks/useCreateItems'
-import type { CreateItemData, BulkCreateResult } from '../api/items'
+import { useCreateItem, useCreateItemsBulk, useDeleteItems } from '../hooks/useCreateItems'
+import type { CreateItemData, BulkCreateResult, DeleteItemsResult } from '../api/items'
+import type { CraftItem } from '../api/types'
 
-type Tab = 'single' | 'bulk'
+type Tab = 'single' | 'bulk' | 'delete'
 
 /**
  * Yangi item yaratish: bittalab yoki ro'yxatdan ommaviy.
@@ -65,13 +70,17 @@ export default function AdminItemsPage() {
           icon={<ListPlus size={14} />}
           label={t('itemCreate.tabBulk')}
         />
+        <TabButton
+          active={tab === 'delete'}
+          onClick={() => setTab('delete')}
+          icon={<Trash2 size={14} />}
+          label={t('itemCreate.tabDelete')}
+        />
       </nav>
 
-      {tab === 'single' ? (
-        <SinglePanel categories={categories} />
-      ) : (
-        <BulkPanel categories={categories} />
-      )}
+      {tab === 'single' && <SinglePanel categories={categories} />}
+      {tab === 'bulk' && <BulkPanel categories={categories} />}
+      {tab === 'delete' && <DeletePanel items={items} />}
     </div>
   )
 }
@@ -429,7 +438,200 @@ function BulkResult({ result }: { result: BulkCreateResult }) {
   )
 }
 
+
+// -- O'chirish --------------------------------------------------------------
+
+/**
+ * Itemlarni o'chirish. Avval "ko'rib chiqish" — bazaga tegilmaydi, foydalanuvchi
+ * nima o'chishini va u bilan birga yana nimalar ketishini ko'radi. O'chirish
+ * qaytarilmaydi, shuning uchun tasdiqlash faqat shundan keyin ochiladi.
+ */
+function DeletePanel({ items }: { items?: CraftItem[] }) {
+  const { t } = useTranslation()
+  const { getField } = useLocalizedField()
+  const mutation = useDeleteItems()
+  const [selected, setSelected] = useState<Set<number>>(new Set())
+  const [search, setSearch] = useState('')
+  const [result, setResult] = useState<DeleteItemsResult | null>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  const filtered = useMemo(() => {
+    const list = items ?? []
+    const q = search.trim().toLowerCase()
+    if (!q) return list
+    return list.filter((i) =>
+      [i.name, i.nameUz, i.nameEn, i.nameUzCyr].some((n) => n?.toLowerCase().includes(q)),
+    )
+  }, [items, search])
+
+  const toggle = (id: number) => {
+    setResult(null)
+    setSelected((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
+  const run = async (dryRun: boolean) => {
+    setError(null)
+    try {
+      const res = await mutation.mutateAsync({ itemIds: [...selected], dryRun })
+      setResult(res)
+      if (!dryRun && res.deleted > 0) {
+        // O'chirilganlar tanlovdan chiqadi, bloklanganlar qoladi — ular hali ham u yerda.
+        const gone = new Set(res.rows.filter((r) => r.status === 'DELETABLE').map((r) => r.itemId))
+        setSelected((prev) => new Set([...prev].filter((id) => !gone.has(id))))
+      }
+    } catch (e) {
+      const err = e as { response?: { data?: { message?: string } }; message?: string }
+      setError(err?.response?.data?.message ?? err?.message ?? String(e))
+    }
+  }
+
+  const previewed = result?.dryRun === true
+
+  return (
+    <section className="panel p-5 space-y-4 border-red-500/25">
+      <div className="flex items-start gap-2 p-3 rounded bg-red-500/10 border border-red-500/30 text-xs text-red-200">
+        <AlertTriangle size={13} className="mt-0.5 shrink-0" />
+        <span>{t('itemCreate.deleteWarning')}</span>
+      </div>
+
+      <div className="relative">
+        <Search
+          size={13}
+          className="absolute left-2.5 top-1/2 -translate-y-1/2 text-skin-dark pointer-events-none"
+        />
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder={t('search.placeholder')}
+          className="w-full bg-dark-bg border border-dark-border rounded pl-8 pr-3 py-1.5 text-sm text-skin-base focus:outline-none focus:border-dark-gold/50"
+        />
+      </div>
+
+      <ul className="max-h-72 overflow-y-auto pr-1 space-y-0.5 border border-dark-border rounded p-1">
+        {filtered.map((item) => {
+          const checked = selected.has(item.id)
+          return (
+            <li key={item.id}>
+              <button
+                type="button"
+                onClick={() => toggle(item.id)}
+                className="w-full flex items-center gap-2 px-2 py-1 rounded text-left hover:bg-dark-hover/50 transition-colors"
+              >
+                {checked ? (
+                  <CheckSquare size={14} className="text-red-400 shrink-0" />
+                ) : (
+                  <Square size={14} className="text-skin-dark shrink-0" />
+                )}
+                <span className="text-sm text-skin-base truncate">{getField(item, 'name')}</span>
+                <span className="ml-auto text-[10px] text-skin-dark font-mono shrink-0">
+                  {item.categoryCode}
+                </span>
+              </button>
+            </li>
+          )
+        })}
+        {filtered.length === 0 && (
+          <li className="text-xs text-skin-dark py-3 text-center">{t('itemList.empty')}</li>
+        )}
+      </ul>
+
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => run(true)}
+          disabled={selected.size === 0 || mutation.isPending}
+          className="flex items-center gap-1.5 px-4 py-2 rounded text-sm text-skin-muted border border-dark-border hover:text-skin-base hover:border-dark-gold/40 transition-colors disabled:opacity-50"
+        >
+          {mutation.isPending ? <Loader2 size={14} className="animate-spin" /> : <Eye size={14} />}
+          {t('itemCreate.preview')}
+        </button>
+        <button
+          onClick={() => run(false)}
+          disabled={!previewed || (result?.deleted ?? 0) === 0 || mutation.isPending}
+          className="flex items-center gap-1.5 px-4 py-2 rounded text-sm font-medium bg-red-500/15 text-red-300 border border-red-500/40 hover:bg-red-500/25 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          title={!previewed ? t('itemCreate.previewFirst') : undefined}
+        >
+          <Trash2 size={14} />
+          {t('itemCreate.deleteConfirm', { count: result?.deleted ?? 0 })}
+        </button>
+        <span className="text-xs text-skin-muted ml-1">
+          {t('itemCreate.selectedCount', { count: selected.size })}
+        </span>
+      </div>
+
+      {result && <DeleteResult result={result} />}
+      {error && <ErrorBox message={error} />}
+    </section>
+  )
+}
+
+function DeleteResult({ result }: { result: DeleteItemsResult }) {
+  const { t } = useTranslation()
+  return (
+    <div className="space-y-3 border-t border-dark-border pt-4">
+      <div className="text-sm">
+        {result.dryRun ? (
+          <span className="text-skin-muted">
+            {t('itemCreate.previewResult', { version: result.version })}
+          </span>
+        ) : (
+          <span className="text-emerald-300 flex items-center gap-1.5">
+            <Check size={14} />
+            {t('itemCreate.deleteDone', { count: result.deleted, version: result.version })}
+          </span>
+        )}
+      </div>
+
+      <div className="grid grid-cols-2 gap-2">
+        <Stat
+          label={result.dryRun ? t('itemCreate.statWillDelete') : t('itemCreate.statDeleted')}
+          value={result.deleted}
+          accent="text-red-300"
+        />
+        <Stat label={t('itemCreate.statBlocked')} value={result.blocked} accent="text-amber-200" />
+      </div>
+
+      <ul className="space-y-1 max-h-64 overflow-y-auto pr-1">
+        {result.rows.map((r) => {
+          const extras: string[] = []
+          if (r.ownRecipe) extras.push(t('itemCreate.alsoRecipe'))
+          if (r.favorites > 0) extras.push(t('itemCreate.alsoFavorites', { count: r.favorites }))
+          if (r.inventory > 0) extras.push(t('itemCreate.alsoInventory', { count: r.inventory }))
+          if (r.craftLogs > 0) extras.push(t('itemCreate.alsoCraftLogs', { count: r.craftLogs }))
+          const isBlocked = r.status === 'BLOCKED'
+          return (
+            <li
+              key={r.itemId}
+              className={`text-xs rounded px-2 py-1.5 border ${
+                isBlocked
+                  ? 'text-amber-200 border-amber-400/30 bg-amber-500/5'
+                  : 'text-skin-base border-dark-border bg-dark-bg/40'
+              }`}
+            >
+              <span className="font-medium">{r.name}</span>
+              {isBlocked ? (
+                <span className="block text-amber-200/80 mt-0.5">
+                  {t('itemCreate.blockedBy', { recipes: r.usedIn.join(', ') })}
+                </span>
+              ) : (
+                extras.length > 0 && (
+                  <span className="block text-skin-dark mt-0.5">{extras.join(' · ')}</span>
+                )
+              )}
+            </li>
+          )
+        })}
+      </ul>
+    </div>
+  )
+}
+
 // -- Umumiy qismlar ---------------------------------------------------------
+
 
 function Field({
   label,

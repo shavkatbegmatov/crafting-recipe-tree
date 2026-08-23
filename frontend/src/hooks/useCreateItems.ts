@@ -2,8 +2,10 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   createItem,
   createItemsBulk,
+  deleteItems,
   type CreateItemData,
   type BulkCreateResult,
+  type DeleteItemsResult,
 } from '../api/items'
 import { useGameVersion } from '../contexts/GameVersionContext'
 
@@ -35,6 +37,19 @@ export function useCreateItemsBulk() {
     mutationFn: ({ items, defaultCategoryCode, dryRun }) =>
       createItemsBulk(items, defaultCategoryCode, dryRun, effectiveVersion ?? undefined),
     // dryRun bazaga tegmaydi, shuning uchun keshni faqat haqiqiy qo'shishda tozalaymiz.
+    onSuccess: (res) => {
+      if (!res.dryRun) invalidateItemData(qc)
+    },
+  })
+}
+
+export function useDeleteItems() {
+  const qc = useQueryClient()
+  const { effectiveVersion } = useGameVersion()
+  return useMutation<DeleteItemsResult, unknown, { itemIds: number[]; dryRun: boolean }>({
+    mutationFn: ({ itemIds, dryRun }) =>
+      deleteItems(itemIds, dryRun, effectiveVersion ?? undefined),
+    // dryRun bazaga tegmaydi — keshni faqat haqiqiy o'chirishda tozalaymiz.
     onSuccess: (res) => {
       if (!res.dryRun) invalidateItemData(qc)
     },

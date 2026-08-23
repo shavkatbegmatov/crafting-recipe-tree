@@ -752,6 +752,19 @@
       "NAME_TOO_LONG": "ном 100 белгидан узун",
       "CATEGORY_UNKNOWN": "номаълум категория: {{detail}}",
       "CATEGORY_MISSING": "категория кўрсатилмаган"
-    }
+    },
+    "tabDelete": "Ўчириш",
+    "deleteWarning": "Ўчириш қайтарилмайди. Предмет билан бирга унинг рецепти, теглари, севимлилардаги, инвентардаги ва крафт тарихидаги ёзувлари ҳам кетади. Ингредиент сифатида ишлатилаётган предмет ўчирилмайди.",
+    "deleteConfirm": "Ўчириш ({{count}})",
+    "deleteDone": "{{version}} версиясидан {{count}} та ўчирилди",
+    "selectedCount": "танланди: {{count}}",
+    "statWillDelete": "Ўчирилади",
+    "statDeleted": "Ўчирилди",
+    "statBlocked": "Ўчирилмайди",
+    "blockedBy": "рецептларда ишлатиляпти: {{recipes}}",
+    "alsoRecipe": "+ ўз рецепти",
+    "alsoFavorites": "+ севимлилар: {{count}}",
+    "alsoInventory": "+ инвентар: {{count}}",
+    "alsoCraftLogs": "+ крафт тарихи: {{count}}"
   }
 }
