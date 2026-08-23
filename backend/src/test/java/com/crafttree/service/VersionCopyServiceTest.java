@@ -1,10 +1,12 @@
 package com.crafttree.service;
 
 import com.crafttree.dto.VersionCopyResultDto;
+import com.crafttree.entity.Category;
 import com.crafttree.entity.CraftItem;
 import com.crafttree.entity.GameVersion;
 import com.crafttree.entity.Recipe;
 import com.crafttree.entity.RecipeIngredient;
+import com.crafttree.repository.CategoryRepository;
 import com.crafttree.repository.CraftItemRepository;
 import com.crafttree.repository.RecipeIngredientRepository;
 import com.crafttree.repository.RecipeRepository;
@@ -27,6 +29,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -42,6 +45,7 @@ import static org.mockito.Mockito.when;
 class VersionCopyServiceTest {
 
     @Mock CraftItemRepository craftItemRepository;
+    @Mock CategoryRepository categoryRepository;
     @Mock RecipeRepository recipeRepository;
     @Mock RecipeIngredientRepository recipeIngredientRepository;
     @Mock GameVersionService gameVersionService;
@@ -50,12 +54,18 @@ class VersionCopyServiceTest {
 
     GameVersion v1;
     GameVersion v2;
+    Category cat;
     final AtomicLong idSeq = new AtomicLong(1000);
 
     @BeforeEach
     void setUp() {
         v1 = GameVersion.builder().id(1L).version("1.0.0").build();
         v2 = GameVersion.builder().id(2L).version("5.9.0").build();
+        // Kategoriya ham versiyaga bog'langan: nusxa olishda maqsad versiyadagisi kerak.
+        cat = Category.builder().id(10L).code("RAW").nameRu("Xom").nameUz("Xom").gameVersion(v1).build();
+        when(categoryRepository.findByCodeAndGameVersionId(eq("RAW"), any()))
+                .thenReturn(Optional.of(Category.builder()
+                        .id(20L).code("RAW").nameRu("Xom").nameUz("Xom").gameVersion(v2).build()));
         when(gameVersionService.findById(1L)).thenReturn(v1);
         when(gameVersionService.findById(2L)).thenReturn(v2);
 
@@ -78,7 +88,7 @@ class VersionCopyServiceTest {
     private CraftItem item(long id, String name, String key) {
         return CraftItem.builder()
                 .id(id).name(name).nameEn(name).itemKey(key)
-                .craftTimeSeconds(5).gameVersion(v1)
+                .craftTimeSeconds(5).gameVersion(v1).category(cat)
                 .build();
     }
 
@@ -113,7 +123,8 @@ class VersionCopyServiceTest {
     @DisplayName("idempotent — maqsad versiyada bor item qayta yaratilmaydi")
     void skipsItemsAlreadyPresentInTarget() {
         CraftItem glass = item(10L, "Стекло", "glass-10");
-        CraftItem existing = CraftItem.builder().id(99L).name("Стекло").itemKey("glass-10").gameVersion(v2).build();
+        CraftItem existing = CraftItem.builder()
+                .id(99L).name("Стекло").itemKey("glass-10").gameVersion(v2).category(cat).build();
         when(craftItemRepository.findAllByGameVersionId(1L)).thenReturn(List.of(glass));
         when(craftItemRepository.findByItemKeyAndGameVersionId("glass-10", 2L)).thenReturn(Optional.of(existing));
 
@@ -164,7 +175,7 @@ class VersionCopyServiceTest {
     @DisplayName("manba versiyaga tegishli bo'lmagan item o'tkazib yuboriladi va ogohlantiriladi")
     void warnsOnItemFromAnotherVersion() {
         CraftItem foreign = CraftItem.builder()
-                .id(77L).name("Чужой").itemKey("foreign-77").gameVersion(v2).build();
+                .id(77L).name("Чужой").itemKey("foreign-77").gameVersion(v2).category(cat).build();
         when(craftItemRepository.findAllById(List.of(77L))).thenReturn(List.of(foreign));
 
         VersionCopyResultDto res = service.copy(1L, 2L, List.of(77L), true);

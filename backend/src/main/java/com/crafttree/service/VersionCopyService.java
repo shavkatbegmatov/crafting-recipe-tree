@@ -2,10 +2,12 @@ package com.crafttree.service;
 
 import com.crafttree.dto.VersionCopyResultDto;
 import com.crafttree.entity.AuditAction;
+import com.crafttree.entity.Category;
 import com.crafttree.entity.CraftItem;
 import com.crafttree.entity.GameVersion;
 import com.crafttree.entity.Recipe;
 import com.crafttree.entity.RecipeIngredient;
+import com.crafttree.repository.CategoryRepository;
 import com.crafttree.repository.CraftItemRepository;
 import com.crafttree.repository.RecipeIngredientRepository;
 import com.crafttree.repository.RecipeRepository;
@@ -38,6 +40,7 @@ import java.util.Set;
 public class VersionCopyService {
 
     private final CraftItemRepository craftItemRepository;
+    private final CategoryRepository categoryRepository;
     private final RecipeRepository recipeRepository;
     private final RecipeIngredientRepository recipeIngredientRepository;
     private final GameVersionService gameVersionService;
@@ -172,7 +175,7 @@ public class VersionCopyService {
                 .descriptionUz(src.getDescriptionUz())
                 .descriptionEn(src.getDescriptionEn())
                 .descriptionUzCyr(src.getDescriptionUzCyr())
-                .category(src.getCategory())
+                .category(categoryInTarget(src.getCategory(), target))
                 .craftTimeSeconds(src.getCraftTimeSeconds())
                 .imageUrl(src.getImageUrl())
                 .tags(new HashSet<>(src.getTags()))
@@ -182,6 +185,26 @@ public class VersionCopyService {
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
+    }
+
+    /**
+     * Kategoriya ham versiyaga bog'langan, shuning uchun item ko'chirilganda uning
+     * kategoriyasi maqsad versiyada ham bo'lishi shart — bo'lmasa nusxasi yaratiladi.
+     * Aks holda kompozit tashqi kalit (category_id, game_version_id) buzilardi.
+     */
+    private Category categoryInTarget(Category src, GameVersion target) {
+        return categoryRepository.findByCodeAndGameVersionId(src.getCode(), target.getId())
+                .orElseGet(() -> categoryRepository.save(Category.builder()
+                        .gameVersion(target)
+                        .code(src.getCode())
+                        .nameRu(src.getNameRu())
+                        .nameUz(src.getNameUz())
+                        .nameEn(src.getNameEn())
+                        .nameUzCyr(src.getNameUzCyr())
+                        .color(src.getColor())
+                        .icon(src.getIcon())
+                        .sortOrder(src.getSortOrder())
+                        .build()));
     }
 
     /** @return retsept ko'chirildimi (ingredienti yetishmasa {@code false}) */

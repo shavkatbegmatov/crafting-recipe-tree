@@ -188,7 +188,8 @@
     "icon": "Ikonka",
     "sortOrder": "Tartib raqami",
     "actions": "Amallar",
-    "confirmDelete": "Rostdan o'chirmoqchimisiz?"
+    "confirmDelete": "Rostdan o'chirmoqchimisiz?",
+    "categoriesVersionHint": "Kategoriyalar versiyaga bog'langan. Bu yerda {{version}} versiyasining kategoriyalari — bu yerda yaratilgani boshqa versiyalarda ko'rinmaydi."
   },
   "adminUsers": {
     "title": "Foydalanuvchilar",

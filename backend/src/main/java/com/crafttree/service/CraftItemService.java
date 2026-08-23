@@ -46,9 +46,14 @@ public class CraftItemService {
     private final CraftLogRepository craftLogRepository;
     private final AuditService auditService;
 
-    @Cacheable("categories")
-    public List<CategoryDto> getAllCategories() {
-        return categoryRepository.findAllByOrderBySortOrderAsc().stream()
+    /**
+     * Kesh kaliti VERSIYA bo'yicha — aks holda bir versiyaning kategoriyalari
+     * boshqasiga ko'rsatilib qolardi.
+     */
+    @Cacheable(value = "categories", key = "#version == null ? 'current' : #version")
+    public List<CategoryDto> getAllCategories(String version) {
+        GameVersion gv = gameVersionService.resolveOrCurrent(version);
+        return categoryRepository.findByGameVersionIdOrderBySortOrderAsc(gv.getId()).stream()
                 .map(c -> CategoryDto.builder()
                         .id(c.getId())
                         .code(c.getCode())
@@ -119,7 +124,7 @@ public class CraftItemService {
     @Transactional
     public CraftItemDto createItem(CreateItemRequest request, String version) {
         GameVersion gv = gameVersionService.resolveOrCurrent(version);
-        Category category = resolveCategory(request.getCategoryId(), request.getCategoryCode());
+        Category category = resolveCategory(request.getCategoryId(), request.getCategoryCode(), gv);
 
         String name = request.getName() == null ? "" : request.getName().trim();
         if (name.isEmpty()) {
@@ -190,7 +195,7 @@ public class CraftItemService {
                 continue;
             }
             try {
-                category = resolveCategory(row.getCategoryId(), code);
+                category = resolveCategory(row.getCategoryId(), code, gv);
             } catch (IllegalArgumentException e) {
                 report.add(new BulkCreateResultDto.Row(line, name, code,
                         BulkCreateResultDto.Row.INVALID,
@@ -258,14 +263,27 @@ public class CraftItemService {
         item.setTags(new HashSet<>(tagRepository.findAllById(tagIds)));
     }
 
-    private Category resolveCategory(Long id, String code) {
+    /**
+     * Kategoriyani AYNAN shu versiya ichidan topadi.
+     * <p>
+     * Boshqa versiyaning kategoriyasi berilsa rad etiladi: item va uning kategoriyasi
+     * bir versiyada bo'lishi shart (DB'da kompozit tashqi kalit ham shuni talab qiladi).
+     */
+    private Category resolveCategory(Long id, String code, GameVersion gv) {
         if (id != null) {
-            return categoryRepository.findById(id)
+            Category c = categoryRepository.findById(id)
                     .orElseThrow(() -> new IllegalArgumentException("Kategoriya topilmadi: " + id));
+            if (!c.getGameVersion().getId().equals(gv.getId())) {
+                throw new IllegalArgumentException(
+                        "Kategoriya " + c.getCode() + " boshqa versiyaga tegishli");
+            }
+            return c;
         }
         if (code != null && !code.isBlank()) {
-            return categoryRepository.findByCode(code.trim().toUpperCase(Locale.ROOT))
-                    .orElseThrow(() -> new IllegalArgumentException("Kategoriya kodi nomalum: " + code));
+            return categoryRepository
+                    .findByCodeAndGameVersionId(code.trim().toUpperCase(Locale.ROOT), gv.getId())
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "Kategoriya kodi bu versiyada yo'q: " + code));
         }
         throw new IllegalArgumentException("Kategoriya korsatilmagan");
     }

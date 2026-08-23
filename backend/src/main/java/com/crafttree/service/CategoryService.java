@@ -4,6 +4,7 @@ import com.crafttree.dto.CategoryDto;
 import com.crafttree.dto.UpdateCategoryRequest;
 import com.crafttree.entity.AuditAction;
 import com.crafttree.entity.Category;
+import com.crafttree.entity.GameVersion;
 import com.crafttree.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,11 +18,14 @@ import java.util.stream.Collectors;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final GameVersionService gameVersionService;
     private final AuditService auditService;
 
+    /** Berilgan (yoki joriy) versiyaning kategoriyalari. */
     @Transactional(readOnly = true)
-    public List<CategoryDto> getAll() {
-        return categoryRepository.findAllByOrderBySortOrderAsc().stream()
+    public List<CategoryDto> getAll(String version) {
+        GameVersion gv = gameVersionService.resolveOrCurrent(version);
+        return categoryRepository.findByGameVersionIdOrderBySortOrderAsc(gv.getId()).stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
@@ -32,10 +36,21 @@ public class CategoryService {
                 .orElseThrow(() -> new RuntimeException("Category not found: " + id)));
     }
 
+    /** Kategoriya DOIM bitta versiyada yaratiladi — kod shu versiya ichida noyob. */
     @Transactional
-    public CategoryDto create(UpdateCategoryRequest request) {
+    public CategoryDto create(UpdateCategoryRequest request, String version) {
+        GameVersion gv = gameVersionService.resolveOrCurrent(version);
+        String code = request.getCode() == null ? "" : request.getCode().trim().toUpperCase();
+        if (code.isEmpty()) {
+            throw new IllegalArgumentException("Kategoriya kodi bo'sh bo'lishi mumkin emas");
+        }
+        if (categoryRepository.existsByCodeAndGameVersionId(code, gv.getId())) {
+            throw new IllegalArgumentException(
+                    code + " kodli kategoriya " + gv.getVersion() + " versiyasida allaqachon bor");
+        }
         Category category = Category.builder()
-                .code(request.getCode().toUpperCase())
+                .gameVersion(gv)
+                .code(code)
                 .nameRu(request.getNameRu())
                 .nameUz(request.getNameUz())
                 .nameEn(request.getNameEn())
@@ -54,7 +69,16 @@ public class CategoryService {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Category not found: " + id));
 
-        if (request.getCode() != null) category.setCode(request.getCode().toUpperCase());
+        if (request.getCode() != null) {
+            String newCode = request.getCode().trim().toUpperCase();
+            if (!newCode.equals(category.getCode())
+                    && categoryRepository.existsByCodeAndGameVersionId(
+                            newCode, category.getGameVersion().getId())) {
+                throw new IllegalArgumentException(newCode
+                        + " kodli kategoriya bu versiyada allaqachon bor");
+            }
+            category.setCode(newCode);
+        }
         if (request.getNameRu() != null) category.setNameRu(request.getNameRu());
         if (request.getNameUz() != null) category.setNameUz(request.getNameUz());
         if (request.getNameEn() != null) category.setNameEn(request.getNameEn());
@@ -77,6 +101,7 @@ public class CategoryService {
     private CategoryDto toDto(Category c) {
         return CategoryDto.builder()
                 .id(c.getId())
+                .version(c.getGameVersion() != null ? c.getGameVersion().getVersion() : null)
                 .code(c.getCode())
                 .nameRu(c.getNameRu())
                 .nameUz(c.getNameUz())

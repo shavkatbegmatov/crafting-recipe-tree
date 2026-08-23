@@ -16,4 +16,6 @@ public class CategoryDto {
     private String color;
     private String icon;
     private Integer sortOrder;
+    /** Kategoriya qaysi o'yin versiyasiga tegishli. */
+    private String version;
 }
