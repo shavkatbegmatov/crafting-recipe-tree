@@ -765,6 +765,11 @@
     "alsoRecipe": "+ o'z retsepti",
     "alsoFavorites": "+ sevimlilar: {{count}}",
     "alsoInventory": "+ inventar: {{count}}",
-    "alsoCraftLogs": "+ kraft tarixi: {{count}}"
+    "alsoCraftLogs": "+ kraft tarixi: {{count}}",
+    "deleteOneTitle": "«{{name}}» o'chirilsinmi?",
+    "deleteOneWarning": "O'chirish qaytarilmaydi. Predmet bilan birga uning retsepti, teglari va sevimlilardagi, inventardagi, kraft tarixidagi yozuvlari ham ketadi.",
+    "deleteOneConfirm": "O'chirish",
+    "deleteChecking": "Tekshirilmoqda...",
+    "alsoRemoved": "U bilan birga:"
   }
 }

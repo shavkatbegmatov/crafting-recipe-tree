@@ -765,6 +765,11 @@
     "alsoRecipe": "+ ўз рецепти",
     "alsoFavorites": "+ севимлилар: {{count}}",
     "alsoInventory": "+ инвентар: {{count}}",
-    "alsoCraftLogs": "+ крафт тарихи: {{count}}"
+    "alsoCraftLogs": "+ крафт тарихи: {{count}}",
+    "deleteOneTitle": "«{{name}}» ўчирилсинми?",
+    "deleteOneWarning": "Ўчириш қайтарилмайди. Предмет билан бирга унинг рецепти, теглари ва севимлилардаги, инвентардаги, крафт тарихидаги ёзувлари ҳам кетади.",
+    "deleteOneConfirm": "Ўчириш",
+    "deleteChecking": "Текширилмоқда...",
+    "alsoRemoved": "У билан бирга:"
   }
 }

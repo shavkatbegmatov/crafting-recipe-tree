@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useLocalizedField } from '../hooks/useLanguage'
 import { useGoBack } from '../hooks/useGoBack'
 import { useItem, useUsedIn, useCategories, useTags } from '../hooks/useItems'
 import { useAuth } from '../contexts/AuthContext'
+import DeleteItemDialog from '../components/items/DeleteItemDialog'
 import { updateItem, setItemTags } from '../api/items'
 import { useQueryClient } from '@tanstack/react-query'
 import RecipeTree from '../components/tree/RecipeTree'
@@ -13,7 +14,7 @@ import CraftPlanPanel from '../components/tree/CraftPlanPanel'
 import CategoryBadge from '../components/ui/CategoryBadge'
 import ItemImageIcon from '../components/ui/ItemImageIcon'
 import Spinner from '../components/ui/Spinner'
-import { ArrowLeft, ArrowRight, Clock, Beaker, Pencil, Save, X, Loader2, Check, Download, GitBranchPlus } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Clock, Beaker, Pencil, Save, X, Loader2, Check, Download, GitBranchPlus, Trash2 } from 'lucide-react'
 import { downloadExport } from '../api/portage'
 import ImageUpload from '../components/items/ImageUpload'
 import SafeImage from '../components/ui/SafeImage'
@@ -25,7 +26,9 @@ export default function ItemDetailPage() {
   const { t } = useTranslation()
   const { getField } = useLocalizedField()
   const goBack = useGoBack('/')
+  const navigate = useNavigate()
   const { isAdmin } = useAuth()
+  const [deleting, setDeleting] = useState(false)
   const contentWidth = useContentWidth('max-w-7xl')
   const { id } = useParams<{ id: string }>()
   const itemId = Number(id)
@@ -190,6 +193,13 @@ export default function ItemDetailPage() {
                   >
                     <Pencil size={12} />
                     {t('edit.button')}
+                  </button>
+                  <button
+                    onClick={() => setDeleting(true)}
+                    className="flex items-center gap-1 text-xs text-red-400/80 hover:text-red-400 transition-colors border border-red-400/25 rounded px-2 py-1 hover:border-red-400/50"
+                    title={t('itemCreate.deleteOneConfirm')}
+                  >
+                    <Trash2 size={12} />
                   </button>
                 </>
               )}
@@ -378,6 +388,17 @@ export default function ItemDetailPage() {
           )}
         </div>
       </div>
+
+      {/* Delete confirmation (admin) */}
+      {deleting && (
+        <DeleteItemDialog
+          itemId={itemId}
+          itemName={itemName}
+          onClose={() => setDeleting(false)}
+          // O'chirilgan itemning sahifasida qolib bo'lmaydi — bosh sahifaga qaytamiz.
+          onDeleted={() => { setDeleting(false); navigate('/', { replace: true }) }}
+        />
+      )}
 
       {/* Recipe editor (admin) */}
       {!editing && editingRecipe && isAdmin && item.categoryCode !== 'RAW' && (
