@@ -26,6 +26,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl postgresql
 
 ENV SPRING_PROFILES_ACTIVE=prod
 
+# JVM xotira chegaralari. Bayroqsiz JVM konteynerda limit yo'qligi uchun butun server
+# RAM'ining 25% ini (~2 GB) heap deb oladi, G1 esa uni kengaytirib OS'ga qaytarmaydi —
+# production'da RSS 1,4 GB ga yetgan. Server 8 GB va unda ~10 loyiha turadi, deploy
+# paytida esa eski va yangi JVM bir vaqtda tirik bo'ladi (OOM-killer shu payt ishlagan).
+#   -Xmx384m          ma'lumot kichik (o'nlab item), keshlar chegaralangan — yetarli zaxira
+#   -Xms128m          boshlang'ich heap; aniq berilmasa host RAM'ining 1/64 qismi olinadi va
+#                     katta RAM'li mashinada heap darhol -Xmx gacha band bo'lib qoladi
+#   UseSerialGC       kichik heap va kam trafikda G1'dan tejamkor, pauzalar o'nlab ms
+#   Metaspace/Code    sinf va JIT kodi uchun yuqori chegara (heap'dan tashqari xotira)
+#   -Xss512k          har bir thread steki (sukut 1 MB)
+#   ExitOnOOM         yarim tirik holatda qolmasdan chiqadi -> restart=unless-stopped ko'taradi
+# JAVA_TOOL_OPTIONS bo'lgani uchun Coolify env'idan qayta build'siz almashtirsa bo'ladi.
+ENV JAVA_TOOL_OPTIONS="-Xms128m -Xmx384m -Xss512k -XX:+UseSerialGC -XX:MaxMetaspaceSize=192m -XX:ReservedCodeCacheSize=64m -XX:+ExitOnOutOfMemoryError"
+
 COPY --from=build /app/target/*.jar app.jar
 
 # Non-root foydalanuvchi (xavfsizlik) + uploads/backups kataloglari egaligi.
